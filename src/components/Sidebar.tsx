@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Radio } from "lucide-react";
+import { LayoutDashboard, Users, Radio, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 export function Sidebar() {
     const pathname = usePathname();
@@ -48,6 +49,17 @@ export function Sidebar() {
                     ))}
                 </div>
             </div>
-        </div>
+            <div className="px-3 py-2">
+                <button
+                    onClick={() => signOut({ callbackUrl: "/login" })}
+                    className="text-sm group flex p-3 w-full justify-start font-medium cursor-pointer text-zinc-400 hover:text-white hover:bg-white/10 rounded-lg transition"
+                >
+                    <div className="flex items-center flex-1">
+                        <LogOut className="h-5 w-5 mr-3 text-red-500" />
+                        Log Out
+                    </div>
+                </button>
+            </div>
+        </div >
     );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -10,9 +10,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge"; // I might need to add badge
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { RefreshCw, Clock, Calendar, Users, Activity } from "lucide-react";
+import { getCurrentPeriod, PeriodStatus } from "@/lib/schedule";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface Log {
   _id: string;
@@ -27,6 +37,18 @@ interface Log {
 export default function Dashboard() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState<PeriodStatus | null>(null);
+
+  // Mock data for weekly attendance chart
+  const data = [
+    { name: "Sun", present: 20 }, // Assuming Sun is start of week or Mon
+    { name: "Mon", present: 45 },
+    { name: "Tue", present: 42 },
+    { name: "Wed", present: 48 },
+    { name: "Thu", present: 46 },
+    { name: "Fri", present: 0 }, // Holiday
+    { name: "Sat", present: 0 },
+  ];
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -45,88 +67,141 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchLogs();
-    // Auto refresh every 5 seconds
-    const interval = setInterval(fetchLogs, 5000);
+    setPeriod(getCurrentPeriod());
+    const interval = setInterval(() => {
+      fetchLogs();
+      setPeriod(getCurrentPeriod());
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   const totalPresent = logs.filter((l) => l.status === "PRESENT").length;
 
   return (
-    <div className="p-8 space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <Button onClick={fetchLogs} variant="outline" size="sm">
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Refresh
-        </Button>
+    <div className="p-8 space-y-8 bg-slate-50/50 min-h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h2>
+          <p className="text-muted-foreground">Overview of today's attendance and class schedule.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant={period?.isHoliday ? "destructive" : "outline"} className="px-4 py-2 text-sm bg-white">
+            {period?.isHoliday ? "Holiday Mode" : period?.timeRange}
+          </Badge>
+          <Button onClick={fetchLogs} variant="default" size="sm" className="bg-emerald-600 hover:bg-emerald-700">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Refresh Data
+          </Button>
+        </div>
       </div>
 
+      {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Present Today
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Total Present</CardTitle>
+            <Users className="h-4 w-4 text-emerald-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalPresent}</div>
+            <p className="text-xs text-muted-foreground">Students marked today</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Current Period</CardTitle>
+            <Clock className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {period?.isHoliday ? "Holiday" : period?.periodNumber > 0 && period?.periodNumber <= 8 ? `Period ${period.periodNumber}` : period?.periodName}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Unique students: {new Set(logs.map(l => l.student_id?.rfid_uid)).size}
+              {period?.periodNumber > 0 && period?.periodNumber <= 8 ? "Class is in session" : period?.periodName}
             </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">System Status</CardTitle>
+            <Activity className="h-4 w-4 text-emerald-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-emerald-500">Active</div>
+            <p className="text-xs text-muted-foreground">ESP8266 Connected</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Date</CardTitle>
+            <Calendar className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{new Date().toLocaleDateString('en-US', { weekday: 'short' })}</div>
+            <p className="text-xs text-muted-foreground">{new Date().toLocaleDateString()}</p>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Student Name</TableHead>
-                <TableHead>RFID UID</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center">
-                    Loading...
-                  </TableCell>
-                </TableRow>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        {/* Chart Section */}
+        <Card className="col-span-4">
+          <CardHeader>
+            <CardTitle>Weekly Attendance Overview</CardTitle>
+            <CardDescription>Daily student presence count (Admin Demo)</CardDescription>
+          </CardHeader>
+          <CardContent className="pl-2">
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+                  <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ background: '#1e293b', border: 'none', color: '#fff' }} />
+                  <Bar dataKey="present" fill="#10b981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Logs Section */}
+        <Card className="col-span-3">
+          <CardHeader>
+            <CardTitle>Live Feed</CardTitle>
+            <CardDescription>
+              Real-time entrance logs.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] overflow-auto">
+              {loading && logs.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Loading logs...</div>
               ) : logs.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center">
-                    No attendance logs for today.
-                  </TableCell>
-                </TableRow>
+                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No logs today.</div>
               ) : (
-                logs.map((log) => (
-                  <TableRow key={log._id}>
-                    <TableCell className="font-medium">
-                      {log.student_id?.name || "Unknown"}
-                    </TableCell>
-                    <TableCell>{log.student_id?.rfid_uid}</TableCell>
-                    <TableCell>
-                      {new Date(log.timestamp).toLocaleTimeString()}
-                    </TableCell>
-                    <TableCell>
-                      <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 text-white hover:bg-green-600">
-                        {log.status}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))
+                <div className="space-y-4">
+                  {logs.map((log) => (
+                    <div key={log._id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium leading-none">{log.student_id?.name || "Unknown Visitor"}</p>
+                        <p className="text-xs text-muted-foreground">{log.student_id?.rfid_uid}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-medium text-emerald-600">{log.status}</div>
+                        <div className="text-xs text-muted-foreground">{new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

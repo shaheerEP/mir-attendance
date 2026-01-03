@@ -19,7 +19,7 @@ const char* password = "mirpunjab"; // <--- CHANGE THIS to the password for MIR.
 
 // OPTION 2: Vercel Production (Use your website URL)
 // REPLACE "https://your-project.vercel.app" with your actual Vercel link
-const char* serverUrl = "https://your-project.vercel.app/api/attendance";
+const char* serverUrl = "https://mir-attendance.vercel.app/api/attendance";
 
 // RFID Pins (D1/D2 default for generic NodeMCU/Wemos)
 #define SS_PIN  D8  // GPIO15
@@ -73,11 +73,13 @@ void loop() {
 
   // Send to Server
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
+    WiFiClientSecure client;
+    client.setInsecure(); // Disable SSL certificate verification (needed for Vercel/HTTPS on ESP8266)
     HTTPClient http;
 
     Serial.print("[HTTP] begin...\n");
-    if (http.begin(client, serverUrl)) {  // HTTP
+    // Use the secure client
+    if (http.begin(client, serverUrl)) {  
 
       http.addHeader("Content-Type", "application/json");
       
@@ -87,6 +89,8 @@ void loop() {
       Serial.print("[HTTP] POST...\n");
       // start connection and send HTTP header
       int httpCode = http.POST(payload);
+      
+      // ... existing error handling ...
 
       // httpCode will be negative on error
       if (httpCode > 0) {
