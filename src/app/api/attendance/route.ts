@@ -84,6 +84,7 @@ export async function POST(req: NextRequest) {
             student_id: student._id,
             timestamp: now,
             status: status,
+            periodId: activePeriod.id
         });
 
         const displayMsg = status === "HALF_PRESENT" ? `Welcome (Half Day)` : `Welcome ${student.name}`;

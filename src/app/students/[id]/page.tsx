@@ -19,6 +19,7 @@ interface AttendanceLog {
     _id: string;
     timestamp: string;
     status: string;
+    periodId?: number;
 }
 
 interface StudentStats {
@@ -160,6 +161,7 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
                             <TableRow>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Time</TableHead>
+                                <TableHead>Period</TableHead>
                                 <TableHead>Status</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -174,6 +176,11 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
                                     </TableCell>
                                     <TableCell>
                                         {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant="outline">
+                                            {log.periodId ? `P${log.periodId}` : "-"}
+                                        </Badge>
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant={log.status === "PRESENT" ? "default" : log.status === "HALF_PRESENT" ? "secondary" : "destructive"}>
