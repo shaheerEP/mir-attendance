@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RefreshCw, Clock, Calendar, Users, Activity } from "lucide-react";
-import { getCurrentPeriod, PeriodStatus } from "@/lib/schedule";
+import { getCurrentActivePeriod, PERIODS } from "@/lib/periods";
 import {
   BarChart,
   Bar,
@@ -34,21 +34,50 @@ interface Log {
   status: string;
 }
 
+interface PeriodConfig {
+  id: number;
+  startTime: string;
+  durationMinutes: number;
+}
+
+interface PeriodStatus {
+  isHoliday: boolean;
+  periodName: string;
+  periodNumber: number;
+  timeRange: string;
+}
+
 export default function Dashboard() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<PeriodStatus | null>(null);
+  const [periodsConfig, setPeriodsConfig] = useState<PeriodConfig[]>(PERIODS);
 
   // Mock data for weekly attendance chart
   const data = [
-    { name: "Sun", present: 20 }, // Assuming Sun is start of week or Mon
+    { name: "Sun", present: 20 },
     { name: "Mon", present: 45 },
     { name: "Tue", present: 42 },
     { name: "Wed", present: 48 },
     { name: "Thu", present: 46 },
-    { name: "Fri", present: 0 }, // Holiday
+    { name: "Fri", present: 0 },
     { name: "Sat", present: 0 },
   ];
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch("/api/settings");
+      if (res.ok) {
+        const data = await res.json();
+        // If API returns valid periods, use them. Otherwise fallback to default PERIODS via useState init.
+        if (data.periods && Array.isArray(data.periods) && data.periods.length > 0) {
+          setPeriodsConfig(data.periods);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch settings", error);
+    }
+  };
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -65,15 +94,63 @@ export default function Dashboard() {
     }
   };
 
+  const updatePeriodStatus = () => {
+    const now = new Date();
+    const day = now.getDay();
+
+    // Holiday Check (Friday)
+    if (day === 5) {
+      setPeriod({
+        isHoliday: true,
+        periodName: "Holiday (Friday)",
+        periodNumber: 0,
+        timeRange: "All Day",
+      });
+      return;
+    }
+
+    const active = getCurrentActivePeriod(now, periodsConfig);
+
+    if (active) {
+      const [h, m] = active.startTime.split(':').map(Number);
+      const start = new Date(now);
+      start.setHours(h, m, 0, 0);
+      const end = new Date(start.getTime() + active.durationMinutes * 60000);
+
+      const formatTime = (d: Date) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+      setPeriod({
+        isHoliday: false,
+        periodName: `Period ${active.id}`,
+        periodNumber: active.id,
+        timeRange: `${formatTime(start)} - ${formatTime(end)}`
+      });
+    } else {
+      setPeriod({
+        isHoliday: false,
+        periodName: "No Active Class",
+        periodNumber: 0,
+        timeRange: "Break / After School"
+      });
+    }
+  };
+
   useEffect(() => {
-    fetchLogs();
-    setPeriod(getCurrentPeriod());
+    fetchSettings().then(() => {
+      // After settings fetch, do initial update
+      fetchLogs();
+    });
+  }, []); // Run once on mount
+
+  // Update status when config changes or time passes
+  useEffect(() => {
+    updatePeriodStatus(); // usage of new config
     const interval = setInterval(() => {
       fetchLogs();
-      setPeriod(getCurrentPeriod());
+      updatePeriodStatus();
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [periodsConfig]);
 
   const totalPresent = logs.filter((l) => l.status === "PRESENT").length;
 
