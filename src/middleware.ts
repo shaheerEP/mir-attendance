@@ -7,7 +7,12 @@ export default withAuth(
     },
     {
         callbacks: {
-            authorized: ({ token }) => !!token,
+            authorized: ({ token, req }) => {
+                if (req.nextUrl.pathname.startsWith("/api/attendance")) {
+                    return true;
+                }
+                return !!token;
+            },
         },
         pages: {
             signIn: "/login",

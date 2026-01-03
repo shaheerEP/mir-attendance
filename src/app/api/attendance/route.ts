@@ -26,23 +26,29 @@ export async function POST(req: NextRequest) {
         }
 
         const now = new Date();
+        console.log(`[Attendance] Scanning at ${now.toLocaleString()}, UID: ${uid}`);
+
         // 2. Identify Current Period
         const activePeriod = getCurrentActivePeriod(now, periods);
+        console.log(`[Attendance] Active Period:`, activePeriod);
 
         if (!activePeriod) {
+            console.log(`[Attendance] Error: No active period found.`);
             return NextResponse.json(
                 { message: "No active class period", status: "error" },
-                { status: 400 }
+                { status: 404 } // Changed from 400 to 404 (Not Found)
             );
         }
 
         // 3. Check Rules (Grace Period / Half / Late)
         const status = getAttendanceStatusForPeriod(activePeriod, now, gracePeriod);
+        console.log(`[Attendance] Status calculated: ${status}`);
 
         if (status === "NONE" || status === "LATE") {
+            console.log(`[Attendance] Error: Status is ${status} (Late/Closed)`);
             return NextResponse.json(
                 { message: "Late: Attendance closed", status: "error" },
-                { status: 400 }
+                { status: 403 } // Changed from 400 to 403 (Forbidden)
             );
         }
 
