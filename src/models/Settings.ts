@@ -14,6 +14,7 @@ export interface IGracePeriodConfig {
 export interface ISettings extends Document {
     periods: IPeriodConfig[];
     gracePeriod: IGracePeriodConfig;
+    weeklyHolidays: number[]; // 0=Sun, 1=Mon...
 }
 
 const PeriodSchema = new Schema<IPeriodConfig>({
@@ -29,6 +30,7 @@ const SettingsSchema = new Schema<ISettings>(
             fullPresentMins: { type: Number, default: 5 },
             halfPresentMins: { type: Number, default: 20 },
         },
+        weeklyHolidays: { type: [Number], default: [5] }, // Default Friday (5)
     },
     { timestamps: true }
 );

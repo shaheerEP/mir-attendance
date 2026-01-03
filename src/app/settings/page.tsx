@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Loader2, RefreshCw } from "lucide-react";
+import { Save, Loader2, Plus, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PeriodConfig {
     id: number;
@@ -22,7 +23,18 @@ interface GracePeriodConfig {
 interface SettingsData {
     periods: PeriodConfig[];
     gracePeriod: GracePeriodConfig;
+    weeklyHolidays: number[];
 }
+
+const DAYS = [
+    { id: 0, label: "Sunday" },
+    { id: 1, label: "Monday" },
+    { id: 2, label: "Tuesday" },
+    { id: 3, label: "Wednesday" },
+    { id: 4, label: "Thursday" },
+    { id: 5, label: "Friday" },
+    { id: 6, label: "Saturday" },
+];
 
 export default function SettingsPage() {
     const [loading, setLoading] = useState(true);
@@ -37,7 +49,8 @@ export default function SettingsPage() {
                 const data = await res.json();
                 setSettings({
                     periods: data.periods,
-                    gracePeriod: data.gracePeriod
+                    gracePeriod: data.gracePeriod,
+                    weeklyHolidays: data.weeklyHolidays || [5] // Default Friday
                 });
             }
         } catch (error) {
@@ -64,6 +77,33 @@ export default function SettingsPage() {
             ...settings,
             gracePeriod: { ...settings.gracePeriod, [field]: value },
         });
+    };
+
+    const handleAddPeriod = () => {
+        if (!settings) return;
+        const newId = settings.periods.length + 1;
+        const newPeriod: PeriodConfig = {
+            id: newId,
+            startTime: "09:00",
+            durationMinutes: 45
+        };
+        setSettings({ ...settings, periods: [...settings.periods, newPeriod] });
+    };
+
+    const handleRemovePeriod = (index: number) => {
+        if (!settings) return;
+        const newPeriods = settings.periods.filter((_, i) => i !== index);
+        const reindexed = newPeriods.map((p, i) => ({ ...p, id: i + 1 }));
+        setSettings({ ...settings, periods: reindexed });
+    };
+
+    const toggleHoliday = (dayId: number) => {
+        if (!settings) return;
+        const current = settings.weeklyHolidays || [];
+        const updated = current.includes(dayId)
+            ? current.filter(d => d !== dayId)
+            : [...current, dayId];
+        setSettings({ ...settings, weeklyHolidays: updated });
     };
 
     const saveSettings = async () => {
@@ -113,17 +153,22 @@ export default function SettingsPage() {
             <div className="grid gap-6 md:grid-cols-2">
                 {/* Period Configuration */}
                 <Card className="col-span-2 md:col-span-1">
-                    <CardHeader>
-                        <CardTitle>Class Periods</CardTitle>
-                        <CardDescription>Set start times and duration for the 8 daily periods.</CardDescription>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Class Periods</CardTitle>
+                            <CardDescription>Configure daily schedule.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={handleAddPeriod}>
+                            <Plus className="h-4 w-4 mr-2" /> Add
+                        </Button>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
                         {settings?.periods.map((period, index) => (
-                            <div key={period.id} className="grid grid-cols-6 gap-4 items-end">
-                                <div className="col-span-1 flex items-center h-10 font-medium text-sm text-muted-foreground">
-                                    P{period.id}
+                            <div key={index} className="grid grid-cols-12 gap-2 items-end border-b pb-4 last:border-0 last:pb-0">
+                                <div className="col-span-1 flex items-center h-10 font-bold text-sm text-muted-foreground">
+                                    #{period.id}
                                 </div>
-                                <div className="col-span-3 space-y-1">
+                                <div className="col-span-5 space-y-1">
                                     <Label className="text-xs">Start Time</Label>
                                     <Input
                                         type="time"
@@ -131,7 +176,7 @@ export default function SettingsPage() {
                                         onChange={(e) => handlePeriodChange(index, 'startTime', e.target.value)}
                                     />
                                 </div>
-                                <div className="col-span-2 space-y-1">
+                                <div className="col-span-4 space-y-1">
                                     <Label className="text-xs">Duration (m)</Label>
                                     <Input
                                         type="number"
@@ -139,52 +184,78 @@ export default function SettingsPage() {
                                         onChange={(e) => handlePeriodChange(index, 'durationMinutes', parseInt(e.target.value))}
                                     />
                                 </div>
+                                <div className="col-span-2 flex justify-end">
+                                    <Button variant="ghost" size="icon" onClick={() => handleRemovePeriod(index)} className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
                             </div>
                         ))}
                     </CardContent>
                 </Card>
 
-                {/* Grace Period & Rules */}
-                <Card className="col-span-2 md:col-span-1 h-fit">
-                    <CardHeader>
-                        <CardTitle>Attendance Rules</CardTitle>
-                        <CardDescription>Define thresholds for Present and Half-Day.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-2">
-                            <Label>Grace Period (Full Present)</Label>
-                            <div className="flex items-center gap-2">
-                                <Input
-                                    type="number"
-                                    value={settings?.gracePeriod.fullPresentMins}
-                                    onChange={(e) => handleGraceChange('fullPresentMins', parseInt(e.target.value))}
-                                    className="w-24"
-                                />
-                                <span className="text-sm text-muted-foreground">minutes after start</span>
-                            </div>
-                            <p className="text-xs text-muted-foreground">Students arriving within this time get full attendance.</p>
-                        </div>
+                {/* Right Column: Grace & Holidays */}
+                <div className="col-span-2 md:col-span-1 space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Holidays</CardTitle>
+                            <CardDescription>Select weekly off-days.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-2 gap-4">
+                            {DAYS.map((day) => (
+                                <div key={day.id} className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id={`day-${day.id}`}
+                                        checked={settings?.weeklyHolidays?.includes(day.id)}
+                                        onCheckedChange={() => toggleHoliday(day.id)}
+                                    />
+                                    <Label htmlFor={`day-${day.id}`}>{day.label}</Label>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
 
-                        <Separator />
-
-                        <div className="space-y-2">
-                            <Label>Half Day Limit</Label>
-                            <div className="flex items-center gap-2">
-                                <Input
-                                    type="number"
-                                    value={settings?.gracePeriod.halfPresentMins}
-                                    onChange={(e) => handleGraceChange('halfPresentMins', parseInt(e.target.value))}
-                                    className="w-24"
-                                />
-                                <span className="text-sm text-muted-foreground">minutes after start</span>
+                    <Card className="h-fit">
+                        <CardHeader>
+                            <CardTitle>Attendance Rules</CardTitle>
+                            <CardDescription>Define thresholds for Present and Half-Day.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-2">
+                                <Label>Grace Period (Full Present)</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="number"
+                                        value={settings?.gracePeriod.fullPresentMins}
+                                        onChange={(e) => handleGraceChange('fullPresentMins', parseInt(e.target.value))}
+                                        className="w-24"
+                                    />
+                                    <span className="text-sm text-muted-foreground">minutes after start</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground">Students arriving within this time get full attendance.</p>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                Students arriving between Grace Period and this limit get Half Day.
-                                <br />After this time, attendance is rejected (Late).
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
+
+                            <Separator />
+
+                            <div className="space-y-2">
+                                <Label>Half Day Limit</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="number"
+                                        value={settings?.gracePeriod.halfPresentMins}
+                                        onChange={(e) => handleGraceChange('halfPresentMins', parseInt(e.target.value))}
+                                        className="w-24"
+                                    />
+                                    <span className="text-sm text-muted-foreground">minutes after start</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    Students arriving between Grace Period and this limit get Half Day.
+                                    <br />After this time, attendance is rejected (Late).
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { AddStudentDialog } from "@/components/AddStudentDialog";
 import { EditStudentDialog } from "@/components/EditStudentDialog";
 import {
@@ -131,7 +132,11 @@ export default function StudentsPage() {
                             ) : (
                                 filteredStudents.map((student) => (
                                     <TableRow key={student._id}>
-                                        <TableCell className="font-medium">{student.name}</TableCell>
+                                        <TableCell className="font-medium">
+                                            <Link href={`/students/${student._id}`} className="hover:underline">
+                                                {student.name}
+                                            </Link>
+                                        </TableCell>
                                         <TableCell className="font-mono text-xs">{student.rfid_uid}</TableCell>
                                         <TableCell>
                                             {new Date(student.created_at).toLocaleDateString()}

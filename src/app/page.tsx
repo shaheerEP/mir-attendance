@@ -52,6 +52,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<PeriodStatus | null>(null);
   const [periodsConfig, setPeriodsConfig] = useState<PeriodConfig[]>(PERIODS);
+  const [holidays, setHolidays] = useState<number[]>([5]); // Default Fri
 
   // Mock data for weekly attendance chart
   const data = [
@@ -73,6 +74,7 @@ export default function Dashboard() {
         if (data.periods && Array.isArray(data.periods) && data.periods.length > 0) {
           setPeriodsConfig(data.periods);
         }
+        if (data.weeklyHolidays) setHolidays(data.weeklyHolidays);
       }
     } catch (error) {
       console.error("Failed to fetch settings", error);
@@ -98,11 +100,11 @@ export default function Dashboard() {
     const now = new Date();
     const day = now.getDay();
 
-    // Holiday Check (Friday)
-    if (day === 5) {
+    // Dynamic Holiday Check
+    if (holidays.includes(day)) {
       setPeriod({
         isHoliday: true,
-        periodName: "Holiday (Friday)",
+        periodName: "Holiday",
         periodNumber: 0,
         timeRange: "All Day",
       });
