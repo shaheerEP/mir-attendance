@@ -115,10 +115,10 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {period?.isHoliday ? "Holiday" : period?.periodNumber > 0 && period?.periodNumber <= 8 ? `Period ${period.periodNumber}` : period?.periodName}
+              {period?.isHoliday ? "Holiday" : (period?.periodNumber ?? 0) > 0 && (period?.periodNumber ?? 0) <= 8 ? `Period ${period?.periodNumber}` : period?.periodName}
             </div>
             <p className="text-xs text-muted-foreground">
-              {period?.periodNumber > 0 && period?.periodNumber <= 8 ? "Class is in session" : period?.periodName}
+              {(period?.periodNumber ?? 0) > 0 && (period?.periodNumber ?? 0) <= 8 ? "Class is in session" : period?.periodName}
             </p>
           </CardContent>
         </Card>
