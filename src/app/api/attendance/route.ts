@@ -26,35 +26,44 @@ export async function POST(req: NextRequest) {
         }
 
         const now = new Date();
-        console.log(`[Attendance] Scanning at ${now.toLocaleString()}, UID: ${uid}`);
+        const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+        const schoolTime = new Date(now.getTime() + IST_OFFSET); // Shift to IST Conceptually
+
+        console.log(`[Attendance] Server Time: ${now.toUTCString()}`);
+        console.log(`[Attendance] School Time (IST Adjusted): ${schoolTime.toUTCString()}`);
+        console.log(`[Attendance] Processing for UID: ${uid}`);
 
         // 2. Identify Current Period
-        const activePeriod = getCurrentActivePeriod(now, periods);
+        const activePeriod = getCurrentActivePeriod(schoolTime, periods);
         console.log(`[Attendance] Active Period:`, activePeriod);
 
         if (!activePeriod) {
             console.log(`[Attendance] Error: No active period found.`);
             return NextResponse.json(
                 { message: "No active class period", status: "error" },
-                { status: 404 } // Changed from 400 to 404 (Not Found)
+                { status: 404 }
             );
         }
 
         // 3. Check Rules (Grace Period / Half / Late)
-        const status = getAttendanceStatusForPeriod(activePeriod, now, gracePeriod);
+        const status = getAttendanceStatusForPeriod(activePeriod, schoolTime, gracePeriod);
         console.log(`[Attendance] Status calculated: ${status}`);
 
         if (status === "NONE" || status === "LATE") {
             console.log(`[Attendance] Error: Status is ${status} (Late/Closed)`);
             return NextResponse.json(
                 { message: "Late: Attendance closed", status: "error" },
-                { status: 403 } // Changed from 400 to 403 (Forbidden)
+                { status: 403 }
             );
         }
 
         // 4. Check Duplicates
-        const startOfPeriod = new Date(now);
+        const startOfPeriod = new Date(schoolTime);
         const [h, m] = activePeriod.startTime.split(":").map(Number);
+
+        // setHours uses local time. Since schoolTime is shifted, its "UTC hours" match IST hours
+        // BUT setHours on server (UTC) sets UTC hours.
+        // If schoolTime is 10:30 UTC (Real 5:00 UTC), setHours(10,30) sets it to 10:30 UTC. Correct.
         startOfPeriod.setHours(h, m, 0, 0);
         const endOfPeriod = new Date(startOfPeriod.getTime() + activePeriod.durationMinutes * 60000);
 
