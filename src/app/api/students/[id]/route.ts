@@ -4,8 +4,9 @@ import Student from "@/models/Student";
 
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
+    const params = await props.params;
     try {
         await dbConnect();
         const body = await req.json();
@@ -38,8 +39,9 @@ export async function PATCH(
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
+    const params = await props.params;
     try {
         await dbConnect();
         const deletedStudent = await Student.findByIdAndDelete(params.id);
