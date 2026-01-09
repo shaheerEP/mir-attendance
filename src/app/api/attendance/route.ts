@@ -45,25 +45,11 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // 3. Check Rules (Grace Period / Half / Late)
-        const status = getAttendanceStatusForPeriod(activePeriod, schoolTime, gracePeriod);
-        console.log(`[Attendance] Status calculated: ${status}`);
-
-        if (status === "NONE" || status === "LATE") {
-            console.log(`[Attendance] Error: Status is ${status} (Late/Closed)`);
-            return NextResponse.json(
-                { message: "Late: Attendance closed", status: "error" },
-                { status: 403 }
-            );
-        }
-
-        // 4. Check Duplicates
+        // 3. Check Duplicates (MOVED UP)
+        // We check if they already have a log for THIS period, regardless of current time status
         const startOfPeriod = new Date(schoolTime);
         const [h, m] = activePeriod.startTime.split(":").map(Number);
 
-        // setHours uses local time. Since schoolTime is shifted, its "UTC hours" match IST hours
-        // BUT setHours on server (UTC) sets UTC hours.
-        // If schoolTime is 10:30 UTC (Real 5:00 UTC), setHours(10,30) sets it to 10:30 UTC. Correct.
         startOfPeriod.setHours(h, m, 0, 0);
         const endOfPeriod = new Date(startOfPeriod.getTime() + activePeriod.durationMinutes * 60000);
 
@@ -73,9 +59,22 @@ export async function POST(req: NextRequest) {
         });
 
         if (existingLog) {
+            console.log(`[Attendance] Duplicate scan prevented. Already marked as ${existingLog.status}`);
             return NextResponse.json(
                 { message: `Already marked (${existingLog.status})`, status: "success" },
                 { status: 200 }
+            );
+        }
+
+        // 4. Check Rules (Grace Period / Half / Late)
+        const status = getAttendanceStatusForPeriod(activePeriod, schoolTime, gracePeriod);
+        console.log(`[Attendance] Status calculated: ${status}`);
+
+        if (status === "NONE" || status === "LATE") {
+            console.log(`[Attendance] Error: Status is ${status} (Late/Closed)`);
+            return NextResponse.json(
+                { message: "Late: Attendance closed", status: "error" },
+                { status: 403 }
             );
         }
 
