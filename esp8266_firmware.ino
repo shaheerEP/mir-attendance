@@ -79,17 +79,26 @@ void setup() {
 }
 
 void loop() {
-  // Look for new cards
+  // 1. Continuous Network Check (Priority)
+  // If WiFi is lost, blink Red and retry next loop.
+  // This ensures "Out of Range" indication works even without a card.
+  if (WiFi.status() != WL_CONNECTED) {
+      digitalWrite(LED_RED, HIGH); delay(250);
+      digitalWrite(LED_RED, LOW); delay(250);
+      return; 
+  }
+
+  // 2. Look for new cards
   if (!mfrc522.PICC_IsNewCardPresent()) {
     return;
   }
 
-  // Select one of the cards
+  // 3. Select one of the cards
   if (!mfrc522.PICC_ReadCardSerial()) {
     return;
   }
 
-  // Create UID String
+  // 4. Create UID String
   String content = "";
   for (byte i = 0; i < mfrc522.uid.size; i++) {
     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? "0" : ""));
@@ -99,84 +108,74 @@ void loop() {
   Serial.print("UID Scanned: ");
   Serial.println(content);
 
-  // Send to Server
-  if (WiFi.status() == WL_CONNECTED) {
-    WiFiClientSecure client;
-    client.setInsecure(); // Disable SSL certificate verification (needed for Vercel/HTTPS on ESP8266)
-    HTTPClient http;
+  // 5. Send to Server (We are connected)
+  WiFiClientSecure client;
+  client.setInsecure(); // Disable SSL certificate verification
+  HTTPClient http;
 
-    Serial.print("[HTTP] begin...\n");
-    // Use the secure client
-    if (http.begin(client, serverUrl)) {  
+  Serial.print("[HTTP] begin...\n");
+  
+  if (http.begin(client, serverUrl)) {  
+    http.addHeader("Content-Type", "application/json");
+    
+    // JSON Payload
+    String payload = "{\"uid\":\"" + content + "\"}";
+    
+    Serial.print("[HTTP] POST...\n");
+    int httpCode = http.POST(payload);
+    
+    if (httpCode > 0) {
+      Serial.printf("[HTTP] POST... code: %d\n", httpCode);
 
-      http.addHeader("Content-Type", "application/json");
-      
-      // JSON Payload
-      String payload = "{\"uid\":\"" + content + "\"}";
-      
-      Serial.print("[HTTP] POST...\n");
-      // start connection and send HTTP header
-      int httpCode = http.POST(payload);
-      
-      if (httpCode > 0) {
-        // HTTP header has been send and Server response header has been handled
-        Serial.printf("[HTTP] POST... code: %d\n", httpCode);
+      // SUCCESS cases (200 OK, 201 Created)
+      if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
+        String payload = http.getString();
+        Serial.println(payload);
+        
+        // SUCCESS FEEDBACK: Green Light 1.5s
+        digitalWrite(LED_GREEN, HIGH);
+        delay(1500);
+        digitalWrite(LED_GREEN, LOW);
+        
+      } else if (httpCode == 206) {
+           // HALF DAY FEEDBACK: Yellow AND Green Light 1.5s
+           String payload = http.getString();
+           Serial.println(payload);
 
-        // SUCCESS cases (200 OK, 201 Created)
-        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
-          String payload = http.getString();
-          Serial.println(payload);
-          
-          // SUCCESS FEEDBACK: Green Light 1.5s
-          digitalWrite(LED_GREEN, HIGH);
-          delay(1500);
-          digitalWrite(LED_GREEN, LOW);
-          
-        } else if (httpCode == 206) {
-             // HALF DAY FEEDBACK: Yellow AND Green Light 1.5s
-             String payload = http.getString();
-             Serial.println(payload);
+           digitalWrite(LED_YELLOW, HIGH);
+           digitalWrite(LED_GREEN, HIGH);
+           delay(1500);
+           digitalWrite(LED_YELLOW, LOW);
+           digitalWrite(LED_GREEN, LOW);
 
-             digitalWrite(LED_YELLOW, HIGH);
-             digitalWrite(LED_GREEN, HIGH);
-             delay(1500);
-             digitalWrite(LED_YELLOW, LOW);
-             digitalWrite(LED_GREEN, LOW);
-
-        } else {
-          // ERROR cases (403, 404, 500, 409 etc)
-          Serial.printf("[HTTP] Server Error: %d\n", httpCode);
-          
-          // ERROR FEEDBACK: Red Light Blink 2 Times
-          for(int i=0; i<2; i++) {
-             digitalWrite(LED_RED, HIGH);
-             delay(500);
-             digitalWrite(LED_RED, LOW);
-             delay(300);
-          }
-        }
       } else {
-        Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
-        // NETWORK FAIL: Quick Red Blinks
-        for(int i=0; i<5; i++) {
-            digitalWrite(LED_RED, HIGH); delay(100);
-            digitalWrite(LED_RED, LOW); delay(100);
+        // ERROR cases (403, 404, 500, 409 etc)
+        Serial.printf("[HTTP] Server Error: %d\n", httpCode);
+        
+        // ERROR FEEDBACK: Red Light Blink 2 Times
+        for(int i=0; i<2; i++) {
+           digitalWrite(LED_RED, HIGH);
+           delay(500);
+           digitalWrite(LED_RED, LOW);
+           delay(300);
         }
       }
-      http.end();
     } else {
-      Serial.printf("[HTTP] Unable to connect\n");
-      // CONN FAIL: Quick Red Blinks
+      Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
+      // NETWORK FAIL: Quick Red Blinks
       for(int i=0; i<5; i++) {
           digitalWrite(LED_RED, HIGH); delay(100);
           digitalWrite(LED_RED, LOW); delay(100);
       }
     }
+    http.end();
   } else {
-      // NO WIFI / OUT OF RANGE
-      // Blink Red continuously
-      digitalWrite(LED_RED, HIGH); delay(250);
-      digitalWrite(LED_RED, LOW); delay(250);
+    Serial.printf("[HTTP] Unable to connect\n");
+    // CONN FAIL: Quick Red Blinks
+    for(int i=0; i<5; i++) {
+        digitalWrite(LED_RED, HIGH); delay(100);
+        digitalWrite(LED_RED, LOW); delay(100);
+    }
   }
 
   // Halt PICC
