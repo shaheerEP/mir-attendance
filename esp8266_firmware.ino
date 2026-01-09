@@ -173,8 +173,10 @@ void loop() {
       }
     }
   } else {
-      // NO WIFI
-      digitalWrite(LED_RED, HIGH); delay(500); digitalWrite(LED_RED, LOW);
+      // NO WIFI / OUT OF RANGE
+      // Blink Red continuously
+      digitalWrite(LED_RED, HIGH); delay(250);
+      digitalWrite(LED_RED, LOW); delay(250);
   }
 
   // Halt PICC
