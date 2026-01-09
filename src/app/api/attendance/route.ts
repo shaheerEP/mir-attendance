@@ -65,8 +65,8 @@ export async function POST(req: NextRequest) {
         if (existingLog) {
             console.log(`[Attendance] Duplicate scan prevented. Already marked as ${existingLog.status}`);
             return NextResponse.json(
-                { message: `Already marked (${existingLog.status})`, status: "success" },
-                { status: 200 }
+                { message: `Already marked (${existingLog.status})`, status: "error" },
+                { status: 409 }
             );
         }
 
