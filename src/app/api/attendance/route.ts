@@ -92,9 +92,12 @@ export async function POST(req: NextRequest) {
 
         const displayMsg = status === "HALF_PRESENT" ? `Welcome (Half Day)` : `Welcome ${student.name}`;
 
+        // Return 206 for Half Day (Partial Content) to trigger Yellow LED
+        const successCode = status === "HALF_PRESENT" ? 206 : 200;
+
         return NextResponse.json(
             { message: displayMsg, status: "success" },
-            { status: 200 }
+            { status: successCode }
         );
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });

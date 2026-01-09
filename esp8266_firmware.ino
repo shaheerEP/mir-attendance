@@ -28,6 +28,7 @@ const char* serverUrl = "https://mir-attendance.vercel.app/api/attendance";
 // LED Pins
 #define LED_GREEN D1 // GPIO5
 #define LED_RED   D2 // GPIO4
+#define LED_YELLOW D4 // GPIO2
 
 // -------------------------------------------------------------
 
@@ -41,11 +42,14 @@ void setup() {
   // Setup LEDs
   pinMode(LED_GREEN, OUTPUT);
   pinMode(LED_RED, OUTPUT);
+  pinMode(LED_YELLOW, OUTPUT);
   digitalWrite(LED_GREEN, LOW);
   digitalWrite(LED_RED, LOW);
+  digitalWrite(LED_YELLOW, LOW);
 
   // Test Blink on Startup
   digitalWrite(LED_GREEN, HIGH); delay(200); digitalWrite(LED_GREEN, LOW);
+  digitalWrite(LED_YELLOW, HIGH); delay(200); digitalWrite(LED_YELLOW, LOW);
   digitalWrite(LED_RED, HIGH); delay(200); digitalWrite(LED_RED, LOW);
 
   WiFi.begin(ssid, password);
@@ -128,8 +132,17 @@ void loop() {
           delay(1500);
           digitalWrite(LED_GREEN, LOW);
           
+        } else if (httpCode == 206) {
+             // HALF DAY FEEDBACK: Yellow Light 1.5s
+             String payload = http.getString();
+             Serial.println(payload);
+
+             digitalWrite(LED_YELLOW, HIGH);
+             delay(1500);
+             digitalWrite(LED_YELLOW, LOW);
+
         } else {
-          // ERROR cases (403, 404, 500 etc)
+          // ERROR cases (403, 404, 500, 409 etc)
           Serial.printf("[HTTP] Server Error: %d\n", httpCode);
           
           // ERROR FEEDBACK: Red Light 2s
