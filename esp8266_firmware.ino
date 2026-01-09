@@ -147,10 +147,13 @@ void loop() {
           // ERROR cases (403, 404, 500, 409 etc)
           Serial.printf("[HTTP] Server Error: %d\n", httpCode);
           
-          // ERROR FEEDBACK: Red Light 2s
-          digitalWrite(LED_RED, HIGH);
-          delay(2000);
-          digitalWrite(LED_RED, LOW);
+          // ERROR FEEDBACK: Red Light Blink 2 Times
+          for(int i=0; i<2; i++) {
+             digitalWrite(LED_RED, HIGH);
+             delay(500);
+             digitalWrite(LED_RED, LOW);
+             delay(300);
+          }
         }
       } else {
         Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
