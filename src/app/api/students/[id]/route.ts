@@ -32,11 +32,11 @@ export async function PATCH(
     try {
         await dbConnect();
         const body = await req.json();
-        const { name, rfid_uid } = body;
+        const { name, rfid_uid, rollNumber, className } = body;
 
         const updatedStudent = await Student.findByIdAndUpdate(
             params.id,
-            { name, rfid_uid },
+            { name, rfid_uid, rollNumber, className },
             { new: true }
         );
 

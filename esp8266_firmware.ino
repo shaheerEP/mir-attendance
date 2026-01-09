@@ -10,6 +10,9 @@
 const char* ssid = "MIR. 4G";
 const char* password = "mirpunjab"; // <--- CHANGE THIS to the password for MIR. 4G
 
+// DEVICE CONFIGURATION
+const char* deviceId = "ESP_GATE_1"; // <--- CHANGE THIS for each device (e.g. GATE_1, CLASS_10A)
+
 // -------------------------------------------------------------
 // SELECT YOUR ENVIRONMENT
 // -------------------------------------------------------------
@@ -119,7 +122,7 @@ void loop() {
     http.addHeader("Content-Type", "application/json");
     
     // JSON Payload
-    String payload = "{\"uid\":\"" + content + "\"}";
+    String payload = "{\"uid\":\"" + content + "\", \"deviceId\":\"" + String(deviceId) + "\"}";
     
     Serial.print("[HTTP] POST...\n");
     int httpCode = http.POST(payload);

@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { uid } = body;
+        const { uid, deviceId } = body;
 
         // Fetch Settings
         const settings = await Settings.findOne();
@@ -87,7 +87,8 @@ export async function POST(req: NextRequest) {
             student_id: student._id,
             timestamp: now,
             status: status,
-            periodId: activePeriod.id
+            periodId: activePeriod.id,
+            deviceId: deviceId || "Unknown"
         });
 
         const displayMsg = status === "HALF_PRESENT" ? `Welcome (Half Day)` : `Welcome ${student.name}`;

@@ -22,6 +22,8 @@ interface Student {
     _id: string;
     name: string;
     rfid_uid: string;
+    rollNumber?: string;
+    className?: string;
     created_at: string;
 }
 
@@ -108,6 +110,8 @@ export default function StudentsPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Name</TableHead>
+                                <TableHead>Roll No</TableHead>
+                                <TableHead>Class</TableHead>
                                 <TableHead>RFID UID</TableHead>
                                 <TableHead>Date Added</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
@@ -137,6 +141,8 @@ export default function StudentsPage() {
                                                 {student.name}
                                             </Link>
                                         </TableCell>
+                                        <TableCell>{student.rollNumber || "-"}</TableCell>
+                                        <TableCell>{student.className || "-"}</TableCell>
                                         <TableCell className="font-mono text-xs">{student.rfid_uid}</TableCell>
                                         <TableCell>
                                             {new Date(student.created_at).toLocaleDateString()}

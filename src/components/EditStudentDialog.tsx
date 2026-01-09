@@ -20,6 +20,8 @@ interface EditStudentProps {
         _id: string;
         name: string;
         rfid_uid: string;
+        rollNumber?: string;
+        className?: string;
     };
 }
 
@@ -27,6 +29,8 @@ export function EditStudentDialog({ student }: EditStudentProps) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState(student.name);
     const [uid, setUid] = useState(student.rfid_uid);
+    const [rollNumber, setRollNumber] = useState(student.rollNumber || "");
+    const [className, setClassName] = useState(student.className || "");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -38,7 +42,7 @@ export function EditStudentDialog({ student }: EditStudentProps) {
             const res = await fetch(`/api/students/${student._id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, rfid_uid: uid }),
+                body: JSON.stringify({ name, rfid_uid: uid, rollNumber, className }),
             });
 
             if (res.ok) {
@@ -94,6 +98,29 @@ export function EditStudentDialog({ student }: EditStudentProps) {
                                     onChange={(e) => setUid(e.target.value)}
                                     className="col-span-3"
                                     required
+                                />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-roll" className="text-right">
+                                    Roll No
+                                </Label>
+                                <Input
+                                    id="edit-roll"
+                                    value={rollNumber}
+                                    onChange={(e) => setRollNumber(e.target.value)}
+                                    className="col-span-3"
+                                />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-class" className="text-right">
+                                    Class
+                                </Label>
+                                <Input
+                                    id="edit-class"
+                                    value={className}
+                                    onChange={(e) => setClassName(e.target.value)}
+                                    className="col-span-3"
+                                    placeholder="e.g. 10A"
                                 />
                             </div>
                         </div>
