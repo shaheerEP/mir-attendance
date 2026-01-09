@@ -163,6 +163,22 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [periodsConfig]);
 
+  // Trigger Absentee Check periodically
+  useEffect(() => {
+    const runAbsenteeCheck = async () => {
+      try {
+        await fetch("/api/attendance/process-absents");
+      } catch (err) {
+        console.error("Absentee check failed", err);
+      }
+    };
+
+    // Run once on load, then every 60s
+    runAbsenteeCheck();
+    const interval = setInterval(runAbsenteeCheck, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   const totalPresent = logs.filter((l) => l.status === "PRESENT").length;
 
   return (
