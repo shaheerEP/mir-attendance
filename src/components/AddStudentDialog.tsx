@@ -20,6 +20,8 @@ export function AddStudentDialog() {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [uid, setUid] = useState("");
+    const [rollNumber, setRollNumber] = useState("");
+    const [className, setClassName] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -31,13 +33,15 @@ export function AddStudentDialog() {
             const res = await fetch("/api/students", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, rfid_uid: uid }),
+                body: JSON.stringify({ name, rfid_uid: uid, rollNumber, className }),
             });
 
             if (res.ok) {
                 setOpen(false);
                 setName("");
                 setUid("");
+                setRollNumber("");
+                setClassName("");
                 router.refresh(); // Refresh (Server Components) or call callback
                 window.location.reload(); // Hard reload to fetch new list for client components if needed
             } else {
@@ -91,6 +95,29 @@ export function AddStudentDialog() {
                                 onChange={(e) => setUid(e.target.value)}
                                 className="col-span-3"
                                 required
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="roll" className="text-right">
+                                Roll No
+                            </Label>
+                            <Input
+                                id="roll"
+                                value={rollNumber}
+                                onChange={(e) => setRollNumber(e.target.value)}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="class" className="text-right">
+                                Class
+                            </Label>
+                            <Input
+                                id="class"
+                                value={className}
+                                onChange={(e) => setClassName(e.target.value)}
+                                className="col-span-3"
+                                placeholder="e.g. 10A"
                             />
                         </div>
                     </div>
