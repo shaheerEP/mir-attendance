@@ -151,6 +151,22 @@ void loop() {
            digitalWrite(LED_YELLOW, LOW);
            digitalWrite(LED_GREEN, LOW);
 
+       } else if (httpCode == 423) {
+           // NO PERIOD / LOCKED: Blink ALL LEDs
+           String payload = http.getString();
+           Serial.println(payload);
+
+           for(int i=0; i<4; i++) {
+               digitalWrite(LED_GREEN, HIGH);
+               digitalWrite(LED_RED, HIGH);
+               digitalWrite(LED_YELLOW, HIGH);
+               delay(250);
+               digitalWrite(LED_GREEN, LOW);
+               digitalWrite(LED_RED, LOW);
+               digitalWrite(LED_YELLOW, LOW);
+               delay(250);
+           }
+
       } else {
         // ERROR cases (403, 404, 500, 409 etc)
         Serial.printf("[HTTP] Server Error: %d\n", httpCode);

@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
             console.log(`[Attendance] Error: No active period found.`);
             return NextResponse.json(
                 { message: "No active class period", status: "error" },
-                { status: 404 }
+                { status: 423 }
             );
         }
 
