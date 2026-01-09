@@ -5,7 +5,12 @@ import Student from '@/models/Student';
 export async function GET(req: NextRequest) {
     try {
         await dbConnect();
-        const students = await Student.find({}).sort({ created_at: -1 });
+        const { searchParams } = new URL(req.url);
+        const className = searchParams.get('className');
+
+        const filter = className ? { className: className } : {};
+        const students = await Student.find(filter).sort({ created_at: -1 });
+
         return NextResponse.json(students);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });

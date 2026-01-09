@@ -79,7 +79,6 @@ export function EditLogDialog({ log }: EditLogProps) {
                                 <SelectContent>
                                     <SelectItem value="PRESENT">Present</SelectItem>
                                     <SelectItem value="HALF_PRESENT">Half Day</SelectItem>
-                                    <SelectItem value="LATE">Late</SelectItem>
                                     <SelectItem value="ABSENT">Absent</SelectItem>
                                     <SelectItem value="LEAVE">Leave</SelectItem>
                                 </SelectContent>

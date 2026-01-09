@@ -1,9 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Radio, LogOut, Settings } from "lucide-react";
+import { LayoutDashboard, Users, Radio, LogOut, Settings, School } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export function Sidebar() {
@@ -15,6 +12,12 @@ export function Sidebar() {
             icon: LayoutDashboard,
             href: "/",
             active: pathname === "/",
+        },
+        {
+            label: "Classes",
+            icon: School,
+            href: "/classes",
+            active: pathname === "/classes",
         },
         {
             label: "Students",
