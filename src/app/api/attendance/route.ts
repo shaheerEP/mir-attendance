@@ -53,9 +53,13 @@ export async function POST(req: NextRequest) {
         startOfPeriod.setHours(h, m, 0, 0);
         const endOfPeriod = new Date(startOfPeriod.getTime() + activePeriod.durationMinutes * 60000);
 
+        // Convert Query Range back to UTC (Server Time) because logs are saved in UTC
+        const queryStart = new Date(startOfPeriod.getTime() - IST_OFFSET);
+        const queryEnd = new Date(endOfPeriod.getTime() - IST_OFFSET);
+
         const existingLog = await AttendanceLog.findOne({
             student_id: student._id,
-            timestamp: { $gte: startOfPeriod, $lt: endOfPeriod }
+            timestamp: { $gte: queryStart, $lt: queryEnd }
         });
 
         if (existingLog) {
