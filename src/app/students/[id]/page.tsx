@@ -4,7 +4,9 @@ import { useEffect, useState, use } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, User, Clock, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { Calendar, User, Clock, ArrowLeft, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
+import { AddManualLogDialog } from "@/components/AddManualLogDialog";
+import { EditLogDialog } from "@/components/EditLogDialog";
 import { useRouter } from "next/navigation";
 import {
     Table,
@@ -91,9 +93,12 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
 
     return (
         <div className="p-8 space-y-8 bg-slate-50/50 min-h-screen">
-            <Button variant="ghost" className="mb-4" onClick={() => router.back()}>
-                <ArrowLeft className="mr-2 h-4 w-4" /> Back to Students
-            </Button>
+            <div className="flex justify-between items-center mb-4">
+                <Button variant="ghost" onClick={() => router.back()}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Students
+                </Button>
+                {student && <AddManualLogDialog studentId={student._id} />}
+            </div>
 
             {/* Header Profile */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -163,6 +168,7 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
                                 <TableHead>Time</TableHead>
                                 <TableHead>Period</TableHead>
                                 <TableHead>Status</TableHead>
+                                <TableHead className="w-[50px]"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -183,9 +189,24 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant={log.status === "PRESENT" ? "default" : log.status === "HALF_PRESENT" ? "secondary" : "destructive"}>
-                                            {log.status === "HALF_PRESENT" ? "Half Day" : log.status}
-                                        </Badge>
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant={log.status === "PRESENT" ? "default" : log.status === "HALF_PRESENT" ? "secondary" : "destructive"}>
+                                                {log.status === "HALF_PRESENT" ? "Half Day" : log.status}
+                                            </Badge>
+                                            <EditLogDialog log={log} />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <button
+                                            onClick={async () => {
+                                                if (!confirm("Delete this log?")) return;
+                                                const res = await fetch(`/api/attendance/logs/${log._id}`, { method: "DELETE" });
+                                                if (res.ok) window.location.reload();
+                                            }}
+                                            className="text-red-400 hover:text-red-600 p-1"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </button>
                                     </TableCell>
                                 </TableRow>
                             ))}
