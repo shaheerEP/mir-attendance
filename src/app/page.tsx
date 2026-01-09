@@ -54,16 +54,16 @@ export default function Dashboard() {
   const [periodsConfig, setPeriodsConfig] = useState<PeriodConfig[]>(PERIODS);
   const [holidays, setHolidays] = useState<number[]>([5]); // Default Fri
 
-  // Mock data for weekly attendance chart
-  const data = [
-    { name: "Sun", present: 20 },
-    { name: "Mon", present: 45 },
-    { name: "Tue", present: 42 },
-    { name: "Wed", present: 48 },
-    { name: "Thu", present: 46 },
+  // Dynamic Chart Data
+  const [weeklyStats, setWeeklyStats] = useState([
+    { name: "Sun", present: 0 },
+    { name: "Mon", present: 0 },
+    { name: "Tue", present: 0 },
+    { name: "Wed", present: 0 },
+    { name: "Thu", present: 0 },
     { name: "Fri", present: 0 },
     { name: "Sat", present: 0 },
-  ];
+  ]);
 
   const fetchSettings = async () => {
     try {
@@ -81,16 +81,25 @@ export default function Dashboard() {
     }
   };
 
-  const fetchLogs = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/attendance/logs");
-      if (res.ok) {
-        const data = await res.json();
+      // Fetch Logs
+      const logsRes = await fetch("/api/attendance/logs");
+      if (logsRes.ok) {
+        const data = await logsRes.json();
         setLogs(data);
       }
+
+      // Fetch Weekly Stats
+      const statsRes = await fetch("/api/attendance/stats/weekly");
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setWeeklyStats(statsData);
+      }
+
     } catch (error) {
-      console.error("Failed to fetch logs", error);
+      console.error("Failed to fetch data", error);
     } finally {
       setLoading(false);
     }
@@ -235,7 +244,7 @@ export default function Dashboard() {
           <CardContent className="pl-2">
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data}>
+                <BarChart data={weeklyStats}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
