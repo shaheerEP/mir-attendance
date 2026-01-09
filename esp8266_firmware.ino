@@ -25,6 +25,10 @@ const char* serverUrl = "https://mir-attendance.vercel.app/api/attendance";
 #define SS_PIN  D8  // GPIO15
 #define RST_PIN D3  // GPIO0
 
+// LED Pins
+#define LED_GREEN D1 // GPIO5
+#define LED_RED   D2 // GPIO4
+
 // -------------------------------------------------------------
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
@@ -34,14 +38,34 @@ void setup() {
   SPI.begin();
   mfrc522.PCD_Init();
 
+  // Setup LEDs
+  pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_RED, OUTPUT);
+  digitalWrite(LED_GREEN, LOW);
+  digitalWrite(LED_RED, LOW);
+
+  // Test Blink on Startup
+  digitalWrite(LED_GREEN, HIGH); delay(200); digitalWrite(LED_GREEN, LOW);
+  digitalWrite(LED_RED, HIGH); delay(200); digitalWrite(LED_RED, LOW);
+
   WiFi.begin(ssid, password);
   Serial.println("");
   
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    digitalWrite(LED_RED, HIGH); // Blink Red while connecting
+    delay(250);
+    digitalWrite(LED_RED, LOW);
+    delay(250);
     Serial.print(".");
   }
+  
+  // Connected Signal (Green Blink x 3)
+  for(int i=0; i<3; i++) {
+    digitalWrite(LED_GREEN, HIGH); delay(100);
+    digitalWrite(LED_GREEN, LOW); delay(100);
+  }
+
   Serial.println("");
   Serial.print("Connected to ID: ");
   Serial.println(ssid);
@@ -90,25 +114,49 @@ void loop() {
       // start connection and send HTTP header
       int httpCode = http.POST(payload);
       
-      // ... existing error handling ...
-
-      // httpCode will be negative on error
       if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         Serial.printf("[HTTP] POST... code: %d\n", httpCode);
 
-        // file found at server
+        // SUCCESS cases (200 OK, 201 Created)
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
           String payload = http.getString();
           Serial.println(payload);
+          
+          // SUCCESS FEEDBACK: Green Light 1.5s
+          digitalWrite(LED_GREEN, HIGH);
+          delay(1500);
+          digitalWrite(LED_GREEN, LOW);
+          
+        } else {
+          // ERROR cases (403, 404, 500 etc)
+          Serial.printf("[HTTP] Server Error: %d\n", httpCode);
+          
+          // ERROR FEEDBACK: Red Light 2s
+          digitalWrite(LED_RED, HIGH);
+          delay(2000);
+          digitalWrite(LED_RED, LOW);
         }
       } else {
         Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        // NETWORK FAIL: Quick Red Blinks
+        for(int i=0; i<5; i++) {
+            digitalWrite(LED_RED, HIGH); delay(100);
+            digitalWrite(LED_RED, LOW); delay(100);
+        }
       }
       http.end();
     } else {
       Serial.printf("[HTTP] Unable to connect\n");
+      // CONN FAIL: Quick Red Blinks
+      for(int i=0; i<5; i++) {
+          digitalWrite(LED_RED, HIGH); delay(100);
+          digitalWrite(LED_RED, LOW); delay(100);
+      }
     }
+  } else {
+      // NO WIFI
+      digitalWrite(LED_RED, HIGH); delay(500); digitalWrite(LED_RED, LOW);
   }
 
   // Halt PICC
@@ -117,5 +165,5 @@ void loop() {
   mfrc522.PCD_StopCrypto1();
   
   // Delay to prevent double reading
-  delay(1000);
+  delay(100);
 }
