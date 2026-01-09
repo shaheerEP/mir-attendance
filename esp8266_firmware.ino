@@ -133,13 +133,15 @@ void loop() {
           digitalWrite(LED_GREEN, LOW);
           
         } else if (httpCode == 206) {
-             // HALF DAY FEEDBACK: Yellow Light 1.5s
+             // HALF DAY FEEDBACK: Yellow AND Green Light 1.5s
              String payload = http.getString();
              Serial.println(payload);
 
              digitalWrite(LED_YELLOW, HIGH);
+             digitalWrite(LED_GREEN, HIGH);
              delay(1500);
              digitalWrite(LED_YELLOW, LOW);
+             digitalWrite(LED_GREEN, LOW);
 
         } else {
           // ERROR cases (403, 404, 500, 409 etc)
