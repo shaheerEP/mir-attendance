@@ -179,7 +179,16 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  const totalPresent = logs.filter((l) => l.status === "PRESENT").length;
+  // Calculate System Status based on latest log
+  const latestLogTime = logs.length > 0 ? new Date(logs[0].timestamp).getTime() : 0;
+  const timeSinceLastLog = Date.now() - latestLogTime;
+  const isRecent = timeSinceLastLog < 10 * 60 * 1000; // 10 minutes
+
+  const systemStatus = logs.length === 0
+    ? { status: "Waiting", color: "text-amber-500", desc: "No data received today" }
+    : isRecent
+      ? { status: "Active", color: "text-emerald-500", desc: " receiving real-time data" }
+      : { status: "Idle", color: "text-slate-500", desc: `Last scan ${Math.floor(timeSinceLastLog / 60000)} mins ago` };
 
   return (
     <div className="p-8 space-y-8 bg-slate-50/50 min-h-screen">
@@ -230,11 +239,11 @@ export default function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">System Status</CardTitle>
-            <Activity className="h-4 w-4 text-emerald-500" />
+            <Activity className={`h-4 w-4 ${systemStatus.color}`} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-500">Active</div>
-            <p className="text-xs text-muted-foreground">ESP8266 Connected</p>
+            <div className={`text-2xl font-bold ${systemStatus.color}`}>{systemStatus.status}</div>
+            <p className="text-xs text-muted-foreground">{systemStatus.desc}</p>
           </CardContent>
         </Card>
 
@@ -306,6 +315,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </div >
   );
 }
