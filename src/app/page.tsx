@@ -149,7 +149,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchSettings().then(() => {
       // After settings fetch, do initial update
-      fetchLogs();
+      fetchData();
     });
   }, []); // Run once on mount
 
@@ -157,7 +157,7 @@ export default function Dashboard() {
   useEffect(() => {
     updatePeriodStatus(); // usage of new config
     const interval = setInterval(() => {
-      fetchLogs();
+      fetchData();
       updatePeriodStatus();
     }, 5000);
     return () => clearInterval(interval);
@@ -176,7 +176,7 @@ export default function Dashboard() {
           <Badge variant={period?.isHoliday ? "destructive" : "outline"} className="px-4 py-2 text-sm bg-white">
             {period?.isHoliday ? "Holiday Mode" : period?.timeRange}
           </Badge>
-          <Button onClick={fetchLogs} variant="default" size="sm" className="bg-emerald-600 hover:bg-emerald-700">
+          <Button onClick={fetchData} variant="default" size="sm" className="bg-emerald-600 hover:bg-emerald-700">
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh Data
           </Button>
