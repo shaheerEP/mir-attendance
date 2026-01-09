@@ -71,6 +71,10 @@ export default function SettingsPage() {
         setSettings({ ...settings, periods: newPeriods });
     };
 
+
+
+    
+
     const handleGraceChange = (field: keyof GracePeriodConfig, value: number) => {
         if (!settings) return;
         setSettings({
