@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Radio, LogOut, Settings, School } from "lucide-react";
+import { LayoutDashboard, Radio, LogOut, Settings, School } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export function Sidebar() {
@@ -21,12 +21,6 @@ export function Sidebar() {
             icon: School,
             href: "/classes",
             active: pathname === "/classes",
-        },
-        {
-            label: "Students",
-            icon: Users,
-            href: "/students",
-            active: pathname === "/students",
         },
         {
             label: "Settings",
