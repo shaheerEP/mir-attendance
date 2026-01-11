@@ -24,12 +24,12 @@ export async function GET(req: NextRequest) {
         // Calculate stats per student
         const enrichedStudents = students.map((student: any) => {
             const studentLogs = logs.filter((log: any) => log.student_id.toString() === student._id.toString());
-            const totalPresent = studentLogs.length;
+
+            // Calculate unique days the student was present
+            const studentUniqueDates = new Set(studentLogs.map((log: any) => new Date(log.timestamp).toDateString()));
+            const totalPresent = studentUniqueDates.size;
 
             // Calculate total unique class days based on logs from this class
-            // This is a simplified estimation. For exact rate, we'd need a separate SchoolDays model or similar.
-            // Using unique dates from all logs for this class/student group as a proxy for "Total Class Days so far"
-            // Using unique dates from all logs for this class/student group as a proxy for "Total Class Days so far"
             const uniqueDates = new Set(logs.map((log: any) => new Date(log.timestamp).toDateString()));
             const totalClassDays = uniqueDates.size || 1; // Avoid division by zero
 
