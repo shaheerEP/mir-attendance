@@ -81,12 +81,14 @@ export async function POST(req: NextRequest) {
                 console.log("Index dropped. Retrying creation...");
 
                 // Retry creation
-                const retryStudent = await Student.create({
+                // Retry creation
+                const retryStudent = new Student({
                     name,
                     rollNumber,
                     className,
                     faceDescriptor
                 });
+                await retryStudent.save();
                 return NextResponse.json(retryStudent, { status: 201 });
             } catch (dropError) {
                 console.error("Failed to drop index:", dropError);
