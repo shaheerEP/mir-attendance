@@ -11,8 +11,6 @@
 // ===================
 // Select Camera Model
 // ===================
-// The AI Thinker model supports both OV2640 and OV3660 sensors.
-// They share the same pinout on this board.
 #define CAMERA_MODEL_AI_THINKER // Has PSRAM
 #include "camera_pins.h"
 
@@ -22,49 +20,67 @@
 const char* ssid = "IRIS_FOUNDATION_JIO";
 const char* password = "iris916313";
 
-bool ledOn = false;
+// Global control flags
+volatile bool isCapturing = false;
 
 void startCameraServer();
 
 // HTML for the Main Page
-static const char PROLOGUE[] PROGMEM = 
+static const char PROLOGUE[] = 
   "<!DOCTYPE html><html><head>"
   "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
   "<title>ESP32-CAM Stream</title>"
   "<style>"
   "body { font-family: sans-serif; text-align: center; margin: 0; padding: 0; background-color: #333; color: white; }"
   "h1 { margin: 10px; }"
-  ".container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }"
-  "button { padding: 15px 40px; font-size: 18px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }"
-  "button:hover { background-color: #45a049; }"
-  "button:active { background-color: #3d8b40; }"
+  "img { width: 100%; max-width: 800px; height: auto; }" 
+  ".container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }"
+  "button { padding: 15px 40px; font-size: 18px; margin: 10px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px; }"
+  "button:hover { background-color: #218838; }"
+  "button:disabled { background-color: #555; cursor: not-allowed; }"
+  "#captured { margin-top: 20px; border: 2px solid #fff; display: none; }"
   "</style>"
+  "<script>"
+  "function capturePhoto() {"
+  "  console.log('Capture clicked');"
+  "  var btn = document.getElementById('btn-capture');"
+  "  var img = document.getElementById('captured');"
+  "  "
+  "  if(!btn || !img) { console.error('Elements not found'); return; }"
+  "  "
+  "  btn.disabled = true;"
+  "  btn.innerText = 'Capturing...';"
+  "  "
+  "  var timestamp = new Date().getTime();"
+  "  var url = '/capture?t=' + timestamp;"
+  "  "
+  "  var tempImg = new Image();"
+  "  tempImg.onload = function() {"
+  "    img.src = url;"
+  "    img.style.display = 'block';"
+  "    btn.disabled = false;"
+  "    btn.innerText = 'Take High-Res Photo';"
+  "  };"
+  "  tempImg.onerror = function() {"
+  "    alert('Capture failed. Please try again.');"
+  "    btn.disabled = false;"
+  "    btn.innerText = 'Take High-Res Photo';"
+  "  };"
+  "  tempImg.src = url;"
+  "}"
+  "window.capturePhoto = capturePhoto;"
+  "</script>"
   "</head><body>"
   "<div class=\"container\">"
-  "<h1>Capture Photo</h1>"
-  "<button onclick=\"captureWithFlash()\">Take Photo</button>"
+  "<h1>ESP32-CAM Stream</h1>"
+  "<img src=\"/stream\" id=\"stream\">"
+  "<br>"
+  "<button id=\"btn-capture\" onclick=\"capturePhoto()\">Take High-Res Photo</button>"
+  "<h3>Captured Image:</h3>"
+  "<img id=\"captured\" src=\"\">"
   "</div>"
-  "<script>"
-  "async function captureWithFlash() {"
-  "  try {"
-  "    console.log('Turning on flash...');"
-  "    await fetch('/light?toggle=1');"
-  "    await new Promise(resolve => setTimeout(resolve, 300));"
-  "    console.log('Opening capture window...');"
-  "    window.open('/capture', '_blank');"
-  "    setTimeout(() => {"
-  "      console.log('Turning off flash...');"
-  "      fetch('/light?toggle=1');"
-  "    }, 500);"
-  "  } catch(err) {"
-  "    console.error('Error:', err);"
-  "    alert('Failed to capture photo: ' + err.message);"
-  "  }"
-  "}"
-  "</script>"
   "</body></html>";
 
-  // Stream response definitions
   static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=frame";
   static const char _STREAM_BOUNDARY[] = "--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
   static const char _STREAM_PART[] = "\r\n--frame\r\n";
@@ -82,28 +98,21 @@ static esp_err_t stream_handler(httpd_req_t *req){
   uint8_t * _jpg_buf = NULL;
   char part_buf[64];
 
-  Serial.println("Stream handler called");
   res = httpd_resp_set_type(req, _STREAM_CONTENT_TYPE);
   if(res != ESP_OK){
-    Serial.println("Failed to set content type");
     return res;
   }
 
   while(true){
-    int retry_count = 0;
-    fb = NULL;
-    
-    // Retry frame capture up to 3 times if it fails (handles I2C glitches)
-    while(!fb && retry_count < 3) {
-      fb = esp_camera_fb_get();
-      if (!fb) {
-        retry_count++;
-        delayMicroseconds(100);  // Small delay to let I2C settle
-      }
+    // PAUSE CHECK: If capturing, yield and continue
+    if (isCapturing) {
+      delay(50);
+      continue;
     }
-    
+
+    fb = esp_camera_fb_get();
     if (!fb) {
-      Serial.println("Camera capture failed after 3 retries");
+      Serial.println("Camera capture failed");
       res = ESP_FAIL;
     } else {
       if(fb->format != PIXFORMAT_JPEG){
@@ -140,7 +149,6 @@ static esp_err_t stream_handler(httpd_req_t *req){
     if(res != ESP_OK){
       break;
     }
-    //Serial.printf("MJPG: %uB\n",(uint32_t)(_jpg_buf_len));
   }
   return res;
 }
@@ -148,42 +156,82 @@ static esp_err_t stream_handler(httpd_req_t *req){
 static esp_err_t capture_handler(httpd_req_t *req){
   camera_fb_t * fb = NULL;
   esp_err_t res = ESP_OK;
-  fb = esp_camera_fb_get();
-  if (!fb) {
-    Serial.println("Camera capture failed");
-    return httpd_resp_send_500(req);
-  }
+  
+  Serial.println("capture_handler started");
 
-  if(fb->format != PIXFORMAT_JPEG){
+  // 1. Pause the stream
+  isCapturing = true;
+  delay(500); // Increased wait time to ensure stream handler releases resources
+  Serial.println("Stream paused");
+
+  sensor_t * s = esp_camera_sensor_get();
+  framesize_t old_size = s->status.framesize;
+
+  // 2. Switch to UXGA (1600x1200) for High Res
+  s->set_framesize(s, FRAMESIZE_UXGA);
+  Serial.println("Resolution switched to UXGA");
+  
+  // 3. Turn on Flash (Pin 4) - DISABLED FOR STABILITY
+  // #ifdef FLASH_GPIO_NUM
+  // digitalWrite(FLASH_GPIO_NUM, HIGH);
+  // Serial.println("Flash ON");
+  // #endif
+  
+  // 4. Warmup loop (discard bad auto-exposure frames after res change)
+  Serial.println("Starting warmup...");
+  for(int i=0; i<3; i++){
+    fb = esp_camera_fb_get();
+    if(fb) {
+      esp_camera_fb_return(fb);
+      fb = NULL;
+    }
+    delay(50);
+  }
+  Serial.println("Warmup done");
+
+  // 5. Capture the good frame
+  fb = esp_camera_fb_get();
+  
+  // 6. Turn off Flash
+  // #ifdef FLASH_GPIO_NUM
+  // digitalWrite(FLASH_GPIO_NUM, LOW);
+  // Serial.println("Flash OFF");
+  // #endif
+
+  if (!fb) {
+    Serial.println("Capture failed: No Frame Buffer");
+    httpd_resp_send_500(req);
+    // Restore and resume
+    s->set_framesize(s, old_size);
+    isCapturing = false;
+    return ESP_FAIL;
+  }
+  Serial.printf("Capture successful. Size: %u bytes\n", fb->len);
+
+  // 7. Send the image
+  httpd_resp_set_type(req, "image/jpeg");
+  httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
+  httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+
+  if(fb->format == PIXFORMAT_JPEG){
+    res = httpd_resp_send(req, (const char *)fb->buf, fb->len);
+  } else {
+    // Should not happen with current config, but fallback
     uint8_t * jpg_buf = NULL;
     size_t jpg_len = 0;
-    if(!frame2jpg(fb, 30, &jpg_buf, &jpg_len)){  // Quality 30 = high clarity
-      esp_camera_fb_return(fb);
-      Serial.println("JPEG compression failed");
-      return httpd_resp_send_500(req);
-    }
-    httpd_resp_set_type(req, "image/jpeg");
-    httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
+    frame2jpg(fb, 90, &jpg_buf, &jpg_len);
     res = httpd_resp_send(req, (const char *)jpg_buf, jpg_len);
     free(jpg_buf);
-    esp_camera_fb_return(fb);
-    return res;
-  } else {
-    httpd_resp_set_type(req, "image/jpeg");
-    httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
-    res = httpd_resp_send(req, (const char *)fb->buf, fb->len);
-    esp_camera_fb_return(fb);
-    return res;
   }
-}
-
-static esp_err_t light_handler(httpd_req_t *req){
-  ledOn = !ledOn;
-  digitalWrite(FLASH_GPIO_NUM, ledOn ? HIGH : LOW);
   
-  const char* response = ledOn ? "{\"status\":\"on\"}" : "{\"status\":\"off\"}";
-  httpd_resp_set_type(req, "application/json");
-  return httpd_resp_send(req, response, HTTPD_RESP_USE_STRLEN);
+  esp_camera_fb_return(fb);
+  
+  // 8. Restore resolution and resume stream
+  s->set_framesize(s, old_size);
+  isCapturing = false;
+  Serial.println("Resolution restored, stream resuming");
+  
+  return res;
 }
 
 void startCameraServer(){
@@ -211,19 +259,11 @@ void startCameraServer(){
     .user_ctx  = NULL
   };
 
-  httpd_uri_t light_uri = {
-    .uri       = "/light",
-    .method    = HTTP_GET,
-    .handler   = light_handler,
-    .user_ctx  = NULL
-  };
-
   httpd_handle_t stream_httpd = NULL;
   if (httpd_start(&stream_httpd, &config) == ESP_OK) {
     httpd_register_uri_handler(stream_httpd, &index_uri);
     httpd_register_uri_handler(stream_httpd, &stream_uri);
     httpd_register_uri_handler(stream_httpd, &capture_uri);
-    httpd_register_uri_handler(stream_httpd, &light_uri);
   }
 }
 
@@ -234,8 +274,10 @@ void setup() {
   Serial.setDebugOutput(false);
   
   // Initialize flash LED pin
+  #ifdef FLASH_GPIO_NUM
   pinMode(FLASH_GPIO_NUM, OUTPUT);
   digitalWrite(FLASH_GPIO_NUM, LOW);
+  #endif
   
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -252,20 +294,20 @@ void setup() {
   config.pin_pclk = PCLK_GPIO_NUM;
   config.pin_vsync = VSYNC_GPIO_NUM;
   config.pin_href = HREF_GPIO_NUM;
-  config.pin_sscb_sda = SIOD_GPIO_NUM;
-  config.pin_sscb_scl = SIOC_GPIO_NUM;
+  config.pin_sccb_sda = SIOD_GPIO_NUM;
+  config.pin_sccb_scl = SIOC_GPIO_NUM;
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG; 
   
   if(psramFound()){
-    config.frame_size = FRAMESIZE_VGA;   // 640x480 - maximum clarity resolution
-    config.jpeg_quality = 25;             // High quality = best clarity (1-100)
+    config.frame_size = FRAMESIZE_UXGA; // Init with high res to allocate large buffer
+    config.jpeg_quality = 10;
     config.fb_count = 2;
   } else {
-    config.frame_size = FRAMESIZE_QVGA;
-    config.jpeg_quality = 20;             // No PSRAM: use lower res
+    config.frame_size = FRAMESIZE_SVGA;
+    config.jpeg_quality = 12;
     config.fb_count = 1;
   }
   
@@ -276,6 +318,13 @@ void setup() {
     Serial.printf("Camera init failed with error 0x%x\n", err);
     return;
   }
+
+  // Drop down to VGA for smooth streaming
+  sensor_t * s = esp_camera_sensor_get();
+  if (psramFound()) {
+    s->set_framesize(s, FRAMESIZE_VGA);
+  }
+
   Serial.println("Camera initialized successfully");
   
   // Wi-Fi connection
