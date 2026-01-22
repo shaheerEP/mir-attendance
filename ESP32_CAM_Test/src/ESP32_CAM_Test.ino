@@ -41,32 +41,45 @@ static const char PROLOGUE[] =
   "#captured { margin-top: 20px; border: 2px solid #fff; display: none; }"
   "</style>"
   "<script>"
+  "console.log('Script loaded');"
   "function capturePhoto() {"
   "  console.log('Capture clicked');"
   "  var btn = document.getElementById('btn-capture');"
   "  var img = document.getElementById('captured');"
+  "  var stream = document.getElementById('stream');"
   "  "
-  "  if(!btn || !img) { console.error('Elements not found'); return; }"
+  "  if(!btn || !img || !stream) { console.error('Elements not found'); return; }"
   "  "
   "  btn.disabled = true;"
   "  btn.innerText = 'Capturing...';"
   "  "
-  "  var timestamp = new Date().getTime();"
-  "  var url = '/capture?t=' + timestamp;"
+  "  // STOP STREAM to free up server"
+  "  var streamSrc = stream.src;"
+  "  stream.src = '';"
+  "  console.log('Stream stopped');"
   "  "
-  "  var tempImg = new Image();"
-  "  tempImg.onload = function() {"
-  "    img.src = url;"
-  "    img.style.display = 'block';"
-  "    btn.disabled = false;"
-  "    btn.innerText = 'Take High-Res Photo';"
-  "  };"
-  "  tempImg.onerror = function() {"
-  "    alert('Capture failed. Please try again.');"
-  "    btn.disabled = false;"
-  "    btn.innerText = 'Take High-Res Photo';"
-  "  };"
-  "  tempImg.src = url;"
+  "  setTimeout(function() {"
+  "    var timestamp = new Date().getTime();"
+  "    var url = '/capture?t=' + timestamp;"
+  "    "
+  "    var tempImg = new Image();"
+  "    tempImg.onload = function() {"
+  "      img.src = url;"
+  "      img.style.display = 'block';"
+  "      btn.disabled = false;"
+  "      btn.innerText = 'Take High-Res Photo';"
+  "      // Restore stream"
+  "      stream.src = streamSrc;"
+  "      console.log('Stream restored');"
+  "    };"
+  "    tempImg.onerror = function() {"
+  "      alert('Capture failed. Please try again.');"
+  "      btn.disabled = false;"
+  "      btn.innerText = 'Take High-Res Photo';"
+  "      stream.src = streamSrc;"
+  "    };"
+  "    tempImg.src = url;"
+  "  }, 500);"
   "}"
   "window.capturePhoto = capturePhoto;"
   "</script>"
@@ -97,6 +110,9 @@ static esp_err_t stream_handler(httpd_req_t *req){
   size_t _jpg_buf_len = 0;
   uint8_t * _jpg_buf = NULL;
   char part_buf[64];
+
+  httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+  httpd_resp_set_hdr(req, "Access-Control-Allow-Methods", "GET");
 
   res = httpd_resp_set_type(req, _STREAM_CONTENT_TYPE);
   if(res != ESP_OK){
@@ -171,11 +187,11 @@ static esp_err_t capture_handler(httpd_req_t *req){
   s->set_framesize(s, FRAMESIZE_UXGA);
   Serial.println("Resolution switched to UXGA");
   
-  // 3. Turn on Flash (Pin 4) - DISABLED FOR STABILITY
-  // #ifdef FLASH_GPIO_NUM
-  // digitalWrite(FLASH_GPIO_NUM, HIGH);
-  // Serial.println("Flash ON");
-  // #endif
+  // 3. Turn on Flash (Pin 4)
+  #ifdef FLASH_GPIO_NUM
+  digitalWrite(FLASH_GPIO_NUM, HIGH);
+  Serial.println("Flash ON");
+  #endif
   
   // 4. Warmup loop (discard bad auto-exposure frames after res change)
   Serial.println("Starting warmup...");
@@ -193,10 +209,10 @@ static esp_err_t capture_handler(httpd_req_t *req){
   fb = esp_camera_fb_get();
   
   // 6. Turn off Flash
-  // #ifdef FLASH_GPIO_NUM
-  // digitalWrite(FLASH_GPIO_NUM, LOW);
-  // Serial.println("Flash OFF");
-  // #endif
+  #ifdef FLASH_GPIO_NUM
+  digitalWrite(FLASH_GPIO_NUM, LOW);
+  Serial.println("Flash OFF");
+  #endif
 
   if (!fb) {
     Serial.println("Capture failed: No Frame Buffer");

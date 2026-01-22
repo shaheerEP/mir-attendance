@@ -5,6 +5,7 @@ export interface IStudent extends Document {
     rfid_uid: string;
     rollNumber?: string;
     className?: string; // "10A", "10B"
+    faceDescriptor?: number[];
     created_at: Date;
 }
 
@@ -13,6 +14,7 @@ const StudentSchema: Schema = new Schema({
     rfid_uid: { type: String, required: true, unique: true },
     rollNumber: { type: String },
     className: { type: String },
+    faceDescriptor: { type: [Number], required: false },
     created_at: { type: Date, default: Date.now },
 });
 

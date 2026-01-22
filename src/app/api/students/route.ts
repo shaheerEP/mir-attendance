@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { name, rfid_uid, rollNumber, className } = body;
+        const { name, rfid_uid, rollNumber, className, faceDescriptor } = body;
 
         if (!name || !rfid_uid) {
             return NextResponse.json(
@@ -68,7 +68,8 @@ export async function POST(req: NextRequest) {
             name,
             rfid_uid,
             rollNumber,
-            className
+            className,
+            faceDescriptor
         });
 
         return NextResponse.json(newStudent, { status: 201 });
