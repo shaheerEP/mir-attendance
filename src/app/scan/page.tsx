@@ -132,15 +132,15 @@ export default function FaceScanPage() {
         <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4">
             <h1 className="text-3xl font-bold mb-4">Face Recognition Attendance</h1>
 
-            <div className="relative border-4 border-green-500 rounded-lg overflow-hidden">
+            <div className="relative border-4 border-green-500 rounded-lg overflow-hidden shadow-2xl shadow-green-900/50">
                 <img
                     ref={videoRef}
                     src={streamUrl}
                     alt="ESP32 Stream"
-                    className="max-w-full max-h-[60vh]"
+                    className="max-w-full max-h-[80vh] object-contain"
                     crossOrigin="anonymous"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-4 text-center text-xl font-mono">
+                <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-4 text-center text-xl font-mono backdrop-blur-sm">
                     {displayText}
                 </div>
             </div>
