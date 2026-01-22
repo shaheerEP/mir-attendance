@@ -14,6 +14,17 @@ export default function FaceScanPage() {
     const [students, setStudents] = useState<Student[]>([]);
     const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [displayText, setDisplayText] = useState("Initializing...");
+
+    useEffect(() => {
+        // Initial OLED Message
+        const initOLED = async () => {
+            // Try sending message, might fail if delay is needed but worth a shot
+            // Use a small delay to ensure component mount
+            setTimeout(() => sendFeedbackToOLED("SYSTEM INIT", "info"), 1000);
+        };
+        initOLED();
+    }, []);
+
     const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
     const videoRef = useRef<HTMLImageElement>(null);
     const streamUrl = "http://192.168.31.160/stream";
@@ -44,8 +55,10 @@ export default function FaceScanPage() {
                 if (labeledDescriptors.length > 0) {
                     setFaceMatcher(new faceapi.FaceMatcher(labeledDescriptors, 0.6));
                     setDisplayText("Ready to Scan");
+                    sendFeedbackToOLED("READY", "info");
                 } else {
                     setDisplayText("No students with face data found.");
+                    sendFeedbackToOLED("NO DATA", "error");
                 }
 
                 setIsModelLoaded(true);
@@ -57,6 +70,17 @@ export default function FaceScanPage() {
         };
         init();
     }, []);
+
+    // State for throttling OLED updates
+    const lastOledUpdate = useRef<number>(0);
+
+    const sendFeedbackThrottled = (msg: string, type: string = 'info', delayMs: number = 2000) => {
+        const now = Date.now();
+        if (now - lastOledUpdate.current > delayMs) {
+            sendFeedbackToOLED(msg, type);
+            lastOledUpdate.current = now;
+        }
+    };
 
     // 2. Detection Loop
     useEffect(() => {
@@ -73,23 +97,23 @@ export default function FaceScanPage() {
                     if (detection) {
                         const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
                         if (bestMatch.label !== "unknown") {
-                            // DO ATTENDANCE LOGIC HERE
-                            // Ideally throttle this so we don't spam the API
-
-                            setDisplayText(`Welcome, ${bestMatch.label}! (${Math.round(bestMatch.distance * 100) / 100})`);
+                            // Valid Face Found
+                            setDisplayText(`Verifying: ${bestMatch.label}`);
 
                             // Find student ID
                             const student = students.find(s => s.name === bestMatch.label);
                             if (student) {
+                                // Only mark if enough time passed since last update to avoid rapid fire
                                 markAttendance(student._id, student.name);
                             }
 
                         } else {
                             setDisplayText("Unknown Face");
-                            // Don't spam unknown feedback too fast
+                            sendFeedbackThrottled("UNKNOWN", "error", 1500);
                         }
                     } else {
                         setDisplayText("Scanning...");
+                        // Optionally send "READY" periodically or leave it be
                     }
                 } catch (err) {
                     console.error("Detection error", err);
@@ -130,8 +154,8 @@ export default function FaceScanPage() {
                 }, 3000);
             } else {
                 if (res.status === 409) { // Duplicate
-                    setDisplayText("Already Marked");
-                    sendFeedbackToOLED("SIGNED IN", "info");
+                    setDisplayText(`Already Marked: ${name}`);
+                    sendFeedbackToOLED(`${name} IN`, "info");
                     setTimeout(() => setDisplayText("Scanning..."), 2000);
                 } else {
                     setDisplayText(`Error: ${data.message}`);

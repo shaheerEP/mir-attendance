@@ -140,6 +140,31 @@ void updateOLED(String msg, String type) {
   display.display();
 }
 
+// URL Decode Helper
+void urlDecode(char* str) {
+    char* p = str;
+    char* dest = str;
+    while (*p) {
+        if (*p == '%') {
+            if (p[1] && p[2]) {
+                int value = 0;
+                char hex[3] = {p[1], p[2], '\0'};
+                value = strtol(hex, NULL, 16);
+                *dest++ = (char)value;
+                p += 3;
+            } else {
+                *dest++ = *p++;
+            }
+        } else if (*p == '+') {
+            *dest++ = ' ';
+            p++;
+        } else {
+            *dest++ = *p++;
+        }
+    }
+    *dest = '\0';
+}
+
 static esp_err_t feedback_handler(httpd_req_t *req){
     char buf[100];
     char msg[50] = "Ready";
@@ -147,8 +172,7 @@ static esp_err_t feedback_handler(httpd_req_t *req){
     
     if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK) {
         if (httpd_query_key_value(buf, "msg", msg, sizeof(msg)) == ESP_OK) {
-            // URL decode would be better but let's assume raw text or simple spaces
-            for(int i=0; msg[i]; i++) if(msg[i] == '+') msg[i] = ' ';
+            urlDecode(msg); // Decode the message
         }
         httpd_query_key_value(buf, "type", type, sizeof(type));
     }
