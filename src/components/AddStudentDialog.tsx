@@ -20,7 +20,6 @@ import * as faceapi from 'face-api.js';
 export function AddStudentDialog() {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
-    const [uid, setUid] = useState("");
     const [rollNumber, setRollNumber] = useState("");
     const [className, setClassName] = useState("");
     const [loading, setLoading] = useState(false);
@@ -85,7 +84,6 @@ export function AddStudentDialog() {
         try {
             const body = {
                 name,
-                rfid_uid: uid,
                 rollNumber,
                 className,
                 faceDescriptor // Add descriptor
@@ -100,7 +98,6 @@ export function AddStudentDialog() {
             if (res.ok) {
                 setOpen(false);
                 setName("");
-                setUid("");
                 setRollNumber("");
                 setClassName("");
                 setFaceDescriptor(null);
@@ -130,7 +127,7 @@ export function AddStudentDialog() {
                 <DialogHeader>
                     <DialogTitle>Add Student</DialogTitle>
                     <DialogDescription>
-                        Enter details, RFID UID, and capture face for recognition.
+                        Enter details and capture face for recognition.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
@@ -162,10 +159,7 @@ export function AddStudentDialog() {
                             <Label htmlFor="name" className="text-right">Name</Label>
                             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" required />
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="uid" className="text-right">RFID UID</Label>
-                            <Input id="uid" value={uid} onChange={(e) => setUid(e.target.value)} className="col-span-3" required />
-                        </div>
+
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="roll" className="text-right">Roll No</Label>
                             <Input id="roll" value={rollNumber} onChange={(e) => setRollNumber(e.target.value)} className="col-span-3" />

@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         const logs = await AttendanceLog.find({
             timestamp: { $gte: startOfDay, $lte: endOfDay }
         })
-            .populate('student_id', 'name rfid_uid')
+            .populate('student_id', 'name')
             .sort({ timestamp: -1 })
             .lean();
 

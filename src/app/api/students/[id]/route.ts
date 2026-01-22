@@ -32,11 +32,11 @@ export async function PATCH(
     try {
         await dbConnect();
         const body = await req.json();
-        const { name, rfid_uid, rollNumber, className } = body;
+        const { name, rollNumber, className } = body;
 
         const updatedStudent = await Student.findByIdAndUpdate(
             params.id,
-            { name, rfid_uid, rollNumber, className },
+            { name, rollNumber, className },
             { new: true }
         );
 
@@ -49,15 +49,10 @@ export async function PATCH(
 
         return NextResponse.json(updatedStudent, { status: 200 });
     } catch (error: any) {
-        if (error.code === 11000) {
-            return NextResponse.json(
-                { message: "RFID UID already exists" },
-                { status: 409 }
-            );
-        }
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+
 
 export async function DELETE(
     req: NextRequest,
