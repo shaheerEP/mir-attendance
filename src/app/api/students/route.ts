@@ -73,6 +73,29 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(newStudent, { status: 201 });
     } catch (error: any) {
+        // Auto-fix for lingering RFID index
+        if (error.code === 11000 && (error.keyPattern?.rfid_uid || error.message.includes("rfid_uid"))) {
+            console.log("Detected lingering RFID index. Attempting to drop...");
+            try {
+                await Student.collection.dropIndex("rfid_uid_1");
+                console.log("Index dropped. Retrying creation...");
+
+                // Retry creation
+                const retryStudent = await Student.create({
+                    name,
+                    rollNumber,
+                    className,
+                    faceDescriptor
+                });
+                return NextResponse.json(retryStudent, { status: 201 });
+            } catch (dropError) {
+                console.error("Failed to drop index:", dropError);
+                return NextResponse.json(
+                    { message: "Database error: Lingering unique index on rfid_uid. Please check DB logs." },
+                    { status: 500 }
+                );
+            }
+        }
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
