@@ -17,8 +17,22 @@
 // ===========================
 // Enter your WiFi Credentials
 // ===========================
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
 const char* ssid = "IRIS_FOUNDATION_JIO";
 const char* password = "iris916313";
+
+// OLED Configuration
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+#define SCREEN_ADDRESS 0x3C
+#define OLED_SDA 14
+#define OLED_SCL 15
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Global control flags
 volatile bool isCapturing = false;
@@ -98,6 +112,52 @@ static const char PROLOGUE[] =
   static const char _STREAM_BOUNDARY[] = "--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
   static const char _STREAM_PART[] = "\r\n--frame\r\n";
   static const size_t _STREAM_PART_LEN = sizeof(_STREAM_PART) - 1;
+
+void updateOLED(String msg, String type) {
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.println("IRIS ATTENDANCE");
+  display.drawLine(0, 10, 128, 10, SSD1306_WHITE);
+  
+  display.setCursor(0, 20);
+  if (type == "success") {
+    display.setTextSize(2);
+    display.println("WELCOME!");
+    display.setTextSize(1);
+    display.println(msg);
+  } else if (type == "error") {
+    display.setTextSize(1);
+    display.println("ALERT:");
+    display.setTextSize(2);
+    display.println(msg);
+  } else {
+    display.setTextSize(2);
+    display.println(msg);
+  }
+  
+  display.display();
+}
+
+static esp_err_t feedback_handler(httpd_req_t *req){
+    char buf[100];
+    char msg[50] = "Ready";
+    char type[20] = "info";
+    
+    if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK) {
+        if (httpd_query_key_value(buf, "msg", msg, sizeof(msg)) == ESP_OK) {
+            // URL decode would be better but let's assume raw text or simple spaces
+            for(int i=0; msg[i]; i++) if(msg[i] == '+') msg[i] = ' ';
+        }
+        httpd_query_key_value(buf, "type", type, sizeof(type));
+    }
+    
+    updateOLED(String(msg), String(type));
+    
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    return httpd_resp_send(req, "OK", 2);
+}
 
 static esp_err_t index_handler(httpd_req_t *req){
   httpd_resp_set_type(req, "text/html");
@@ -275,11 +335,19 @@ void startCameraServer(){
     .user_ctx  = NULL
   };
 
+  httpd_uri_t feedback_uri = {
+    .uri       = "/feedback",
+    .method    = HTTP_GET,
+    .handler   = feedback_handler,
+    .user_ctx  = NULL
+  };
+
   httpd_handle_t stream_httpd = NULL;
   if (httpd_start(&stream_httpd, &config) == ESP_OK) {
     httpd_register_uri_handler(stream_httpd, &index_uri);
     httpd_register_uri_handler(stream_httpd, &stream_uri);
     httpd_register_uri_handler(stream_httpd, &capture_uri);
+    httpd_register_uri_handler(stream_httpd, &feedback_uri);
   }
 }
 
@@ -288,6 +356,17 @@ void setup() {
 
   Serial.begin(115200);
   Serial.setDebugOutput(false);
+
+  // Initialize I2C and OLED
+  Wire.begin(OLED_SDA, OLED_SCL);
+  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    Serial.println(F("SSD1306 allocation failed"));
+  } else {
+    display.clearDisplay();
+    display.setRotation(0);
+    updateOLED("SYSTEM START", "info");
+    Serial.println("OLED initialized");
+  }
   
   // Initialize flash LED pin
   #ifdef FLASH_GPIO_NUM

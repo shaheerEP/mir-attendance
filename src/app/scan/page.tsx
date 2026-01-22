@@ -81,11 +81,12 @@ export default function FaceScanPage() {
                             // Find student ID
                             const student = students.find(s => s.name === bestMatch.label);
                             if (student) {
-                                markAttendance(student._id);
+                                markAttendance(student._id, student.name);
                             }
 
                         } else {
                             setDisplayText("Unknown Face");
+                            // Don't spam unknown feedback too fast
                         }
                     } else {
                         setDisplayText("Scanning...");
@@ -99,10 +100,17 @@ export default function FaceScanPage() {
         return () => clearInterval(interval);
     }, [isModelLoaded, faceMatcher, students]);
 
-    const markAttendance = async (studentId: string) => {
-        // Simple throttle: check if we just marked this student? 
-        // For now, let's rely on backend duplicate check or add a local Set
+    const sendFeedbackToOLED = async (msg: string, type: string = 'info') => {
+        try {
+            // ESP32 IP is usually the same as the stream URL base
+            const baseUrl = streamUrl.replace('/stream', '');
+            await fetch(`${baseUrl}/feedback?msg=${encodeURIComponent(msg)}&type=${type}`, { mode: 'no-cors' });
+        } catch (err) {
+            console.error("Failed to send OLED feedback", err);
+        }
+    };
 
+    const markAttendance = async (studentId: string, name: string) => {
         try {
             const res = await fetch('/api/attendance', {
                 method: 'POST',
@@ -114,17 +122,25 @@ export default function FaceScanPage() {
 
             if (res.ok) {
                 setDisplayText(`${data.message} ✓`);
+                sendFeedbackToOLED(name, 'success');
                 // Timeout to clear message
-                setTimeout(() => setDisplayText("Scanning..."), 2000);
+                setTimeout(() => {
+                    setDisplayText("Scanning...");
+                    sendFeedbackToOLED("READY", "info");
+                }, 3000);
             } else {
                 if (res.status === 409) { // Duplicate
-                    // Ignore or show "Already marked"
+                    setDisplayText("Already Marked");
+                    sendFeedbackToOLED("SIGNED IN", "info");
+                    setTimeout(() => setDisplayText("Scanning..."), 2000);
                 } else {
                     setDisplayText(`Error: ${data.message}`);
+                    sendFeedbackToOLED("API ERROR", "error");
                 }
             }
         } catch (err) {
             console.error(err);
+            sendFeedbackToOLED("NETWORK ERR", "error");
         }
     };
 
