@@ -34,7 +34,6 @@ interface StudentStats {
 interface StudentData {
     _id: string;
     name: string;
-    rfid_uid: string;
 }
 
 export default function StudentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -109,7 +108,7 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight text-slate-900">{student.name}</h2>
                         <div className="flex items-center gap-2 text-muted-foreground">
-                            <Badge variant="outline" className="font-mono">{student.rfid_uid}</Badge>
+
                             <span className="text-sm">Student ID: {student._id.slice(-6)}</span>
                         </div>
                     </div>

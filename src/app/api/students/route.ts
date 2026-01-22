@@ -55,18 +55,17 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { name, rfid_uid, rollNumber, className, faceDescriptor } = body;
+        const { name, rollNumber, className, faceDescriptor } = body;
 
-        if (!name || !rfid_uid) {
+        if (!name) {
             return NextResponse.json(
-                { message: 'Name and RFID UID are required' },
+                { message: 'Name is required' },
                 { status: 400 }
             );
         }
 
         const newStudent = await Student.create({
             name,
-            rfid_uid,
             rollNumber,
             className,
             faceDescriptor
@@ -74,12 +73,6 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(newStudent, { status: 201 });
     } catch (error: any) {
-        if (error.code === 11000) {
-            return NextResponse.json(
-                { message: 'RFID UID already exists' },
-                { status: 409 }
-            );
-        }
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

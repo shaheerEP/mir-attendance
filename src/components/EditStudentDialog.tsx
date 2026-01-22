@@ -19,7 +19,6 @@ interface EditStudentProps {
     student: {
         _id: string;
         name: string;
-        rfid_uid: string;
         rollNumber?: string;
         className?: string;
     };
@@ -28,7 +27,6 @@ interface EditStudentProps {
 export function EditStudentDialog({ student }: EditStudentProps) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState(student.name);
-    const [uid, setUid] = useState(student.rfid_uid);
     const [rollNumber, setRollNumber] = useState(student.rollNumber || "");
     const [className, setClassName] = useState(student.className || "");
     const [loading, setLoading] = useState(false);
@@ -42,7 +40,7 @@ export function EditStudentDialog({ student }: EditStudentProps) {
             const res = await fetch(`/api/students/${student._id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, rfid_uid: uid, rollNumber, className }),
+                body: JSON.stringify({ name, rollNumber, className }),
             });
 
             if (res.ok) {
@@ -84,18 +82,6 @@ export function EditStudentDialog({ student }: EditStudentProps) {
                                     id="edit-name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="col-span-3"
-                                    required
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="edit-uid" className="text-right">
-                                    RFID UID
-                                </Label>
-                                <Input
-                                    id="edit-uid"
-                                    value={uid}
-                                    onChange={(e) => setUid(e.target.value)}
                                     className="col-span-3"
                                     required
                                 />

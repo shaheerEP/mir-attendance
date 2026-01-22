@@ -9,18 +9,18 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { uid, deviceId } = body;
+        const { studentId, deviceId } = body;
 
         // Fetch Settings
         const settings = await Settings.findOne();
         const periods = settings?.periods || PERIODS;
         const gracePeriod = settings?.gracePeriod || DEFAULT_GRACE;
 
-        // 1. Validate UID
-        const student = await Student.findOne({ rfid_uid: uid });
+        // 1. Validate Student Exists
+        const student = await Student.findById(studentId);
         if (!student) {
             return NextResponse.json(
-                { message: "Card not registered", status: "error" },
+                { message: "Student not found", status: "error" },
                 { status: 404 }
             );
         }
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
         console.log(`[Attendance] Server Time: ${now.toUTCString()}`);
         console.log(`[Attendance] School Time (IST Adjusted): ${schoolTime.toUTCString()}`);
-        console.log(`[Attendance] Processing for UID: ${uid}`);
+        console.log(`[Attendance] Processing for Student ID: ${studentId}`);
 
         // 2. Identify Current Period
         const activePeriod = getCurrentActivePeriod(schoolTime, periods);

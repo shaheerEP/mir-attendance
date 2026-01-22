@@ -21,7 +21,6 @@ import { useRouter } from "next/navigation";
 interface Student {
     _id: string;
     name: string;
-    rfid_uid: string;
     rollNumber?: string;
     className?: string;
     created_at?: string;
@@ -189,7 +188,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
                                                     <div className="h-2 w-16 bg-secondary rounded-full overflow-hidden">
                                                         <div
                                                             className={`h-full ${(student.attendanceRate || 0) >= 75 ? 'bg-green-500' :
-                                                                    (student.attendanceRate || 0) >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                                                                (student.attendanceRate || 0) >= 50 ? 'bg-yellow-500' : 'bg-red-500'
                                                                 }`}
                                                             style={{ width: `${student.attendanceRate || 0}%` }}
                                                         />

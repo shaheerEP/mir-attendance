@@ -100,10 +100,32 @@ export default function FaceScanPage() {
     }, [isModelLoaded, faceMatcher, students]);
 
     const markAttendance = async (studentId: string) => {
-        // Implement throttling/debouncing here to prevent duplicate calls
-        // For now just log
-        console.log("Marking attendance for:", studentId);
-        // await fetch('/api/attendance', ...);
+        // Simple throttle: check if we just marked this student? 
+        // For now, let's rely on backend duplicate check or add a local Set
+
+        try {
+            const res = await fetch('/api/attendance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentId, deviceId: 'FaceScan' })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setDisplayText(`${data.message} ✓`);
+                // Timeout to clear message
+                setTimeout(() => setDisplayText("Scanning..."), 2000);
+            } else {
+                if (res.status === 409) { // Duplicate
+                    // Ignore or show "Already marked"
+                } else {
+                    setDisplayText(`Error: ${data.message}`);
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (

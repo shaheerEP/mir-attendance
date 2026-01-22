@@ -28,7 +28,7 @@ interface Log {
   _id: string;
   student_id: {
     name: string;
-    rfid_uid: string;
+    rollNumber?: string;
   };
   timestamp: string;
   status: string;
@@ -292,7 +292,7 @@ export default function Dashboard() {
                     <div key={log._id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
                       <div className="space-y-1">
                         <p className="text-sm font-medium leading-none">{log.student_id?.name || "Unknown Visitor"}</p>
-                        <p className="text-xs text-muted-foreground">{log.student_id?.rfid_uid}</p>
+                        <p className="text-xs text-muted-foreground">{log.student_id?.rollNumber || "No Roll No"}</p>
                       </div>
                       <div className="text-right">
                         <div className="text-sm font-medium text-emerald-600">{log.status}</div>
