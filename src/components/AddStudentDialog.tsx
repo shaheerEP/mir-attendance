@@ -67,6 +67,17 @@ export function AddStudentDialog() {
 
                 if (detection) {
                     setFaceDescriptor(Array.from(detection.descriptor));
+
+                    // Capture image from stream
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0);
+                    const capturedImage = canvas.toDataURL('image/jpeg');
+                    setImage(capturedImage);
+                    setPreviewUrl(capturedImage);
+
                     alert("Face captured successfully!");
                 } else {
                     alert("No face detected. Please try again.");
