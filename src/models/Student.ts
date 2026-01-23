@@ -5,6 +5,8 @@ export interface IStudent extends Document {
     rollNumber?: string;
     className?: string; // "10A", "10B"
     faceDescriptor?: number[];
+    imageId?: string;
+    imageUrl?: string;
     created_at: Date;
 }
 
