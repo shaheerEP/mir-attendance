@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Student from '@/models/Student';
 import AttendanceLog from '@/models/AttendanceLog';
+import cloudinary from '@/lib/cloudinary';
 
 export async function GET(req: NextRequest) {
     try {
@@ -55,7 +56,23 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { name, rollNumber, className, faceDescriptor } = body;
+        const { name, rollNumber, className, faceDescriptor, image } = body;
+
+        let imageUrl = "";
+        let imageId = "";
+
+        if (image) {
+            try {
+                const uploadRes = await cloudinary.uploader.upload(image, {
+                    folder: "students",
+                });
+                imageUrl = uploadRes.secure_url;
+                imageId = uploadRes.public_id;
+            } catch (err) {
+                console.error("Cloudinary upload failed", err);
+                // Continue without image or return error? Let's continue but log it.
+            }
+        }
 
         if (!name) {
             return NextResponse.json(
@@ -76,7 +93,9 @@ export async function POST(req: NextRequest) {
             name,
             rollNumber,
             className,
-            faceDescriptor
+            faceDescriptor,
+            imageUrl,
+            imageId
         });
 
         return NextResponse.json(newStudent, { status: 201 });

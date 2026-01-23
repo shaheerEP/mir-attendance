@@ -13,6 +13,8 @@ const StudentSchema: Schema = new Schema({
     rollNumber: { type: String },
     className: { type: String },
     faceDescriptor: { type: [Number], required: false },
+    imageId: { type: String },
+    imageUrl: { type: String },
     created_at: { type: Date, default: Date.now },
 });
 

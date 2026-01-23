@@ -24,6 +24,8 @@ export function AddStudentDialog() {
     const [className, setClassName] = useState("");
     const [loading, setLoading] = useState(false);
     const [faceDescriptor, setFaceDescriptor] = useState<number[] | null>(null);
+    const [image, setImage] = useState<string | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [capturing, setCapturing] = useState(false);
     const router = useRouter();
@@ -77,6 +79,19 @@ export function AddStudentDialog() {
         setCapturing(false);
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setImage(base64String);
+                setPreviewUrl(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -86,7 +101,10 @@ export function AddStudentDialog() {
                 name,
                 rollNumber,
                 className,
-                faceDescriptor // Add descriptor
+                rollNumber,
+                className,
+                faceDescriptor,
+                image // Add image
             };
 
             const res = await fetch("/api/students", {
@@ -100,7 +118,10 @@ export function AddStudentDialog() {
                 setName("");
                 setRollNumber("");
                 setClassName("");
+                setClassName("");
                 setFaceDescriptor(null);
+                setImage(null);
+                setPreviewUrl(null);
                 router.refresh();
                 window.location.reload();
             } else {
@@ -167,6 +188,15 @@ export function AddStudentDialog() {
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="class" className="text-right">Class</Label>
                             <Input id="class" value={className} onChange={(e) => setClassName(e.target.value)} className="col-span-3" placeholder="e.g. 10A" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="image" className="text-right">Photo</Label>
+                            <div className="col-span-3">
+                                <Input id="image" type="file" accept="image/*" onChange={handleImageChange} />
+                                {previewUrl && (
+                                    <img src={previewUrl} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded-md" />
+                                )}
+                            </div>
                         </div>
                     </form>
                 </div>
