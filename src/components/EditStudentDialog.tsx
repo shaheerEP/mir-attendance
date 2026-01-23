@@ -60,102 +60,100 @@ export function EditStudentDialog({ student }: EditStudentProps) {
         } finally {
             setLoading(false);
         }
-        setLoading(false);
-    }
-};
+    };
 
-const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = reader.result as string;
-            setImage(base64String);
-            setPreviewUrl(base64String);
-        };
-        reader.readAsDataURL(file);
-    }
-};
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setImage(base64String);
+                setPreviewUrl(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
-return (
-    <>
-        <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
-            <Pencil className="h-4 w-4" />
-        </Button>
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Edit Student</DialogTitle>
-                    <DialogDescription>
-                        Update student details.
-                    </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit}>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="edit-name" className="text-right">
-                                Name
-                            </Label>
-                            <Input
-                                id="edit-name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="col-span-3"
-                                required
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="edit-roll" className="text-right">
-                                Roll No
-                            </Label>
-                            <Input
-                                id="edit-roll"
-                                value={rollNumber}
-                                onChange={(e) => setRollNumber(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="edit-class" className="text-right">
-                                Class
-                            </Label>
-                            <Input
-                                id="edit-class"
-                                value={className}
-                                onChange={(e) => setClassName(e.target.value)}
-                                className="col-span-3"
-                                placeholder="e.g. 10A"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="edit-image" className="text-right">
-                                Photo
-                            </Label>
-                            <div className="col-span-3">
+    return (
+        <>
+            <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
+                <Pencil className="h-4 w-4" />
+            </Button>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Edit Student</DialogTitle>
+                        <DialogDescription>
+                            Update student details.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit}>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-name" className="text-right">
+                                    Name
+                                </Label>
                                 <Input
-                                    id="edit-image"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
+                                    id="edit-name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="col-span-3"
+                                    required
                                 />
-                                {previewUrl && (
-                                    <img
-                                        src={previewUrl}
-                                        alt="Preview"
-                                        className="mt-2 h-20 w-20 object-cover rounded-md"
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-roll" className="text-right">
+                                    Roll No
+                                </Label>
+                                <Input
+                                    id="edit-roll"
+                                    value={rollNumber}
+                                    onChange={(e) => setRollNumber(e.target.value)}
+                                    className="col-span-3"
+                                />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-class" className="text-right">
+                                    Class
+                                </Label>
+                                <Input
+                                    id="edit-class"
+                                    value={className}
+                                    onChange={(e) => setClassName(e.target.value)}
+                                    className="col-span-3"
+                                    placeholder="e.g. 10A"
+                                />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-image" className="text-right">
+                                    Photo
+                                </Label>
+                                <div className="col-span-3">
+                                    <Input
+                                        id="edit-image"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
                                     />
-                                )}
+                                    {previewUrl && (
+                                        <img
+                                            src={previewUrl}
+                                            alt="Preview"
+                                            className="mt-2 h-20 w-20 object-cover rounded-md"
+                                        />
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="submit" disabled={loading}>
-                            {loading ? "Saving..." : "Save Changes"}
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    </>
-);
+                        <DialogFooter>
+                            <Button type="submit" disabled={loading}>
+                                {loading ? "Saving..." : "Save Changes"}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+        </>
+    );
 }

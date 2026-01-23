@@ -23,6 +23,7 @@ interface Student {
     name: string;
     rollNumber?: string;
     className?: string;
+    imageUrl?: string;
     created_at?: string;
     attendanceRate?: number;
     totalPresent?: number;
@@ -157,6 +158,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Roll No</TableHead>
+                                    <TableHead>Photo</TableHead>
                                     <TableHead>Name</TableHead>
                                     <TableHead>Date Added</TableHead>
                                     <TableHead>Attendance Rate</TableHead>
@@ -179,6 +181,15 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
                                             onClick={() => router.push(`/students/${student._id}`)}
                                         >
                                             <TableCell>{student.rollNumber || "-"}</TableCell>
+                                            <TableCell>
+                                                {student.imageUrl ? (
+                                                    <img src={student.imageUrl} alt={student.name} className="h-10 w-10 rounded-full object-cover" />
+                                                ) : (
+                                                    <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center">
+                                                        <Users className="h-5 w-5 text-slate-400" />
+                                                    </div>
+                                                )}
+                                            </TableCell>
                                             <TableCell className="font-medium">{student.name}</TableCell>
                                             <TableCell>
                                                 {student.created_at ? new Date(student.created_at).toLocaleDateString() : "-"}
