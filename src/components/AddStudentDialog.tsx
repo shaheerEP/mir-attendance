@@ -101,8 +101,6 @@ export function AddStudentDialog() {
                 name,
                 rollNumber,
                 className,
-                rollNumber,
-                className,
                 faceDescriptor,
                 image // Add image
             };
