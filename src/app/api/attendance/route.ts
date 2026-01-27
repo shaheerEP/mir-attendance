@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { studentId, deviceId } = body;
+        const { studentId, rollNumber, name, deviceId } = body;
 
         // Fetch Settings
         const settings = await Settings.findOne();
@@ -17,8 +17,17 @@ export async function POST(req: NextRequest) {
         const gracePeriod = settings?.gracePeriod || DEFAULT_GRACE;
 
         // 1. Validate Student Exists
-        const student = await Student.findById(studentId);
+        let student;
+        if (studentId) {
+             student = await Student.findById(studentId);
+        } else if (rollNumber) {
+             student = await Student.findOne({ rollNumber });
+        } else if (name) {
+             student = await Student.findOne({ name });
+        }
+
         if (!student) {
+            console.log(`[Attendance] Student lookup failed. ID:${studentId} Roll:${rollNumber} Name:${name}`);
             return NextResponse.json(
                 { message: "Student not found", status: "error" },
                 { status: 404 }
