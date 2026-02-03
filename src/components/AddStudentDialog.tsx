@@ -13,21 +13,29 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as faceapi from 'face-api.js';
 
-export function AddStudentDialog() {
+export function AddStudentDialog({ defaultClassName }: { defaultClassName?: string }) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [rollNumber, setRollNumber] = useState("");
-    const [className, setClassName] = useState("");
+    const [className, setClassName] = useState(defaultClassName || "");
     const [loading, setLoading] = useState(false);
     const [faceDescriptor, setFaceDescriptor] = useState<number[] | null>(null);
     const [image, setImage] = useState<string | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [capturing, setCapturing] = useState(false);
+    const [availableClasses, setAvailableClasses] = useState<string[]>([]);
     const router = useRouter();
 
     // Use specific resolution for face recognition
@@ -48,10 +56,29 @@ export function AddStudentDialog() {
                 console.error("Failed to load models", err);
             }
         };
+
+        const fetchClasses = async () => {
+            try {
+                const res = await fetch("/api/classes");
+                if (res.ok) {
+                    const data = await res.json();
+                    setAvailableClasses(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch classes", error);
+            }
+        };
+
         if (open) {
             loadModels();
+            fetchClasses();
+            if (defaultClassName) {
+                setClassName(defaultClassName);
+            } else {
+                setClassName("");
+            }
         }
-    }, [open]);
+    }, [open, defaultClassName]);
 
     const handleCaptureFace = async () => {
         if (!isModelLoaded) return;
@@ -126,8 +153,8 @@ export function AddStudentDialog() {
                 setOpen(false);
                 setName("");
                 setRollNumber("");
-                setClassName("");
-                setClassName("");
+                // keep class name if default was provided, else clear
+                if (!defaultClassName) setClassName("");
                 setFaceDescriptor(null);
                 setImage(null);
                 setPreviewUrl(null);
@@ -196,7 +223,18 @@ export function AddStudentDialog() {
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="class" className="text-right">Class</Label>
-                            <Input id="class" value={className} onChange={(e) => setClassName(e.target.value)} className="col-span-3" placeholder="e.g. 10A" />
+                            <Select value={className} onValueChange={setClassName}>
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Select Class" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {availableClasses.map((cls) => (
+                                        <SelectItem key={cls} value={cls}>
+                                            {cls}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="image" className="text-right">Photo</Label>

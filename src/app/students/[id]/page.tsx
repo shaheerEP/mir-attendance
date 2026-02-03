@@ -34,6 +34,8 @@ interface StudentStats {
 interface StudentData {
     _id: string;
     name: string;
+    imageUrl?: string;
+    imageId?: string;
 }
 
 export default function StudentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -102,8 +104,16 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
             {/* Header Profile */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-4">
-                    <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <User className="h-8 w-8 text-emerald-600" />
+                    <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center overflow-hidden">
+                        {student.imageUrl ? (
+                            <img
+                                src={student.imageUrl}
+                                alt={student.name}
+                                className="h-full w-full object-cover"
+                            />
+                        ) : (
+                            <User className="h-8 w-8 text-emerald-600" />
+                        )}
                     </div>
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight text-slate-900">{student.name}</h2>
