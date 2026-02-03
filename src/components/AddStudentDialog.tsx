@@ -11,6 +11,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusCircle } from "lucide-react";
@@ -28,6 +35,7 @@ export function AddStudentDialog() {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [capturing, setCapturing] = useState(false);
+    const [availableClasses, setAvailableClasses] = useState<string[]>([]);
     const router = useRouter();
 
     // Use specific resolution for face recognition
@@ -48,8 +56,22 @@ export function AddStudentDialog() {
                 console.error("Failed to load models", err);
             }
         };
+
+        const fetchClasses = async () => {
+            try {
+                const res = await fetch("/api/classes");
+                if (res.ok) {
+                    const data = await res.json();
+                    setAvailableClasses(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch classes", error);
+            }
+        };
+
         if (open) {
             loadModels();
+            fetchClasses();
         }
     }, [open]);
 
@@ -196,7 +218,20 @@ export function AddStudentDialog() {
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="class" className="text-right">Class</Label>
-                            <Input id="class" value={className} onChange={(e) => setClassName(e.target.value)} className="col-span-3" placeholder="e.g. 10A" />
+                            <div className="col-span-3">
+                                <Select value={className} onValueChange={setClassName}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a class" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {availableClasses.map((cls) => (
+                                            <SelectItem key={cls} value={cls}>
+                                                {cls}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="image" className="text-right">Photo</Label>
