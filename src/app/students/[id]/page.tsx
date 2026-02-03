@@ -16,6 +16,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface AttendanceLog {
     _id: string;
@@ -104,17 +105,35 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
             {/* Header Profile */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-4">
-                    <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center overflow-hidden">
-                        {student.imageUrl ? (
-                            <img
-                                src={student.imageUrl}
-                                alt={student.name}
-                                className="h-full w-full object-cover"
-                            />
-                        ) : (
+                    {student.imageUrl ? (
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90">
+                                    <img
+                                        src={student.imageUrl}
+                                        alt={student.name}
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle>{student.name}</DialogTitle>
+                                </DialogHeader>
+                                <div className="flex justify-center">
+                                    <img
+                                        src={student.imageUrl}
+                                        alt={student.name}
+                                        className="max-h-[80vh] w-auto object-contain rounded-md"
+                                    />
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    ) : (
+                        <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center overflow-hidden">
                             <User className="h-8 w-8 text-emerald-600" />
-                        )}
-                    </div>
+                        </div>
+                    )}
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight text-slate-900">{student.name}</h2>
                         <div className="flex items-center gap-2 text-muted-foreground">
