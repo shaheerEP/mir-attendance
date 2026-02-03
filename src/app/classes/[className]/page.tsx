@@ -139,7 +139,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
                         className="pl-8"
                     />
                 </div>
-                <AddStudentDialog />
+                <AddStudentDialog defaultClassName={className} />
             </div>
 
             <Card>

@@ -20,15 +20,22 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as faceapi from 'face-api.js';
 
-export function AddStudentDialog() {
+export function AddStudentDialog({ defaultClassName }: { defaultClassName?: string }) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [rollNumber, setRollNumber] = useState("");
-    const [className, setClassName] = useState("");
+    const [className, setClassName] = useState(defaultClassName || "");
     const [loading, setLoading] = useState(false);
     const [faceDescriptor, setFaceDescriptor] = useState<number[] | null>(null);
     const [image, setImage] = useState<string | null>(null);
@@ -72,8 +79,13 @@ export function AddStudentDialog() {
         if (open) {
             loadModels();
             fetchClasses();
+            if (defaultClassName) {
+                setClassName(defaultClassName);
+            } else {
+                setClassName("");
+            }
         }
-    }, [open]);
+    }, [open, defaultClassName]);
 
     const handleCaptureFace = async () => {
         if (!isModelLoaded) return;
@@ -148,8 +160,8 @@ export function AddStudentDialog() {
                 setOpen(false);
                 setName("");
                 setRollNumber("");
-                setClassName("");
-                setClassName("");
+                // keep class name if default was provided, else clear
+                if (!defaultClassName) setClassName("");
                 setFaceDescriptor(null);
                 setImage(null);
                 setPreviewUrl(null);
@@ -218,20 +230,18 @@ export function AddStudentDialog() {
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="class" className="text-right">Class</Label>
-                            <div className="col-span-3">
-                                <Select value={className} onValueChange={setClassName}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a class" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {availableClasses.map((cls) => (
-                                            <SelectItem key={cls} value={cls}>
-                                                {cls}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            <Select value={className} onValueChange={setClassName}>
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Select Class" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {availableClasses.map((cls) => (
+                                        <SelectItem key={cls} value={cls}>
+                                            {cls}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="image" className="text-right">Photo</Label>
