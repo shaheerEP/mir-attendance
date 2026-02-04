@@ -1,0 +1,135 @@
+
+
+=== ESP32 BOOT START ===
+LittleFS mounted
+......
+WiFi Connected
+192.168.31.160
+Enrollment Started via Web Request
+Enroll: Sample 1/5
+CORRUPT HEAP: Bad head at 0x3ffdcf28. Expected 0xabba1234 got 0x00000014
+abort() was called at PC 0x4008adf5 on core 1
+
+ELF file SHA256: 0000000000000000
+
+Backtrace: 0x4008eb6c:0x3ffb1af0 0x4008ede5:0x3ffb1b10 0x4008adf5:0x3ffb1b30 0x4008af21:0x3ffb1b60 0x40102db3:0x3ffb1b80 0x400ff021:0x3ffb1e40 0x400fefa9:0x3ffb1e90 0x4009416d:0x3ffb1ec0 0x400830fe:0x3ffb1ee0 0x4008aced:0x3ffb1f00 0x4000bec7:0x3ffb1f20 0x400d246b:0x3ffb1f40 0x400de8d4:0x3ffb1fb0 0x40090a76:0x3ffb1fd0
+  #0  0x4008eb6c:0x3ffb1af0 in invoke_abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #1  0x4008ede5:0x3ffb1b10 in abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #2  0x4008adf5:0x3ffb1b30 in lock_acquire_generic at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/locks.c:143
+  #3  0x4008af21:0x3ffb1b60 in _lock_acquire_recursive at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/locks.c:171
+  #4  0x40102db3:0x3ffb1b80 in _vfiprintf_r at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdio/../../../.././newlib/libc/stdio/vfprintf.c:860 (discriminator 2)
+  #5  0x400ff021:0x3ffb1e40 in fiprintf at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdio/../../../.././newlib/libc/stdio/fiprintf.c:50
+  #6  0x400fefa9:0x3ffb1e90 in __assert_func at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdlib/../../../.././newlib/libc/stdlib/assert.c:59 (discriminator 8)
+  #7  0x4009416d:0x3ffb1ec0 in multi_heap_free at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/heap/multi_heap_poisoning.c:321
+  #8  0x400830fe:0x3ffb1ee0 in heap_caps_free at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/heap/heap_caps.c:232
+  #9  0x4008aced:0x3ffb1f00 in _free_r at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/syscalls.c:42
+  #10 0x4000bec7:0x3ffb1f20 in ?? ??:0
+  #11 0x400d246b:0x3ffb1f40 in loop() at src/main.cpp:332
+  #12 0x400de8d4:0x3ffb1fb0 in loopTask(void*) at C:/Users/shahe/.platformio/packages/framework-arduinoespressif32@3.10006.210326/cores/esp32/main.cpp:23
+  #13 0x40090a76:0x3ffb1fd0 in vPortTaskWrapper at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/freertos/port.c:355 (discriminator 1)
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+
+
+=== ESP32 BOOT START ===
+LittleFS mounted
+......
+WiFi Connected
+192.168.31.160
+Enrollment Started via Web Request
+Enroll: Sample 1/5
+CORRUPT HEAP: Bad head at 0x3ffdce40. Expected 0xabba1234 got 0x00000014
+abort() was called at PC 0x4008adf5 on core 1
+
+ELF file SHA256: 0000000000000000
+
+Backtrace: 0x4008eb6c:0x3ffb1af0 0x4008ede5:0x3ffb1b10 0x4008adf5:0x3ffb1b30 0x4008af21:0x3ffb1b60 0x40102db3:0x3ffb1b80 0x400ff021:0x3ffb1e40 0x400fefa9:0x3ffb1e90 0x4009416d:0x3ffb1ec0 0x400830fe:0x3ffb1ee0 0x4008aced:0x3ffb1f00 0x4000bec7:0x3ffb1f20 0x400d246b:0x3ffb1f40 0x400de8d4:0x3ffb1fb0 0x40090a76:0x3ffb1fd0
+  #0  0x4008eb6c:0x3ffb1af0 in invoke_abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #1  0x4008ede5:0x3ffb1b10 in abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #2  0x4008adf5:0x3ffb1b30 in lock_acquire_generic at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/locks.c:143
+  #3  0x4008af21:0x3ffb1b60 in _lock_acquire_recursive at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/locks.c:171
+  #4  0x40102db3:0x3ffb1b80 in _vfiprintf_r at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdio/../../../.././newlib/libc/stdio/vfprintf.c:860 (discriminator 2)
+  #5  0x400ff021:0x3ffb1e40 in fiprintf at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdio/../../../.././newlib/libc/stdio/fiprintf.c:50
+  #6  0x400fefa9:0x3ffb1e90 in __assert_func at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdlib/../../../.././newlib/libc/stdlib/assert.c:59 (discriminator 8)
+  #7  0x4009416d:0x3ffb1ec0 in multi_heap_free at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/heap/multi_heap_poisoning.c:321
+  #8  0x400830fe:0x3ffb1ee0 in heap_caps_free at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/heap/heap_caps.c:232
+  #9  0x4008aced:0x3ffb1f00 in _free_r at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/syscalls.c:42
+  #10 0x4000bec7:0x3ffb1f20 in ?? ??:0
+  #11 0x400d246b:0x3ffb1f40 in loop() at src/main.cpp:332
+  #12 0x400de8d4:0x3ffb1fb0 in loopTask(void*) at C:/Users/shahe/.platformio/packages/framework-arduinoespressif32@3.10006.210326/cores/esp32/main.cpp:23
+  #13 0x40090a76:0x3ffb1fd0 in vPortTaskWrapper at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/freertos/port.c:355 (discriminator 1)
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+
+
+=== ESP32 BOOT START ===
+LittleFS mounted
+......
+WiFi Connected
+192.168.31.160
+Enrollment Started via Web Request
+Enroll: Sample 1/5
+CORRUPT HEAP: Bad head at 0x3ffdc790. Expected 0xabba1234 got 0x00000014
+abort() was called at PC 0x4008adf5 on core 1
+
+ELF file SHA256: 0000000000000000
+
+Backtrace: 0x4008eb6c:0x3ffb1af0 0x4008ede5:0x3ffb1b10 0x4008adf5:0x3ffb1b30 0x4008af21:0x3ffb1b60 0x40102db3:0x3ffb1b80 0x400ff021:0x3ffb1e40 0x400fefa9:0x3ffb1e90 0x4009416d:0x3ffb1ec0 0x400830fe:0x3ffb1ee0 0x4008aced:0x3ffb1f00 0x4000bec7:0x3ffb1f20 0x400d246b:0x3ffb1f40 0x400de8d4:0x3ffb1fb0 0x40090a76:0x3ffb1fd0
+  #0  0x4008eb6c:0x3ffb1af0 in invoke_abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #1  0x4008ede5:0x3ffb1b10 in abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #2  0x4008adf5:0x3ffb1b30 in lock_acquire_generic at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/locks.c:143
+  #3  0x4008af21:0x3ffb1b60 in _lock_acquire_recursive at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/locks.c:171
+  #4  0x40102db3:0x3ffb1b80 in _vfiprintf_r at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdio/../../../.././newlib/libc/stdio/vfprintf.c:860 (discriminator 2)
+  #5  0x400ff021:0x3ffb1e40 in fiprintf at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdio/../../../.././newlib/libc/stdio/fiprintf.c:50
+  #6  0x400fefa9:0x3ffb1e90 in __assert_func at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdlib/../../../.././newlib/libc/stdlib/assert.c:59 (discriminator 8)
+  #7  0x4009416d:0x3ffb1ec0 in multi_heap_free at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/heap/multi_heap_poisoning.c:321
+  #8  0x400830fe:0x3ffb1ee0 in heap_caps_free at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/heap/heap_caps.c:232
+  #9  0x4008aced:0x3ffb1f00 in _free_r at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/newlib/syscalls.c:42
+  #10 0x4000bec7:0x3ffb1f20 in ?? ??:0
+  #11 0x400d246b:0x3ffb1f40 in loop() at src/main.cpp:332
+  #12 0x400de8d4:0x3ffb1fb0 in loopTask(void*) at C:/Users/shahe/.platformio/packages/framework-arduinoespressif32@3.10006.210326/cores/esp32/main.cpp:23
+  #13 0x40090a76:0x3ffb1fd0 in vPortTaskWrapper at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/freertos/port.c:355 (discriminator 1)
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+
+
+=== ESP32 BOOT START ===
+LittleFS mounted
+......
+WiFi Connected
+192.168.31.160
+Enrollment Started via Web Request
+[E][esp_jpg_decode.c:118] esp_jpg_decode(): JPG Decompression Failed! Data format error
