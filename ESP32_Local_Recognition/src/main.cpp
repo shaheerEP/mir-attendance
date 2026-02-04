@@ -189,6 +189,7 @@ void setup() {
   }
 
   WiFi.begin(ssid, password);
+  WiFi.setSleep(false); // Disable power save to improve response time
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -291,58 +292,63 @@ void loop() {
         free(net_boxes->score);
         free(net_boxes->box);
         free(net_boxes->landmark);
-        free(net_boxes);
-      }
-    }
-  }
-}
-dl_matrix3du_free(image_matrix);
-}
-
-// RECOGNITION LOGIC
-else if (id_list.count > 0) {
-  dl_matrix3du_t *image_matrix =
-      dl_matrix3du_alloc(1, fb->width, fb->height, 3);
-  if (image_matrix) {
-    if (fmt2rgb888(fb->buf, fb->len, fb->format, image_matrix->item)) {
-
-      box_array_t *net_boxes = face_detect(image_matrix, &mtmn_config);
-
-      if (net_boxes) {
-        // Run Recognition on largest face
-        // Old API: int8_t recognize_face(face_id_list *l, dl_matrix3du_t
-        // *algined_face); We need to align the face first
-        dl_matrix3du_t *aligned_face =
-            dl_matrix3du_alloc(1, FACE_WIDTH, FACE_HEIGHT, 3);
-        if (aligned_face) {
-          if (align_face(net_boxes, image_matrix, aligned_face) == ESP_OK) {
-            int8_t matched_id = recognize_face(&id_list, aligned_face);
-            if (matched_id >= 0) {
-              // Found!
-              String name = "Student_" + String(matched_id);
-              Serial.printf("Matched Face ID: %d\n", matched_id);
-
-              showStatus("Matched:\nID " + String(matched_id), false);
-              // Debounce/Throttling
-              sendAttendance(name);
-            }
-          }
-          dl_matrix3du_free(aligned_face);
-        }
-
-        // Cleanup boxes
-        free(net_boxes->score);
-        free(net_boxes->box);
-        free(net_boxes->landmark);
-        free(net_boxes);
       }
     }
     dl_matrix3du_free(image_matrix);
   }
-}
 
-esp_camera_fb_return(fb);
-delay(200); // Don't overheat
+  // RECOGNITION LOGIC
+  else if (id_list.count > 0) {
+    dl_matrix3du_t *image_matrix =
+        dl_matrix3du_alloc(1, fb->width, fb->height, 3);
+    if (image_matrix) {
+      if (fmt2rgb888(fb->buf, fb->len, fb->format, image_matrix->item)) {
+
+        box_array_t *net_boxes = face_detect(image_matrix, &mtmn_config);
+
+        if (net_boxes) {
+          // Run Recognition on largest face
+          // Old API: int8_t recognize_face(face_id_list *l, dl_matrix3du_t
+          // *algined_face); We need to align the face first
+          dl_matrix3du_t *aligned_face =
+              dl_matrix3du_alloc(1, FACE_WIDTH, FACE_HEIGHT, 3);
+          if (aligned_face) {
+            if (align_face(net_boxes, image_matrix, aligned_face) == ESP_OK) {
+              int8_t matched_id = recognize_face(&id_list, aligned_face);
+              if (matched_id >= 0) {
+                // Found!
+                String name = "Student_" + String(matched_id);
+                Serial.printf("Matched Face ID: %d\n", matched_id);
+
+                showStatus("Matched:\nID " + String(matched_id), false);
+                // Debounce/Throttling
+                sendAttendance(name);
+              }
+            }
+            dl_matrix3du_free(aligned_face);
+          }
+
+          // Cleanup boxes
+          free(net_boxes->score);
+          free(net_boxes->box);
+          free(net_boxes->landmark);
+          free(net_boxes);
+        }
+      }
+      dl_matrix3du_free(image_matrix);
+    }
+  }
+
+  esp_camera_fb_return(fb);
+
+  // Heartbeat to confirm loop is running
+  static unsigned long last_beat = 0;
+  if (millis() - last_beat > 5000) {
+    Serial.printf("[Alive] Free Heap: %d\n", ESP.getFreeHeap());
+    last_beat = millis();
+  }
+
+  delay(200); // Don't overheat
 }
 
 // ----------------------------------------------------------------
