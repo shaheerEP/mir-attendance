@@ -189,7 +189,6 @@ void setup() {
   }
 
   WiFi.begin(ssid, password);
-  WiFi.setSleep(false); // Disable power save to improve response time
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -288,10 +287,14 @@ void loop() {
           }
         }
 
-        // Proper Cleanup for box_array_t
-        free(net_boxes->score);
-        free(net_boxes->box);
-        free(net_boxes->landmark);
+        // Proper Cleanup for box_array_t using safe dl_lib_free checks
+        if (net_boxes->score)
+          dl_lib_free(net_boxes->score);
+        if (net_boxes->box)
+          dl_lib_free(net_boxes->box);
+        if (net_boxes->landmark)
+          dl_lib_free(net_boxes->landmark);
+        dl_lib_free(net_boxes);
       }
     }
     dl_matrix3du_free(image_matrix);
@@ -329,10 +332,13 @@ void loop() {
           }
 
           // Cleanup boxes
-          free(net_boxes->score);
-          free(net_boxes->box);
-          free(net_boxes->landmark);
-          free(net_boxes);
+          if (net_boxes->score)
+            dl_lib_free(net_boxes->score);
+          if (net_boxes->box)
+            dl_lib_free(net_boxes->box);
+          if (net_boxes->landmark)
+            dl_lib_free(net_boxes->landmark);
+          dl_lib_free(net_boxes);
         }
       }
       dl_matrix3du_free(image_matrix);
@@ -340,14 +346,6 @@ void loop() {
   }
 
   esp_camera_fb_return(fb);
-
-  // Heartbeat to confirm loop is running
-  static unsigned long last_beat = 0;
-  if (millis() - last_beat > 5000) {
-    Serial.printf("[Alive] Free Heap: %d\n", ESP.getFreeHeap());
-    last_beat = millis();
-  }
-
   delay(200); // Don't overheat
 }
 
