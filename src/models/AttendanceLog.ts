@@ -6,6 +6,7 @@ export interface IAttendanceLog extends Document {
     status: string;
     periodId?: number;
     deviceId?: string;
+    remarks?: string;
 }
 
 const AttendanceLogSchema: Schema = new Schema({
@@ -14,6 +15,7 @@ const AttendanceLogSchema: Schema = new Schema({
     status: { type: String, default: 'PRESENT' },
     periodId: { type: Number },
     deviceId: { type: String },
+    remarks: { type: String },
 });
 
 const AttendanceLog: Model<IAttendanceLog> = mongoose.models.AttendanceLog || mongoose.model<IAttendanceLog>('AttendanceLog', AttendanceLogSchema);
