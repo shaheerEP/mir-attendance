@@ -1,0 +1,155 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- STATUS ---
+Title: Booting
+Msg:   Init...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+WiFi Connected. IP: 192.168.31.160
+DNS: 192.168.31.1
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+Server Params: HTTP/1.1 307 Temporary Redirect
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: text/plain
+Date: Thu, 05 Feb 2026 12:02:54 GMT
+Location: /login?callbackUrl=%2Fapi%2Frecognize
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+X-Vercel-Id: bo
+--- STATUS ---
+Title: Result
+Msg:   Timeout
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+--- STATUS ---
+Title: Result
+Msg:   Timeout
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- STATUS ---
+Title: Booting
+Msg:   Init...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+WiFi Connected. IP: 192.168.31.160
+DNS: 192.168.31.1
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+--- STATUS ---
+Title: Result
+Msg:   Timeout
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+[E][esp_jpg_decode.c:118] esp_jpg_decode(): JPG Decompression Failed! Data format error

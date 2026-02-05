@@ -116,7 +116,7 @@ String sendPhoto(camera_fb_t *fb) {
   HTTPClient http;
   WiFiClientSecure client;
   client.setInsecure();     // Skip cert check
-  client.setTimeout(20000); // 20s timeout for TCP connect
+  client.setTimeout(45000); // 45s timeout for TCP connect
 
   Serial.println("Connecting to " + String(serverUrl));
 
@@ -192,7 +192,7 @@ String sendPhoto(camera_fb_t *fb) {
   // Read Response
   showStatus("Processing", "Analyzing...");
   unsigned long start = millis();
-  while (client.connected() && millis() - start < 20000) {
+  while (client.connected() && millis() - start < 45000) {
     if (client.available()) {
       String response = client.readString();
       Serial.println("Server Params: " +
