@@ -58,6 +58,13 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { name, rollNumber, className, faceDescriptor, image } = body;
 
+        console.log(`[API] Creating Student: ${name}`);
+        if (faceDescriptor) {
+            console.log(`[API] Received Face Descriptor. Length: ${faceDescriptor.length}`);
+        } else {
+            console.log(`[API] No Face Descriptor received.`);
+        }
+
         let imageUrl = "";
         let imageId = "";
 

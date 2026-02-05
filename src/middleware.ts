@@ -8,7 +8,8 @@ export default withAuth(
     {
         callbacks: {
             authorized: ({ token, req }) => {
-                if (req.nextUrl.pathname.startsWith("/api/attendance")) {
+                if (req.nextUrl.pathname.startsWith("/api/attendance") ||
+                    req.nextUrl.pathname.startsWith("/api/recognize")) {
                     return true;
                 }
                 return !!token;
@@ -23,6 +24,7 @@ export default withAuth(
 // Protect everything except:
 // - /login (Login page)
 // - /api/attendance (Hardware endpoint must be public)
+// - /api/recognize (Hardware endpoint must be public)
 // - /_next (Next.js internals)
 // - /static (Static files)
 export const config = {
@@ -30,11 +32,12 @@ export const config = {
         /*
          * Match all request paths except for the ones starting with:
          * - login (Login page)
-         * - api/attendance (Hardware endpoint, exclude subpaths if any or be precise)
+         * - api/attendance (Hardware endpoint)
+         * - api/recognize (Hardware endpoint)
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          */
-        "/((?!login|api/attendance|_next/static|_next/image|favicon.ico).*)",
+        "/((?!login|api/attendance|api/recognize|_next/static|_next/image|favicon.ico).*)",
     ],
 };

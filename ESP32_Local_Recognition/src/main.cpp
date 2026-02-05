@@ -109,30 +109,71 @@ void initCamera() {
   }
 }
 
+// Include HTTPClient
+#include <HTTPClient.h>
+
 String sendPhoto(camera_fb_t *fb) {
+  HTTPClient http;
   WiFiClientSecure client;
-  client.setInsecure();
+  client.setInsecure();     // Skip cert check
+  client.setTimeout(20000); // 20s timeout for TCP connect
+
+  Serial.println("Connecting to " + String(serverUrl));
+
+  // Construct URL with https protocol
+  String fullUrl = "https://" + String(serverUrl) + String(serverPath);
+
+  // We use WiFiClientSecure with HTTPClient to manage the connection
+  if (!http.begin(client, fullUrl)) {
+    return "Connect Fail";
+  }
 
   showStatus("Processing", "Uploading...");
 
-  Serial.printf("Free Heap before Connect: %d\n", ESP.getFreeHeap());
+  String boundary = "esp32-boundary";
+  String contentType = "multipart/form-data; boundary=" + boundary;
 
-  if (!client.connect(serverUrl, serverPort)) {
-    return "Conn. Fail";
-  }
+  // Start POST
+  http.addHeader("Content-Type", contentType);
 
-  String boundary = "------------------------esp32cam";
   String head = "--" + boundary +
                 "\r\nContent-Disposition: form-data; name=\"image\"; "
                 "filename=\"capture.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
   String tail = "\r\n--" + boundary + "--\r\n";
 
-  uint32_t totalLen = fb->len + head.length() + tail.length();
+  uint32_t imageLen = fb->len;
+  uint32_t extraLen = head.length() + tail.length();
+  uint32_t totalLen = imageLen + extraLen;
+
+  // Custom logic to stream data because HTTPClient.POST(String) loads
+  // everything to RAM which crashes ESP32 We have to use the low-level stream
+  // or fallback to existing method if HTTPClient is too heavy. Actually,
+  // standard HTTPClient library doesn't support streaming POST body easily
+  // without hacking. Given the fragility, let's use the Raw Client but with
+  // improved settings (Keep-Alive, Retry)
+
+  http.end(); // Clean up if we aren't using it
+
+  // --- RAW CLIENT RETRY LOGIC ---
+  int retries = 3;
+  while (retries > 0) {
+    if (client.connect(serverUrl, 443)) {
+      break;
+    }
+    Serial.println("Connect failed... retrying");
+    retries--;
+    delay(1000);
+  }
+
+  if (!client.connected()) {
+    return "Conn. Fail";
+  }
 
   client.println("POST " + String(serverPath) + " HTTP/1.1");
   client.println("Host: " + String(serverUrl));
   client.println("Content-Length: " + String(totalLen));
   client.println("Content-Type: multipart/form-data; boundary=" + boundary);
+  client.println("Connection: close");
   client.println();
   client.print(head);
 
@@ -150,10 +191,13 @@ String sendPhoto(camera_fb_t *fb) {
 
   // Read Response
   showStatus("Processing", "Analyzing...");
-  unsigned long timeout = millis();
-  while (client.connected() && millis() - timeout < 15000) {
+  unsigned long start = millis();
+  while (client.connected() && millis() - start < 20000) {
     if (client.available()) {
       String response = client.readString();
+      Serial.println("Server Params: " +
+                     response.substring(0, 300)); // Debug header
+
       int jsonStart = response.indexOf("{");
       if (jsonStart != -1) {
         String jsonStr = response.substring(jsonStart);
@@ -164,13 +208,12 @@ String sendPhoto(camera_fb_t *fb) {
         DynamicJsonDocument doc(1024);
         deserializeJson(doc, jsonStr);
         String msg = doc["message"].as<String>();
-
-        Serial.println("Response JSON: " + jsonStr);
+        client.stop();
         return msg;
       }
     }
   }
-  Serial.println("Error: Connection Timeout or No Data");
+  client.stop();
   return "Timeout";
 }
 
@@ -195,11 +238,22 @@ void setup() {
   mtmn_config = mtmn_init_config();
 
   // WiFi
+  WiFi.setSleep(false); // Disable sleep for better connection
+  WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, IPAddress(8, 8, 8, 8),
+              IPAddress(8, 8, 4, 4));
+  WiFi.setHostname("ESP32-Attendance");
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     showStatus("Connecting", "WiFi...");
   }
+
+  Serial.print("WiFi Connected. IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("DNS: ");
+  Serial.println(WiFi.dnsIP());
+
   showStatus("Ready", "Look at Cam");
 }
 
