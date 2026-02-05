@@ -1,0 +1,83 @@
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+[E][esp_jpg_decode.c:118] esp_jpg_decode(): JPG Decompression Failed! Data format error
+[E][esp_jpg_decode.c:118] esp_jpg_decode(): JPG Decompression Failed! Data format error
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Yׁ��&NL�'S�H.���	�U���UUI����&i�eP*�e**�%��jh�Z�Z�	����Vh�E.���)E.����E.���i.�����B�E.����E.���j��Y'T�k-"Z��!+���LbYKS!+���L,bYKLS!+���bYKLL&S!+���bYKM&j�������S�C��K�UU*j!U����Z�5�j�JZ
+Rj�j
+K�UU*j!U����,W�5�j��ZT�j�Z�j
+K�UU*j!U����,W�5�j��ZT�j�j
+K�UU*j!U����,W�5�j��ZT�j�j
+K�UU*j!U����,W�5�j��ZT�j�j
+K�UU*j!U����,W�5�j��ZT�j�j
+K�UU*j!U����,W�5�j��ZT�j�j
+K�UU*j!U����,W�5�j��ZT�j�j�K�UU*j!U���VV5�j�b-
+5�j

@@ -18,3 +18,22 @@ Msg:   WiFi...
 Title: Ready
 Msg:   Look at Cam
 --------------
+Face Detected
+--- STATUS ---
+Title: Face Found
+Msg:   Identifying...
+--------------
+--- STATUS ---
+Title: Syncing
+Msg:   Wait...
+--------------
+Resp: Redirecting...
+
+--- STATUS ---
+Title: Attendance
+Msg:   Marked!
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------

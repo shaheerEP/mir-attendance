@@ -139,6 +139,32 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
                         <div className="flex items-center gap-2 text-muted-foreground">
 
                             <span className="text-sm">Student ID: {student._id.slice(-6)}</span>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="ml-4 gap-2 text-orange-600 border-orange-200 hover:bg-orange-50"
+                                onClick={async () => {
+                                    if (!confirm(`Enroll ${student.name} on ESP32 Device?`)) return;
+                                    try {
+                                        const res = await fetch("/api/device/command", {
+                                            method: "POST",
+                                            headers: { "Content-Type": "application/json" },
+                                            body: JSON.stringify({
+                                                command: "ENROLL",
+                                                payload: { studentId: student._id },
+                                                deviceId: "default"
+                                            })
+                                        });
+                                        if (res.ok) alert("Command Queued! Check ESP32 Screen.");
+                                        else alert("Failed to queue command.");
+                                    } catch (e) {
+                                        console.error(e);
+                                        alert("Error sending command.");
+                                    }
+                                }}
+                            >
+                                <CheckCircle2 className="h-4 w-4" /> Enroll on Device
+                            </Button>
                         </div>
                     </div>
                 </div>

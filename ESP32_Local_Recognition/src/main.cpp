@@ -49,6 +49,69 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // FACE DETECTION GLOBALS
 static mtmn_config_t mtmn_config = {0};
 
+// RESTORED GLOBALS
+static face_id_list id_list = {0};
+#define ENROLL_CONFIRM_TIMES 5
+#define FACE_ID_SAVE_NUMBER 7
+
+// Global State for Production
+String currentEnrollStudentId = "";
+unsigned long lastPollTime = 0;
+const long pollInterval = 5000;
+
+// simple in-memory map
+String studentMap[FACE_ID_SAVE_NUMBER];
+
+// Poll Server for Commands
+void checkRemoteCommands() {
+  if (millis() - lastPollTime < pollInterval)
+    return;
+  lastPollTime = millis();
+
+  if (isEnrolling)
+    return; // Don't interrupt enrollment
+
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    WiFiClientSecure client;
+    client.setInsecure();
+    client.setTimeout(5000); // Short timeout for polling
+
+    // API: GET /api/device/command
+    // Using String concat to be safe
+    String fullUrl = "https://" + String(serverUrl) + "/api/device/command";
+
+    if (http.begin(client, fullUrl)) {
+      int code = http.GET();
+      if (code > 0) {
+        String resp = http.getString();
+
+        JsonDocument doc; // ArduinoJson v7
+        deserializeJson(doc, resp);
+
+        if (doc["command"] == "ENROLL") {
+          String studentId = doc["payload"]["studentId"].as<String>();
+          currentEnrollStudentId = studentId;
+          isEnrolling = true;
+
+          showStatus("CMD RECV", "Enroll: " + studentId.substring(0, 5));
+          Serial.println("Command: ENROLL " + studentId);
+          delay(2000);
+        }
+      }
+      http.end();
+    }
+  }
+}
+
+// Map Local Face ID -> MongoDB ID
+String getStudentId(int face_id) {
+  if (face_id >= 0 && face_id < FACE_ID_SAVE_NUMBER) {
+    return studentMap[face_id];
+  }
+  return "";
+}
+
 void showStatus(String title, String msg) {
   Serial.println("--- STATUS ---");
   Serial.println("Title: " + title);
@@ -132,10 +195,10 @@ String sendAttendance(String studentId) {
     String response = http.getString();
     Serial.println("Resp: " + response);
 
-    DynamicJsonDocument doc(1024);
+    JsonDocument doc; // Fixed Deprecation
     deserializeJson(doc, response);
 
-    if (doc.containsKey("message")) {
+    if (doc["message"].is<String>()) {
       resultMsg = doc["message"].as<String>();
     } else {
       resultMsg = "Marked!";
@@ -167,8 +230,10 @@ void setup() {
 
   initCamera();
 
-  // Init Face Detection
+  // Init Face Detection & Recognition
+  // Init Face Detection & Recognition
   mtmn_config = mtmn_init_config();
+  face_id_init(&id_list, FACE_ID_SAVE_NUMBER, ENROLL_CONFIRM_TIMES);
 
   // WiFi
   WiFi.setSleep(false);
@@ -186,62 +251,100 @@ void setup() {
 }
 
 void loop() {
+  // 1. Check for remote commands
+  checkRemoteCommands();
+
+  // Camera Capture
   camera_fb_t *fb = esp_camera_fb_get();
   if (!fb)
     return;
 
-  // 1. Convert to RGB for AI (Detection)
   dl_matrix3du_t *image_matrix =
       dl_matrix3du_alloc(1, fb->width, fb->height, 3);
+  if (!image_matrix) {
+    esp_camera_fb_return(fb);
+    return;
+  }
 
-  bool faceFound = false;
+  if (fmt2rgb888(fb->buf, fb->len, fb->format, image_matrix->item)) {
 
-  if (image_matrix) {
-    if (fmt2rgb888(fb->buf, fb->len, fb->format, image_matrix->item)) {
-      // 2. DETECT FACES
-      box_array_t *boxes = face_detect(image_matrix, &mtmn_config);
+    box_array_t *boxes = face_detect(image_matrix, &mtmn_config);
 
-      if (boxes) {
-        Serial.println("Face Detected");
-        faceFound = true;
+    if (boxes) {
+      Serial.println("Face Detected");
 
-        // Cleanup
-        dl_lib_free(boxes->score);
-        dl_lib_free(boxes->box);
-        dl_lib_free(boxes->landmark);
-        dl_lib_free(boxes);
+      // ALIGNMENT
+      dl_matrix3du_t *aligned_face =
+          dl_matrix3du_alloc(1, FACE_WIDTH, FACE_HEIGHT, 3);
+
+      if (aligned_face) {
+        if (align_face(boxes, image_matrix, aligned_face) == ESP_OK) {
+
+          if (isEnrolling) {
+            // ENROLL
+            int left_sample_face = enroll_face(&id_list, aligned_face);
+
+            if (left_sample_face == 0) {
+              int enrolled_id = id_list.count - 1;
+
+              // SUCCESS
+              String msg = "ID " + String(enrolled_id) + " Saved";
+              showStatus("ENROLLED", currentEnrollStudentId.substring(0, 8));
+              Serial.printf("Enrolled Face ID: %d for Student: %s\n",
+                            enrolled_id, currentEnrollStudentId.c_str());
+
+              // SAVE MAPPING
+              if (enrolled_id < FACE_ID_SAVE_NUMBER) {
+                studentMap[enrolled_id] = currentEnrollStudentId;
+              }
+
+              isEnrolling = false;         // Stop enrolling
+              currentEnrollStudentId = ""; // Clear
+
+              delay(3000);
+              showStatus("Ready", "Scan Next...");
+            } else {
+              String msg = "Samples: " + String(left_sample_face);
+              showStatus("Enrolling...", msg);
+              Serial.println("Ct: " + String(left_sample_face));
+              delay(500);
+            }
+          } else {
+            // RECOGNIZE
+            int face_id = recognize_face(&id_list, aligned_face);
+
+            if (face_id >= 0) {
+              Serial.printf("Matched Face ID: %d\n", face_id);
+              String studentId =
+                  getStudentId(face_id); // This will need dynamic mapping later
+              if (studentId != "") {
+                digitalWrite(FLASH_LED_PIN, HIGH);
+                delay(100);
+                digitalWrite(FLASH_LED_PIN, LOW);
+
+                String result = sendAttendance(studentId);
+                showStatus("Success", result);
+                delay(4000);
+              } else {
+                showStatus("Unknown", "ID: " + String(face_id));
+              }
+            } else {
+              Serial.println("Not Recognized");
+            }
+          }
+        } else {
+          Serial.println("Align Failed");
+        }
+        dl_matrix3du_free(aligned_face);
       }
+
+      dl_lib_free(boxes->score);
+      dl_lib_free(boxes->box);
+      dl_lib_free(boxes->landmark);
+      dl_lib_free(boxes);
     }
-    dl_matrix3du_free(image_matrix);
   }
 
+  dl_matrix3du_free(image_matrix);
   esp_camera_fb_return(fb);
-
-  if (faceFound) {
-    // 3. Simulated Recognition & Action
-    // In a real FR system, we would:
-    // a. Align Face
-    // b. Get Face Embedding
-    // c. Compare with Local database
-
-    // For this POC Step 1: Prove Connectivity
-    showStatus("Face Found", "Identifying...");
-
-    // Flash Feedback
-    digitalWrite(FLASH_LED_PIN, HIGH);
-    delay(100);
-    digitalWrite(FLASH_LED_PIN, LOW);
-
-    // Call Server with a TEST ID (or the specific user's ID if we recognized
-    // them) Replace this with the User's Actual MongoDB ID from the logs to
-    // test real attendance!
-    String testStudentId = "67a29486c12d4586bc537e28";
-
-    String result = sendAttendance(testStudentId);
-    showStatus("Attendance", result);
-
-    // Cooldown
-    delay(5000);
-    showStatus("Ready", "Look at Cam");
-  }
 }

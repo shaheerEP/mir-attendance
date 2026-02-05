@@ -11,7 +11,8 @@ export default withAuth(
                 const path = req.nextUrl.pathname;
                 if (path.startsWith("/api/attendance") ||
                     path.startsWith("/api/recognize") ||
-                    path.startsWith("/api/mark-attendance")) {
+                    path.startsWith("/api/mark-attendance") ||
+                    path.startsWith("/api/device/command")) {
                     return true;
                 }
                 return !!token;
@@ -25,6 +26,6 @@ export default withAuth(
 
 export const config = {
     matcher: [
-        "/((?!login|api/attendance|api/recognize|api/mark-attendance|_next/static|_next/image|favicon.ico).*)",
+        "/((?!login|api/attendance|api/recognize|api/mark-attendance|api/device/command|_next/static|_next/image|favicon.ico).*)",
     ],
 };
