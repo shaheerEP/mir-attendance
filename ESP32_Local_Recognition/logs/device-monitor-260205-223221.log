@@ -245,3 +245,22 @@ Msg:   Net Error
 Title: Ready
 Msg:   Look at Cam
 --------------
+Face Detected
+--- STATUS ---
+Title: Face Found
+Msg:   Identifying...
+--------------
+--- STATUS ---
+Title: Syncing
+Msg:   Wait...
+--------------
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+--- STATUS ---
+Title: Attendance
+Msg:   Net Error
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
