@@ -1,0 +1,227 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+--- STATUS ---
+Title: Booting
+Msg:   Init...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+WiFi Connected. IP: 192.168.31.160
+DNS: 192.168.31.1
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Face Found! Taking Flash Photo...
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+Server Params: HTTP/1.1 423 Locked
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Thu, 05 Feb 2026 15:17:50 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-s
+--- STATUS ---
+Title: Result
+Msg:   Hi Shaheer
+No Class Now
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Face Found! Taking Flash Photo...
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+Connect failed... retrying
+[E][ssl_client.cpp:36] _handle_error(): [start_ssl_client():216]: (-80) UNKNOWN ERROR CODE (0050)
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -80
+Connect failed... retrying
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+Server Params: HTTP/1.1 401 Unauthorized
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Thu, 05 Feb 2026 15:22:56 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-ro
+--- STATUS ---
+Title: Result
+Msg:   Not Recognized
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Face Found! Taking Flash Photo...
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+Server Params: HTTP/1.1 423 Locked
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Thu, 05 Feb 2026 15:25:03 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-s
+--- STATUS�ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- STATUS ---
+Title: Booting
+Msg:   Init...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+WiFi Connected. IP: 192.168.31.160
+DNS: 192.168.31.1
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Face Found! Taking Flash Photo...
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+Server Params: HTTP/1.1 423 Locked
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Thu, 05 Feb 2026 15:25:50 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-s
+--- STATUS ---
+Title: Result
+Msg:   Hi sayyed aalam
+No Class Now
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+[E][esp_jpg_decode.c:118] esp_jpg_decode(): JPG Decompression Failed! Data format error

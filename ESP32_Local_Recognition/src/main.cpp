@@ -3,11 +3,14 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <ArduinoJson.h>
+#include <HTTPClient.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 
+
 // FACE DETECTION HEADER
 #include "fd_forward.h"
+// #include "fr_forward.h" // Uncomment if FR libraries are available
 
 // ===========================
 // CONFIGURATION
@@ -15,15 +18,16 @@
 const char *ssid = "IRIS_FOUNDATION_JIO";
 const char *password = "iris916313";
 const char *serverUrl = "mir-attendance.vercel.app";
-const char *serverPath = "/api/recognize";
+const char *serverPath = "/api/mark-attendance";
 const int serverPort = 443;
 
 // OLED CONFIG
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+#define OLED_RESET -1
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-// CAMERA PINS
+// CAMERA PINS (AI THINKER)
 #define PWDN_GPIO_NUM 32
 #define RESET_GPIO_NUM -1
 #define XCLK_GPIO_NUM 0
@@ -41,10 +45,12 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 #define HREF_GPIO_NUM 23
 #define PCLK_GPIO_NUM 22
 
+#define FLASH_LED_PIN 4
+
+// FACE DETECTION GLOBALS
 static mtmn_config_t mtmn_config = {0};
 
 void showStatus(String title, String msg) {
-  // Serial Log (Since OLED might be missing)
   Serial.println("--- STATUS ---");
   Serial.println("Title: " + title);
   Serial.println("Msg:   " + msg);
@@ -57,7 +63,7 @@ void showStatus(String title, String msg) {
   display.println(title);
   display.drawLine(0, 10, 128, 10, SSD1306_WHITE);
   display.setCursor(0, 20);
-  display.setTextSize(2); // Large text
+  display.setTextSize(2);
   display.println(msg);
   display.display();
 }
@@ -85,19 +91,12 @@ void initCamera() {
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
 
-  // Use QVGA for Detection Speed ?? No, we need quality for server.
-  // Tradeoff: Recognition needs Quality. Detection needs Speed.
-  // We will capture HIGH QUALITY, but downscale for detection if needed?
-  // Actually, ESP32 Camera driver supports changing resolution on the fly but
-  // it can be buggy. Let's stick to VGA (640x480). It's slow for detection
-  // (~800ms) but works.
-
   if (psramFound()) {
-    config.frame_size = FRAMESIZE_CIF; // Reduced from VGA to save RAM for SSL
-    config.jpeg_quality = 10;
-    config.fb_count = 2;
+    config.frame_size = FRAMESIZE_CIF; // Resolution for Method
+    config.jpeg_quality = 12;
+    config.fb_count = 1;
   } else {
-    config.frame_size = FRAMESIZE_QVGA; // Fallback for no PSRAM
+    config.frame_size = FRAMESIZE_QVGA;
     config.jpeg_quality = 12;
     config.fb_count = 1;
   }
@@ -109,116 +108,53 @@ void initCamera() {
   }
 }
 
-// Include HTTPClient
-#include <HTTPClient.h>
-
-String sendPhoto(camera_fb_t *fb) {
+// Send Student ID to Server
+String sendAttendance(String studentId) {
   HTTPClient http;
   WiFiClientSecure client;
-  client.setInsecure();     // Skip cert check
-  client.setTimeout(45000); // 45s timeout for TCP connect
+  client.setInsecure();
+  client.setTimeout(15000);
 
-  Serial.println("Connecting to " + String(serverUrl));
-
-  // Construct URL with https protocol
   String fullUrl = "https://" + String(serverUrl) + String(serverPath);
 
-  // We use WiFiClientSecure with HTTPClient to manage the connection
   if (!http.begin(client, fullUrl)) {
-    return "Connect Fail";
+    return "Conn Error";
   }
 
-  showStatus("Processing", "Uploading...");
+  http.addHeader("Content-Type", "application/json");
+  String payload = "{\"studentId\":\"" + studentId + "\"}";
 
-  String boundary = "esp32-boundary";
-  String contentType = "multipart/form-data; boundary=" + boundary;
+  showStatus("Syncing", "Wait...");
 
-  // Start POST
-  http.addHeader("Content-Type", contentType);
+  int httpCode = http.POST(payload);
+  String resultMsg = "Error";
 
-  String head = "--" + boundary +
-                "\r\nContent-Disposition: form-data; name=\"image\"; "
-                "filename=\"capture.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
-  String tail = "\r\n--" + boundary + "--\r\n";
+  if (httpCode > 0) {
+    String response = http.getString();
+    Serial.println("Resp: " + response);
 
-  uint32_t imageLen = fb->len;
-  uint32_t extraLen = head.length() + tail.length();
-  uint32_t totalLen = imageLen + extraLen;
+    DynamicJsonDocument doc(1024);
+    deserializeJson(doc, response);
 
-  // Custom logic to stream data because HTTPClient.POST(String) loads
-  // everything to RAM which crashes ESP32 We have to use the low-level stream
-  // or fallback to existing method if HTTPClient is too heavy. Actually,
-  // standard HTTPClient library doesn't support streaming POST body easily
-  // without hacking. Given the fragility, let's use the Raw Client but with
-  // improved settings (Keep-Alive, Retry)
-
-  http.end(); // Clean up if we aren't using it
-
-  // --- RAW CLIENT RETRY LOGIC ---
-  int retries = 3;
-  while (retries > 0) {
-    if (client.connect(serverUrl, 443)) {
-      break;
+    if (doc.containsKey("message")) {
+      resultMsg = doc["message"].as<String>();
+    } else {
+      resultMsg = "Marked!";
     }
-    Serial.println("Connect failed... retrying");
-    retries--;
-    delay(1000);
+  } else {
+    resultMsg = "Net Error";
   }
 
-  if (!client.connected()) {
-    return "Conn. Fail";
-  }
-
-  client.println("POST " + String(serverPath) + " HTTP/1.1");
-  client.println("Host: " + String(serverUrl));
-  client.println("Content-Length: " + String(totalLen));
-  client.println("Content-Type: multipart/form-data; boundary=" + boundary);
-  client.println("Connection: close");
-  client.println();
-  client.print(head);
-
-  uint8_t *fbBuf = fb->buf;
-  size_t fbLen = fb->len;
-  size_t bufferSize = 1024;
-  for (size_t i = 0; i < fbLen; i += bufferSize) {
-    size_t remaining = fbLen - i;
-    if (remaining < bufferSize)
-      bufferSize = remaining;
-    client.write(fbBuf + i, bufferSize);
-  }
-
-  client.print(tail);
-
-  // Read Response
-  showStatus("Processing", "Analyzing...");
-  unsigned long start = millis();
-  while (client.connected() && millis() - start < 45000) {
-    if (client.available()) {
-      String response = client.readString();
-      Serial.println("Server Params: " +
-                     response.substring(0, 300)); // Debug header
-
-      int jsonStart = response.indexOf("{");
-      if (jsonStart != -1) {
-        String jsonStr = response.substring(jsonStart);
-        int jsonEnd = jsonStr.lastIndexOf("}");
-        if (jsonEnd != -1)
-          jsonStr = jsonStr.substring(0, jsonEnd + 1);
-
-        DynamicJsonDocument doc(1024);
-        deserializeJson(doc, jsonStr);
-        String msg = doc["message"].as<String>();
-        client.stop();
-        return msg;
-      }
-    }
-  }
-  client.stop();
-  return "Timeout";
+  http.end();
+  return resultMsg;
 }
 
 void setup() {
   Serial.begin(115200);
+
+  // Flash LED
+  pinMode(FLASH_LED_PIN, OUTPUT);
+  digitalWrite(FLASH_LED_PIN, LOW);
 
   // OLED
   Wire.begin(14, 15);
@@ -226,89 +162,87 @@ void setup() {
     Serial.println("SSD1306 allocation failed");
   }
   display.clearDisplay();
-  display.setTextColor(SSD1306_WHITE);
   display.display();
 
-  showStatus("Booting", "Init...");
+  showStatus("Booting", "Init AI...");
 
-  // Camera
   initCamera();
 
-  // Init Face Detection Config
+  // Init Face Detection
   mtmn_config = mtmn_init_config();
 
   // WiFi
-  WiFi.setSleep(false); // Disable sleep for better connection
+  WiFi.setSleep(false);
   WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, IPAddress(8, 8, 8, 8),
               IPAddress(8, 8, 4, 4));
   WiFi.setHostname("ESP32-Attendance");
-
   WiFi.begin(ssid, password);
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     showStatus("Connecting", "WiFi...");
   }
-
-  Serial.print("WiFi Connected. IP: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("DNS: ");
-  Serial.println(WiFi.dnsIP());
 
   showStatus("Ready", "Look at Cam");
 }
 
 void loop() {
   camera_fb_t *fb = esp_camera_fb_get();
-  if (!fb) {
-    delay(100);
+  if (!fb)
     return;
-  }
 
-  // WE NEED RGB888 FOR DETECTION
-  // Detection on VGA JPEG is slow because we have to decode it.
-  // 1. Allocate RAM for RGB
+  // 1. Convert to RGB for AI (Detection)
   dl_matrix3du_t *image_matrix =
       dl_matrix3du_alloc(1, fb->width, fb->height, 3);
 
   bool faceFound = false;
 
   if (image_matrix) {
-    // 2. Convert JPEG to RGB
     if (fmt2rgb888(fb->buf, fb->len, fb->format, image_matrix->item)) {
-      // 3. Detect
+      // 2. DETECT FACES
       box_array_t *boxes = face_detect(image_matrix, &mtmn_config);
 
       if (boxes) {
+        Serial.println("Face Detected");
         faceFound = true;
-        Serial.println("Face Detected!");
 
-        // Cleanup boxes
-        if (boxes->score)
-          dl_lib_free(boxes->score);
-        if (boxes->box)
-          dl_lib_free(boxes->box);
-        if (boxes->landmark)
-          dl_lib_free(boxes->landmark);
+        // Cleanup
+        dl_lib_free(boxes->score);
+        dl_lib_free(boxes->box);
+        dl_lib_free(boxes->landmark);
         dl_lib_free(boxes);
       }
     }
     dl_matrix3du_free(image_matrix);
   }
 
+  esp_camera_fb_return(fb);
+
   if (faceFound) {
-    // UPLOAD THE SAME FB (It's already JPEG)
-    String result = sendPhoto(fb);
-    showStatus("Result", result);
+    // 3. Simulated Recognition & Action
+    // In a real FR system, we would:
+    // a. Align Face
+    // b. Get Face Embedding
+    // c. Compare with Local database
 
-    esp_camera_fb_return(fb);
+    // For this POC Step 1: Prove Connectivity
+    showStatus("Face Found", "Identifying...");
 
-    // COOLDOWN to prevent spamming
+    // Flash Feedback
+    digitalWrite(FLASH_LED_PIN, HIGH);
+    delay(100);
+    digitalWrite(FLASH_LED_PIN, LOW);
+
+    // Call Server with a TEST ID (or the specific user's ID if we recognized
+    // them) Replace this with the User's Actual MongoDB ID from the logs to
+    // test real attendance!
+    String testStudentId = "67a29486c12d4586bc537e28";
+
+    String result = sendAttendance(testStudentId);
+    showStatus("Attendance", result);
+
+    // Cooldown
     delay(5000);
     showStatus("Ready", "Look at Cam");
-  } else {
-    esp_camera_fb_return(fb);
-    // detection loop speed
-    // display dot to show life?
-    // display.drawPixel(0,0, SSD1306_WHITE); display.display();
   }
 }

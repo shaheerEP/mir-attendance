@@ -1,0 +1,59 @@
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+WiFi Connected. IP: 192.168.31.160
+DNS: 192.168.31.1
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Face Found! Taking Flash Photo...
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+--- STATUS ---
+Title: Processing
+Msg:   Analyzing...
+--------------
+Server Params: HTTP/1.1 423 Locked
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Thu, 05 Feb 2026 16:27:55 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-s
+--- STATUS ---
+Title: Result
+Msg:   Hi sayyed aalam
+No Class Now
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected!
+Face Found! Taking Flash Photo...
+Connecting to mir-attendance.vercel.app
+--- STATUS ---
+Title: Processing
+Msg:   Uploading...
+--------------
+[E][ssl_client.cpp:36] _handle_error(): [start_ssl_client():216]: (-80) UNKNOWN ERROR CODE (0050)
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -80
+Connect failed... retrying
