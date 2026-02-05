@@ -126,9 +126,35 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
                 const base64String = reader.result as string;
                 setImage(base64String);
                 setPreviewUrl(base64String);
+                // Reset descriptor when new image is uploaded
+                setFaceDescriptor(null);
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    const handleDetectFromImage = async () => {
+        if (!isModelLoaded) return;
+        setCapturing(true);
+        const img = document.getElementById('uploaded-preview') as HTMLImageElement;
+
+        if (img) {
+            try {
+                // face-api.js detection
+                const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+
+                if (detection) {
+                    setFaceDescriptor(Array.from(detection.descriptor));
+                    alert("Face descriptor generated successfully!");
+                } else {
+                    alert("No face detected in this photo. Please use a clearer photo.");
+                }
+            } catch (error) {
+                console.error("Detection error:", error);
+                alert("Failed to process image.");
+            }
+        }
+        setCapturing(false);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -242,7 +268,25 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
                             <div className="col-span-3">
                                 <Input id="image" type="file" accept="image/*" onChange={handleImageChange} />
                                 {previewUrl && (
-                                    <img src={previewUrl} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded-md" />
+                                    <div className="mt-2 relative">
+                                        <img
+                                            id="uploaded-preview"
+                                            src={previewUrl}
+                                            alt="Preview"
+                                            className="h-40 w-full object-contain rounded-md border text-center"
+                                            crossOrigin="anonymous"
+                                        />
+                                        <div className="mt-1 flex gap-2">
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                onClick={() => handleDetectFromImage()}
+                                                disabled={!isModelLoaded || capturing}
+                                            >
+                                                Generate Descriptor from Photo
+                                            </Button>
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         </div>
