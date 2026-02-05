@@ -93,11 +93,11 @@ void initCamera() {
   // (~800ms) but works.
 
   if (psramFound()) {
-    config.frame_size = FRAMESIZE_VGA;
-    config.jpeg_quality = 10; // High Quality
+    config.frame_size = FRAMESIZE_CIF; // Reduced from VGA to save RAM for SSL
+    config.jpeg_quality = 10;
     config.fb_count = 2;
   } else {
-    config.frame_size = FRAMESIZE_CIF;
+    config.frame_size = FRAMESIZE_QVGA; // Fallback for no PSRAM
     config.jpeg_quality = 12;
     config.fb_count = 1;
   }
@@ -114,6 +114,8 @@ String sendPhoto(camera_fb_t *fb) {
   client.setInsecure();
 
   showStatus("Processing", "Uploading...");
+
+  Serial.printf("Free Heap before Connect: %d\n", ESP.getFreeHeap());
 
   if (!client.connect(serverUrl, serverPort)) {
     return "Conn. Fail";
