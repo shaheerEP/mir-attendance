@@ -56,7 +56,7 @@ export async function recognizeFace(imageBuffer: Buffer) {
         // faceDescriptor is stored as array of numbers in DB, need to convert to Float32Array
         return new faceapi.LabeledFaceDescriptors(
             student._id.toString(),
-            [new Float32Array(student.faceDescriptor)]
+            [new Float32Array(student.faceDescriptor as number[])]
         );
     });
 

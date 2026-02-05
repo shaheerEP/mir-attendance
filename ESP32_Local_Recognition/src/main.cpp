@@ -6,7 +6,6 @@
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 
-
 // FACE DETECTION HEADER
 #include "fd_forward.h"
 
@@ -45,6 +44,12 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 static mtmn_config_t mtmn_config = {0};
 
 void showStatus(String title, String msg) {
+  // Serial Log (Since OLED might be missing)
+  Serial.println("--- STATUS ---");
+  Serial.println("Title: " + title);
+  Serial.println("Msg:   " + msg);
+  Serial.println("--------------");
+
   display.clearDisplay();
   display.setCursor(0, 0);
   display.setTextColor(SSD1306_WHITE);
@@ -157,10 +162,13 @@ String sendPhoto(camera_fb_t *fb) {
         DynamicJsonDocument doc(1024);
         deserializeJson(doc, jsonStr);
         String msg = doc["message"].as<String>();
+
+        Serial.println("Response JSON: " + jsonStr);
         return msg;
       }
     }
   }
+  Serial.println("Error: Connection Timeout or No Data");
   return "Timeout";
 }
 
