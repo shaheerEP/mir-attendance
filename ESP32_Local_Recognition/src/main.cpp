@@ -7,10 +7,9 @@
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 
-
 // FACE DETECTION HEADER
 #include "fd_forward.h"
-// #include "fr_forward.h" // Uncomment if FR libraries are available
+#include "fr_forward.h" // Uncomment if FR libraries are available
 
 // ===========================
 // CONFIGURATION
