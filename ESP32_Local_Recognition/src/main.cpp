@@ -63,16 +63,18 @@ void showStatus(String title, String msg);
 // RESTORED GLOBALS
 static face_id_list id_list = {0};
 #define ENROLL_CONFIRM_TIMES 5
-#define FACE_ID_SAVE_NUMBER 7
+#define FACE_ID_SAVE_NUMBER 10
 
 // Global State for Production
 String currentEnrollStudentId = "";
+String currentEnrollStudentName = "";
 unsigned long lastPollTime = 0;
 const long pollInterval = 5000;
 bool isEnrolling = false;
 
 // simple in-memory map
 String studentMap[FACE_ID_SAVE_NUMBER];
+String studentNameMap[FACE_ID_SAVE_NUMBER];
 
 // Poll Server for Commands
 void checkRemoteCommands() {
@@ -103,7 +105,10 @@ void checkRemoteCommands() {
 
         if (doc["command"] == "ENROLL") {
           String studentId = doc["payload"]["studentId"].as<String>();
+          String studentName =
+              doc["payload"]["studentName"].as<String>(); // Get Name
           currentEnrollStudentId = studentId;
+          currentEnrollStudentName = studentName;
           isEnrolling = true;
 
           showStatus("CMD RECV", "Enroll: " + studentId.substring(0, 5));
@@ -252,6 +257,13 @@ void setup() {
       studentMap[i] = val;
       Serial.printf("Loaded ID %d: %s\n", i, val.c_str());
     }
+
+    // Load Name
+    String nameKey = "name_" + String(i);
+    String nameVal = preferences.getString(nameKey.c_str(), "");
+    if (nameVal != "") {
+      studentNameMap[i] = nameVal;
+    }
   }
   preferences.end();
 
@@ -346,6 +358,13 @@ void loop() {
                 preferences.begin("attendance", false);
                 String key = "id_" + String(enrolled_id);
                 preferences.putString(key.c_str(), currentEnrollStudentId);
+
+                // Save Name
+                studentNameMap[enrolled_id] = currentEnrollStudentName;
+                String nameKey = "name_" + String(enrolled_id);
+                preferences.putString(nameKey.c_str(),
+                                      currentEnrollStudentName);
+
                 preferences.end();
                 Serial.println("Saved to Flash: " + key);
 
@@ -390,6 +409,7 @@ void loop() {
 
               isEnrolling = false;         // Stop enrolling
               currentEnrollStudentId = ""; // Clear
+              currentEnrollStudentName = "";
 
               delay(3000);
               showStatus("Ready", "Scan Next...");
@@ -413,7 +433,13 @@ void loop() {
                 digitalWrite(FLASH_LED_PIN, LOW);
 
                 String result = sendAttendance(studentId);
-                showStatus("Success", result);
+
+                // Show Name if available, else result from server
+                String dispName = studentNameMap[face_id];
+                if (dispName == "")
+                  dispName = result;
+
+                showStatus("Success", dispName);
                 delay(4000);
               } else {
                 showStatus("Unknown", "ID: " + String(face_id));

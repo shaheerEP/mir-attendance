@@ -151,7 +151,10 @@ export default function StudentDetailsPage({ params }: { params: Promise<{ id: s
                                             headers: { "Content-Type": "application/json" },
                                             body: JSON.stringify({
                                                 command: "ENROLL",
-                                                payload: { studentId: student._id },
+                                                payload: {
+                                                    studentId: student._id,
+                                                    studentName: student.name
+                                                },
                                                 deviceId: "default"
                                             })
                                         });
