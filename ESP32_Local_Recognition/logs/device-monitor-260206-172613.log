@@ -1,0 +1,137 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] Found 1 faces.
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 1
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected
+assertion "id_1->c == id_2->c" failed: file "/home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/components/esp-face/face_recognition/fr_forward.c", line 264, function: cos_distance_unit_id
+abort() was called at PC 0x400fcf13 on core 1
+
+ELF file SHA256: 0000000000000000
+
+Backtrace: 0x4008e998:0x3ffb1e50 0x4008ec11:0x3ffb1e70 0x400fcf13:0x3ffb1e90 0x4013b372:0x3ffb1ec0 0x4013b412:0x3ffb1ee0 0x400d47b3:0x3ffb1f10 0x400dbfa0:0x3ffb1fb0 0x400908a2:0x3ffb1fd0
+  #0  0x4008e998:0x3ffb1e50 in invoke_abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #1  0x4008ec11:0x3ffb1e70 in abort at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/esp32/panic.c:715
+  #2  0x400fcf13:0x3ffb1e90 in __assert_func at /Users/ivan/e/newlib_xtensa-2.2.0-bin/newlib_xtensa-2.2.0/xtensa-esp32-elf/newlib/libc/stdlib/../../../.././newlib/libc/stdlib/assert.c:63 (discriminator 8)
+  #3  0x4013b372:0x3ffb1ec0 in cos_distance_unit_id at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/components/esp-face/face_recognition/fr_forward.c:296
+  #4  0x4013b412:0x3ffb1ee0 in recognize_face at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/components/esp-face/face_recognition/fr_forward.c:296
+  #5  0x400d47b3:0x3ffb1f10 in loop() at src/main.cpp:404
+  #6  0x400dbfa0:0x3ffb1fb0 in loopTask(void*) at C:/Users/shahe/.platformio/packages/framework-arduinoespressif32@3.10006.210326/cores/esp32/main.cpp:23
+  #7  0x400908a2:0x3ffb1fd0 in vPortTaskWrapper at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/freertos/port.c:355 (discriminator 1)
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] Found 1 faces.
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 1
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------

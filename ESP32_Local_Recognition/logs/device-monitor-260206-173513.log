@@ -1,0 +1,218 @@
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] No valid V2 data found (Magic: 0xFACE0001). Init empty.
+Model loaded. RAM Count: 0
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected
+Not Recognized
+--- STATUS ---
+Title: CMD RECV
+Msg:   Enroll: 69855
+--------------
+Command: ENROLL 69855bb1e00751a6a1da76df
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 4
+--------------
+Ct: 4
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 3
+--------------
+Ct: 3
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 2
+--------------
+Ct: 2
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 1
+--------------
+Ct: 1
+Face Detected
+--- STATUS ---
+Title: ENROLLED
+Msg:   69855bb1
+--------------
+Enrolled Face ID: 0 for Student: 69855bb1e00751a6a1da76df
+Saved to Flash: id_0
+[CustomFR] Saving 1 faces to Flash...
+[CustomFR] Saved Face 0 (n:-1130950995 w:1027622566 h:-1135603653 c:-1132175230)
+[CustomFR] Save Complete.
+Biometrics saved to Flash
+--- STATUS ---
+Title: Ready
+Msg:   Scan Next...
+--------------
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] Found 1 faces.
+[CustomFR] Invalid dims at face 0: -1130950995,1027622566,-1135603653,-1132175230. Stopping.
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 0
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected
+Not Recognized
+Face Detected
+Not Recognized

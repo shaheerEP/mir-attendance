@@ -1,0 +1,175 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] Found 1 faces.
+[CustomFR] Invalid dims at face 0: -1130950995,1027622566,-1135603653,-1132175230. Stopping.
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 0
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected
+Not Recognized
+--- STATUS ---
+Title: CMD RECV
+Msg:   Enroll: 69855
+--------------
+Command: ENROLL 69855bb1e00751a6a1da76df
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 4
+--------------
+Ct: 4
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 3
+--------------
+Ct: 3
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 2
+--------------
+Ct: 2
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 1
+--------------
+Ct: 1
+Face Detected
+--- STATUS ---
+Title: ENROLLED
+Msg:   69855bb1
+--------------
+Enrolled Face ID: 0 for Student: 69855bb1e00751a6a1da76df
+Saved to Flash: id_0
+[CustomFR] Saving 1 faces to Flash...
+Guru Meditation Error: Core  1 panic'ed (LoadProhibited). Exception was unhandled.
+Core 1 register dump:
+PC      : 0x400d1890  PS      : 0x00060330  A0      : 0x800d48f4  A1      : 0x3ffb1ea0  
+A2      : 0x00000000  A3      : 0xb2872938  A4      : 0x3ffbd448  A5      : 0x3ffc2ec4  
+A6      : 0xbabf12e5  A7      : 0x3ffb5a14  A8      : 0x00000018  A9      : 0x3ffd67a8  
+A10     : 0x00000104  A11     : 0x00000018  A12     : 0xbabf12e5  A13     : 0xb2872920  
+A14     : 0x3ffb1e3c  A15     : 0x3ffb1e3c  SAR     : 0x0000001a  EXCCAUSE: 0x0000001c  
+EXCVADDR: 0xbabf12e5  LBEG    : 0x4008de31  LEND    : 0x4008de41  LCOUNT  : 0xfffffffc  
+
+ELF file SHA256: 0000000000000000
+
+Backtrace: 0x400d1890:0x3ffb1ea0 0x400d48f1:0x3ffb1f10 0x400dc220:0x3ffb1fb0 0x400908a2:0x3ffb1fd0
+  #0  0x400d1890:0x3ffb1ea0 in enroll_face_id_to_flash_custom(face_id_list*, dl_matrix3du_t*) at src/custom_fr_flash.cpp:223
+  #1  0x400d48f1:0x3ffb1f10 in loop() at src/main.cpp:387
+  #2  0x400dc220:0x3ffb1fb0 in loopTask(void*) at C:/Users/shahe/.platformio/packages/framework-arduinoespressif32@3.10006.210326/cores/esp32/main.cpp:23
+  #3  0x400908a2:0x3ffb1fd0 in vPortTaskWrapper at /home/runner/work/esp32-arduino-lib-builder/esp32-arduino-lib-builder/esp-idf/components/freertos/port.c:355 (discriminator 1)
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] Found 1 faces.
+[CustomFR] Invalid dims at face 0: -1134731811,1027493610,1009992506,-1120813254. Stopping.
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 0
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------

@@ -8,14 +8,13 @@
 #include <WiFiClientSecure.h>
 
 // FACE DETECTION HEADER
+#include "custom_fr_flash.h" // Add Custom Flash Support
 #include "esp_partition.h"
 #include "fd_forward.h"
-#include "fr_flash.h"   // Add Flash Support
 #include "fr_forward.h" // Uncomment if FR libraries are available
 #include "soc/rtc_cntl_reg.h"
 #include "soc/soc.h"
 #include <Preferences.h>
-
 
 Preferences preferences;
 
@@ -116,6 +115,7 @@ void checkRemoteCommands() {
     }
   }
 }
+// [Deleted Manual Persistence]
 
 // Map Local Face ID -> MongoDB ID
 String getStudentId(int face_id) {
@@ -230,8 +230,9 @@ void setup() {
 
   // DEBUG PARTITIONS
   Serial.println("--- PARTITIONS ---");
+  // Check for DATA partitions (Type 1)
   esp_partition_iterator_t it = esp_partition_find(
-      ESP_PARTITION_TYPE_ANY, ESP_PARTITION_SUBTYPE_ANY, NULL);
+      ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_ANY, NULL);
   if (it) {
     do {
       const esp_partition_t *p = esp_partition_get(it);
@@ -276,8 +277,8 @@ void setup() {
   face_id_init(&id_list, FACE_ID_SAVE_NUMBER, ENROLL_CONFIRM_TIMES);
 
   // Load Biometrics from Flash
-  read_face_id_from_flash(&id_list);
-  Serial.printf("Loaded %d faces from Flash\n", id_list.count);
+  read_face_id_from_flash_custom(&id_list);
+  Serial.printf("Model loaded. RAM Count: %d\n", id_list.count);
 
   // WiFi
   WiFi.setSleep(false);
@@ -383,7 +384,7 @@ void loop() {
                 // But I lost reference to aligned_face? No, it's valid in this
                 // scope.
 
-                enroll_face_id_to_flash(&id_list, aligned_face);
+                enroll_face_id_to_flash_custom(&id_list, aligned_face);
                 Serial.println("Biometrics saved to Flash");
               }
 
