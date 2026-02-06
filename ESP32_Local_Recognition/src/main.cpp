@@ -10,6 +10,9 @@
 // FACE DETECTION HEADER
 #include "fd_forward.h"
 #include "fr_forward.h" // Uncomment if FR libraries are available
+#include <Preferences.h>
+
+Preferences preferences;
 
 // ===========================
 // CONFIGURATION
@@ -219,6 +222,17 @@ String sendAttendance(String studentId) {
 void setup() {
   Serial.begin(115200);
 
+  // Load Persistent Map
+  preferences.begin("attendance", false); // Namespace "attendance", RW mode
+  for (int i = 0; i < FACE_ID_SAVE_NUMBER; i++) {
+    String key = "id_" + String(i);
+    String val = preferences.getString(key.c_str(), "");
+    if (val != "") {
+      studentMap[i] = val;
+      Serial.printf("Loaded ID %d: %s\n", i, val.c_str());
+    }
+  }
+
   // Flash LED
   pinMode(FLASH_LED_PIN, OUTPUT);
   digitalWrite(FLASH_LED_PIN, LOW);
@@ -301,6 +315,11 @@ void loop() {
               // SAVE MAPPING
               if (enrolled_id < FACE_ID_SAVE_NUMBER) {
                 studentMap[enrolled_id] = currentEnrollStudentId;
+
+                // Save to Flash
+                String key = "id_" + String(enrolled_id);
+                preferences.putString(key.c_str(), currentEnrollStudentId);
+                Serial.println("Saved to Flash: " + key);
               }
 
               isEnrolling = false;         // Stop enrolling
