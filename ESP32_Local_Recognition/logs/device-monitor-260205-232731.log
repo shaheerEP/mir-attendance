@@ -1,0 +1,171 @@
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+--- STATUS ---
+Title: AUTO MODE
+Msg:   Enrolling ID 0
+--------------
+Starting Auto Enroll ID 0 (Shaheer)
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+--- STATUS ---
+Title: AUTO MODE
+Msg:   Enrolling ID 0
+--------------
+Starting Auto Enroll ID 0 (Shaheer)
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 4
+--------------
+Ct: 4
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 3
+--------------
+Ct: 3
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 2
+--------------
+Ct: 2
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 1
+--------------
+Ct: 1
+Face Detected
+--- STATUS ---
+Title: SUCCESS
+Msg:   ID 0 Done
+--------------
+Enrolled Face ID: 0
+--- STATUS ---
+Title: NEXT
+Msg:   Get Ready ID 1
+--------------
+Face Detected
+--- STATUS ---
+Title: AUTO MODE
+Msg:   Enrolling ID 1
+--------------
+Starting Auto Enroll ID 1 (Sayyed)
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 4
+--------------
+Ct: 4
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 3
+--------------
+Ct: 3
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 2
+--------------
+Ct: 2
+Face Detected
+--- STATUS ---
+Title: Enrolling
+Msg:   Samples: 1
+--------------
+Ct: 1
+Face Detected
+--- STATUS ---
+Title: SUCCESS
+Msg:   ID 1 Done
+--------------
+Enrolled Face ID: 1
+--- STATUS ---
+Title: DONE
+Msg:   Recognition Mode
+--------------
+Face Detected
+Not Recognized
+Face Detected
+Matched Face ID: 0
+--- STATUS ---
+Title: Syncing
+Msg:   Wait...
+--------------
+Resp: Redirecting...
+
+--- STATUS ---
+Title: Success
+Msg:   Marked!
+--------------
+Face Detected
+Matched Face ID: 1
+--- STATUS ---
+Title: Syncing
+Msg:   Wait...
+--------------
+Resp: Redirecting...
+
+--- STATUS ---
+Title: Success
+Msg:   Marked!
+--------------
+Face Detected
+Not Recognized
+Face Detected
+Not Recognized
+Face Detected
+Not Recognized
