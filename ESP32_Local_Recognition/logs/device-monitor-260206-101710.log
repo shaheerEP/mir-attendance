@@ -1,0 +1,112 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�Loaded ID 0: 69855f59da2d45107e55b219
+Loaded ID 1: 69855f59da2d45107e55b219
+Loaded ID 2: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected
+Not Recognized
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�Loaded ID 0: 69855f59da2d45107e55b219
+Loaded ID 1: 69855f59da2d45107e55b219
+Loaded ID 2: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected
+Not Recognized
+[E][ssl_client.cpp:36] _handle_error(): [start_ssl_client():216]: (-80) UNKNOWN ERROR CODE (0050)
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -80
+[E][ssl_client.cpp:36] _handle_error(): [start_ssl_client():216]: (-80) UNKNOWN ERROR CODE (0050)
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -80
