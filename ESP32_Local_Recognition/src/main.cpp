@@ -47,7 +47,11 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define FLASH_LED_PIN 4
 
 // FACE DETECTION GLOBALS
+// FACE DETECTION GLOBALS
 static mtmn_config_t mtmn_config = {0};
+
+// FORWARD DECLARATION
+void showStatus(String title, String msg);
 
 // RESTORED GLOBALS
 static face_id_list id_list = {0};
@@ -58,6 +62,7 @@ static face_id_list id_list = {0};
 String currentEnrollStudentId = "";
 unsigned long lastPollTime = 0;
 const long pollInterval = 5000;
+bool isEnrolling = false;
 
 // simple in-memory map
 String studentMap[FACE_ID_SAVE_NUMBER];
