@@ -8,10 +8,14 @@
 #include <WiFiClientSecure.h>
 
 // FACE DETECTION HEADER
+#include "esp_partition.h"
 #include "fd_forward.h"
 #include "fr_flash.h"   // Add Flash Support
 #include "fr_forward.h" // Uncomment if FR libraries are available
+#include "soc/rtc_cntl_reg.h"
+#include "soc/soc.h"
 #include <Preferences.h>
+
 
 Preferences preferences;
 
@@ -221,7 +225,22 @@ String sendAttendance(String studentId) {
 }
 
 void setup() {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); // Disable Brownout Detector
   Serial.begin(115200);
+
+  // DEBUG PARTITIONS
+  Serial.println("--- PARTITIONS ---");
+  esp_partition_iterator_t it = esp_partition_find(
+      ESP_PARTITION_TYPE_ANY, ESP_PARTITION_SUBTYPE_ANY, NULL);
+  if (it) {
+    do {
+      const esp_partition_t *p = esp_partition_get(it);
+      Serial.printf("Part: %s, Type: %d, Sub: %d, Addr: 0x%X, Size: 0x%X\n",
+                    p->label, p->type, p->subtype, p->address, p->size);
+      it = esp_partition_next(it);
+    } while (it);
+  }
+  Serial.println("------------------");
 
   // Load Persistent Map
   preferences.begin("attendance", false); // Namespace "attendance", RW mode

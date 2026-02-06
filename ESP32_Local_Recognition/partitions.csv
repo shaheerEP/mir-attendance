@@ -1,12 +1,6 @@
 # Name,   Type, SubType, Offset,  Size, Flags
-nvs,      data, nvs,     ,        0x5000,
-otadata,  data, ota,     ,        0x2000,
-phy_init, data, phy,     ,        0x1000,
-# Main Firmware (3MB)
-app0,     app,  ota_0,   ,        0x300000,
-# Face Recognition Storage (Using 0x40 subtype often used for arbitrary data/fr)
-# Actually esp-who uses 'fr' label. Type 0x01 (data), Subtype 0x81 (custom)? 
-# Let's try explicit offsets or auto.
-fr,       data, 0x99,    ,        0x80000,
-# LittleFS/SPIFFS (Optional, small remainder)
-spiffs,   data, spiffs,  ,        0x10000,
+nvs,      data, nvs,     0x9000,  0x5000,
+otadata,  data, ota,     0xe000,  0x2000,
+app0,     app,  ota_0,   0x10000, 0x300000,
+spiffs,   data, spiffs,  0x310000,0x10000,
+fr,       data, 0x99,    0x320000,0x80000,
