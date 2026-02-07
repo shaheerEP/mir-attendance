@@ -1,0 +1,47 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Ready: Btn or Serial 'c'
+System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 13920 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Sat, 07 Feb 2026 11:59:39 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /api/recognize
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::xzq48-1770465577389-0f801cecad91
+Transfer-Encoding: chunked
+
+7b
+{"message":"Server Error","status":"error","error":"getEnv - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error
+[OLED] Ready: Btn or Serial 'c'
