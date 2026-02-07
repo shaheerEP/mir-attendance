@@ -25,6 +25,18 @@ export async function POST(req: NextRequest) {
 
         console.log(`[Recognize] Processing Image size: ${buffer.length} bytes`);
 
+        // DEBUG: Save latest capture for viewing
+        // In Vercel prod, this is ephemeral. In local dev, checks public folder.
+        try {
+            const fs = require('fs');
+            const path = require('path');
+            const debugPath = path.join(process.cwd(), 'public', 'latest-capture.jpg');
+            fs.writeFileSync(debugPath, buffer);
+            console.log(`[Debug] Saved capture to ${debugPath}`);
+        } catch (err) {
+            console.error("[Debug] Failed to save capture:", err);
+        }
+
         // Perform Recognition - Returns Array
         const results = await recognizeFace(buffer);
 
