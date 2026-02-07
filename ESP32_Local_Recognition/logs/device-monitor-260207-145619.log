@@ -42,3 +42,35 @@ Image Captured. Size: 13468 bytes
 [OLED] Result: Timeout
 Result: Timeout
 [OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 15003 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[OLED] Result: Timeout
+Result: Timeout
+[OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 13856 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 307 Temporary Redirect
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: text/plain
+Date: Sat, 07 Feb 2026 09:47:02 GMT
+Location: /login?callbackUrl=%2Fapi%2Frecognize
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+X-Vercel-Id: bom1::j24l6-1770457605909-c510506c2f84
+Transfer-Encoding: chunked
+
+f
+Redirecting...
+
+0
+
+
+[OLED] Result: Timeout
+Result: Timeout
+[OLED] Ready: Btn or Serial 'c'

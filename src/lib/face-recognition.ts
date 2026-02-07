@@ -68,7 +68,7 @@ export async function recognizeFace(imageBuffer: Buffer) {
     const labeledDescriptors = students.map(student => {
         return new faceapi.LabeledFaceDescriptors(
             student._id.toString(),
-            [new Float32Array(student.faceDescriptor || [])]
+            [new Float32Array((student.faceDescriptor || []) as any)]
         );
     });
 
