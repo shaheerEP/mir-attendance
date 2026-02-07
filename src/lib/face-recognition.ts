@@ -4,6 +4,14 @@ import path from 'path';
 import Student from '@/models/Student';
 import dbConnect from '@/lib/db';
 
+// Polyfill for face-api.js environment detection in Vercel/Next.js
+if (typeof process === 'undefined') {
+    (global as any).process = { versions: { node: '18.17.0' } };
+} else {
+    if (!process.versions) (process as any).versions = {};
+    if (!process.versions.node) (process.versions as any).node = '18.17.0';
+}
+
 // Patch face-api.js for Node.js environment - Lazy load
 // Helper to load image
 import * as canvasLib from 'canvas';

@@ -7,6 +7,8 @@ import { getCurrentActivePeriod, getAttendanceStatusForPeriod, PERIODS, DEFAULT_
 
 // Prevent Next.js from caching this route behavior excessively
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const maxDuration = 60; // Allow 60 seconds for processing
 
 export async function POST(req: NextRequest) {
     try {
