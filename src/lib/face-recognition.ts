@@ -4,8 +4,18 @@ import path from 'path';
 import Student from '@/models/Student';
 import dbConnect from '@/lib/db';
 
-// Patch face-api.js for Node.js environment
-faceapi.env.monkeyPatch({ Canvas: Canvas as any, Image: Image as any, ImageData: ImageData as any });
+// Patch face-api.js for Node.js environment - Lazy load
+let canvas: any;
+
+// Helper to load image
+import * as canvasLib from 'canvas';
+canvas = canvasLib;
+
+const monkeyPatchFaceApi = () => {
+    if (!faceapi.env.monkeyPatch) return;
+    faceapi.env.monkeyPatch({ Canvas: canvas.Canvas, Image: canvas.Image, ImageData: canvas.ImageData });
+}
+
 
 let modelsLoaded = false;
 
@@ -13,6 +23,8 @@ const MODELS_PATH = path.join(process.cwd(), 'public', 'models');
 
 export async function loadModels() {
     if (modelsLoaded) return;
+
+    monkeyPatchFaceApi();
 
     console.log('[FaceRec] Loading models from:', MODELS_PATH);
 
@@ -56,7 +68,7 @@ export async function recognizeFace(imageBuffer: Buffer) {
     const labeledDescriptors = students.map(student => {
         return new faceapi.LabeledFaceDescriptors(
             student._id.toString(),
-            [new Float32Array(student.faceDescriptor)]
+            [new Float32Array(student.faceDescriptor || [])]
         );
     });
 
@@ -84,4 +96,3 @@ export async function recognizeFace(imageBuffer: Buffer) {
 }
 
 // Helper to load image since we need 'canvas' package specific loadImage
-import * as canvas from 'canvas';
