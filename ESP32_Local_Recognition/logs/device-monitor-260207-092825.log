@@ -1,0 +1,504 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_0 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_0 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_1 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_6 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_7 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_7 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_8 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_8 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_9 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_9 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] No valid V2 data found (Magic: 0xFFFFFFFF). Init empty.
+Model loaded. RAM Count: 0
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+[E][ssl_client.cpp:98] start_ssl_client(): Connect to Server failed!
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+Face Detected
+Not Recognized
+--- STATUS ---
+Title: CMD RECV
+Msg:   Enroll: 69855
+--------------
+Command: ENROLL 69855bb1e00751a6a1da76df
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 6
+--------------
+Ct: 6
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 5
+--------------
+Ct: 5
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 4
+--------------
+Ct: 4
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 3
+--------------
+Ct: 3
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 2
+--------------
+Ct: 2
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 1
+--------------
+Ct: 1
+Face Detected
+--- STATUS ---
+Title: ENROLLED
+Msg:   69855bb1
+--------------
+Enrolled Face ID: 0 for Student: 69855bb1e00751a6a1da76df
+Saved to Flash: id_0
+[CustomFR] Saving 1 faces to Flash...
+[CustomFR] Saving Face 0 Data: 0.0305 -0.0171 0.0045 -0.0402 -0.0421 ...
+[CustomFR] Saved Face 0 (n:1 w:1 h:1 c:512)
+[CustomFR] Save Complete.
+Biometrics saved to Flash
+--- STATUS ---
+Title: Ready
+Msg:   Scan Next...
+--------------
+Face Detected
+Matched Face ID: 0
+New Match ID: 0
+--- STATUS ---
+Title: CMD RECV
+Msg:   Enroll: 69855
+--------------
+Command: ENROLL 69855bb1e00751a6a1da76df
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 6
+--------------
+Ct: 6
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 5
+--------------
+Ct: 5
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 4
+--------------
+Ct: 4
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 3
+--------------
+Ct: 3
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 2
+--------------
+Ct: 2
+Face Detected
+--- STATUS ---
+Title: Enrolling...
+Msg:   Samples: 1
+--------------
+Ct: 1
+Face Detected
+--- STATUS ---
+Title: ENROLLED
+Msg:   69855bb1
+--------------
+Enrolled Face ID: 1 for Student: 69855bb1e00751a6a1da76df
+Saved to Flash: id_1
+[CustomFR] Saving 2 faces to Flash...
+[CustomFR] Saving Face 0 Data: 0.0305 -0.0171 0.0045 -0.0402 -0.0421 ...
+[CustomFR] Saved Face 0 (n:1 w:1 h:1 c:512)
+[CustomFR] Saving Face 1 Data: 0.0147 0.0008 -0.0058 -0.0123 -0.0235 ...
+[CustomFR] Saved Face 1 (n:1 w:1 h:1 c:512)
+[CustomFR] Save Complete.
+Biometrics saved to Flash
+--- STATUS ---
+Title: Ready
+Msg:   Scan Next...
+--------------
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+Loaded ID 1: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_6 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_7 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_7 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_8 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_8 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_9 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_9 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] Found 2 faces.
+[CustomFR] Face 0 Data: 0.0305 -0.0171 0.0045 -0.0402 -0.0421 ...
+[CustomFR] Loaded Face 0 (n:1 w:1 h:1 c:512)
+[CustomFR] Face 1 Data: 0.0147 0.0008 -0.0058 -0.0123 -0.0235 ...
+[CustomFR] Loaded Face 1 (n:1 w:1 h:1 c:512)
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 2
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+Face Detected
+Matched Face ID: 0
+New Match ID: 0
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�--- PARTITIONS ---
+Part: nvs, Type: 1, Sub: 2, Addr: 0x9000, Size: 0x5000
+Part: otadata, Type: 1, Sub: 0, Addr: 0xE000, Size: 0x2000
+Part: spiffs, Type: 1, Sub: 130, Addr: 0x310000, Size: 0x10000
+Part: fr, Type: 1, Sub: 153, Addr: 0x320000, Size: 0x80000
+------------------
+Loaded ID 0: 69855bb1e00751a6a1da76df
+Loaded ID 1: 69855bb1e00751a6a1da76df
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_2 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_3 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_4 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_5 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_6 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_6 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_7 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_7 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_8 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_8 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: id_9 NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: name_9 NOT_FOUND
+--- STATUS ---
+Title: Booting
+Msg:   Init AI...
+--------------
+[CustomFR] Reading from Flash...
+[CustomFR] Found 2 faces.
+[CustomFR] Face 0 Data: 0.0305 -0.0171 0.0045 -0.0402 -0.0421 ...
+[CustomFR] Loaded Face 0 (n:1 w:1 h:1 c:512)
+[CustomFR] Face 1 Data: 0.0147 0.0008 -0.0058 -0.0123 -0.0235 ...
+[CustomFR] Loaded Face 1 (n:1 w:1 h:1 c:512)
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 2
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Loaded Face 1 (n:1 w:1 h:1 c:512)
+[CustomFR] Load Complete.
+MLoaded Face 1 (n:1 w:1 h:1 c:512)
+[CustomFR] Load Complete.
+MLoaded Face 1 (n:1 w:1 h:1 c:512)
+[CustomFR] Load Complete.
+MLoaded Face 1 (n:1 w:1 h:1 c:512)
+[CustomFR] Load Complete.
+Model loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+odel loaded. RAM Count: 2
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+-------------- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+-------------- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+-------------- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Connecting
+Msg:   WiFi...
+--------------
+--- STATUS ---
+Title: Ready
+Msg:   Look at Cam
+--------------
+Face Detected
+Matched Face ID: 0
+New Match ID: 0
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[E][ssl_client.cpp:98] start_ssl_client(): Connect to Server failed!
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[E][ssl_client.cpp:98] start_ssl_client(): Connect to Server failed!
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1

@@ -62,8 +62,9 @@ void showStatus(String title, String msg);
 
 // RESTORED GLOBALS
 static face_id_list id_list = {0};
-#define ENROLL_CONFIRM_TIMES 5
+#define ENROLL_CONFIRM_TIMES 7 // Increased for better accuracy
 #define FACE_ID_SAVE_NUMBER 10
+#define CONSECUTIVE_MATCH_REQUIRED 2 // Number of stable reads before success
 
 // Global State for Production
 String currentEnrollStudentId = "";
@@ -75,6 +76,11 @@ bool isEnrolling = false;
 // simple in-memory map
 String studentMap[FACE_ID_SAVE_NUMBER];
 String studentNameMap[FACE_ID_SAVE_NUMBER];
+
+// Verification State
+int last_matched_id = -1;
+int match_count = 0;
+int no_face_count = 0;
 
 // Poll Server for Commands
 void checkRemoteCommands() {
@@ -189,7 +195,7 @@ void initCamera() {
 }
 
 // Send Student ID to Server
-String sendAttendance(String studentId) {
+String sendAttendance(String studentId, String studentName) {
   HTTPClient http;
   WiFiClientSecure client;
   client.setInsecure();
@@ -204,7 +210,9 @@ String sendAttendance(String studentId) {
   http.addHeader("Content-Type", "application/json");
   String payload = "{\"studentId\":\"" + studentId + "\"}";
 
-  showStatus("Syncing", "Wait...");
+  // SHOW STATUS: Sending...
+  // We can show the name here too so it doesn't disappear
+  showStatus("Syncing...", studentName);
 
   int httpCode = http.POST(payload);
   String resultMsg = "Error";
@@ -370,14 +378,15 @@ void loop() {
 
                 // Save Biometrics
                 // Using enroll_face_id_to_flash which handles flash writing
-                // Note: we already called enroll_face (RAM), so maybe check if
-                // this duplicates? Actually, standard usage: enroll_face (RAM)
+                // Note: we already called enroll_face (RAM), so maybe check
+                // if this duplicates? Actually, standard usage: enroll_face
+                // (RAM)
                 // -> delete generic flash -> writes generic flash. But let's
-                // try assuming internal API: If enroll_face_id_to_flash exists,
-                // it typically takes (list, aligned_face). Since we already
-                // enrolled in RAM, we might need to just "save" the list.
-                // Reverting to `write_face_id_to_flash` if it doesn't error.
-                // But since I'm changing lines, I'll update to
+                // try assuming internal API: If enroll_face_id_to_flash
+                // exists, it typically takes (list, aligned_face). Since we
+                // already enrolled in RAM, we might need to just "save" the
+                // list. Reverting to `write_face_id_to_flash` if it doesn't
+                // error. But since I'm changing lines, I'll update to
                 // `delete_face_id_in_flash` + `read`? No.
 
                 // Best guess for "save all":
@@ -390,18 +399,18 @@ void loop() {
                 // enroll_face_id_to_flash(&id_list, aligned_face);
                 // But we already enrolled in RAM...
 
-                // Let's stick to the previous `write_face_id_to_flash` attempt?
-                // No, user said `enroll_face_id_to_flash` is the primary
-                // function. If I call that, I should probably NOT call
-                // `enroll_face` before it? Or maybe `enroll_face` is for RAM
-                // and `..._to_flash` is for Flash? I will COMMENT OUT
+                // Let's stick to the previous `write_face_id_to_flash`
+                // attempt? No, user said `enroll_face_id_to_flash` is the
+                // primary function. If I call that, I should probably NOT
+                // call `enroll_face` before it? Or maybe `enroll_face` is for
+                // RAM and `..._to_flash` is for Flash? I will COMMENT OUT
                 // `write_face_id_to_flash` and try `enroll_face_id_to_flash`
                 // ONLY if the previous one failed? No, I can't interact.
 
                 // Let's try `enroll_face_id_to_flash` INSTEAD of
                 // `write_face_id_to_flash`. It likely needs the aligned face.
-                // But I lost reference to aligned_face? No, it's valid in this
-                // scope.
+                // But I lost reference to aligned_face? No, it's valid in
+                // this scope.
 
                 enroll_face_id_to_flash_custom(&id_list, aligned_face);
                 Serial.println("Biometrics saved to Flash");
@@ -425,27 +434,57 @@ void loop() {
 
             if (face_id >= 0) {
               Serial.printf("Matched Face ID: %d\n", face_id);
-              String studentId =
-                  getStudentId(face_id); // This will need dynamic mapping later
-              if (studentId != "") {
-                digitalWrite(FLASH_LED_PIN, HIGH);
-                delay(100);
-                digitalWrite(FLASH_LED_PIN, LOW);
 
-                String result = sendAttendance(studentId);
+              // --- IMMEDIATE FEEDBACK ---
+              String studentId = getStudentId(face_id);
+              String dispName = studentNameMap[face_id];
+              if (dispName == "")
+                dispName = "ID: " + String(face_id);
 
-                // Show Name if available, else result from server
-                String dispName = studentNameMap[face_id];
-                if (dispName == "")
-                  dispName = result;
+              if (face_id == last_matched_id) {
+                match_count++;
+                Serial.printf("Consecutive Match: %d/%d\n", match_count,
+                              CONSECUTIVE_MATCH_REQUIRED);
 
-                showStatus("Success", dispName);
-                delay(4000);
+                if (match_count >= CONSECUTIVE_MATCH_REQUIRED) {
+                  // --- VERIFIED SUCCESS: SYNC NOW ---
+                  if (studentId != "") {
+                    digitalWrite(FLASH_LED_PIN, HIGH);
+                    delay(100);
+                    digitalWrite(FLASH_LED_PIN, LOW);
+
+                    showStatus("Success", dispName);
+                    String result = sendAttendance(studentId, dispName);
+                    showStatus("Success", result);
+                    delay(4000);
+
+                    // RESET AFTER SUCCESS
+                    last_matched_id = -1;
+                    match_count = 0;
+                  } else {
+                    showStatus("Unknown", "ID: " + String(face_id));
+                    delay(2000);
+                    last_matched_id = -1;
+                    match_count = 0;
+                  }
+                } else {
+                  // Match 2+ but not yet reached threshold (if threshold > 2)
+                  showStatus("Verifying...", dispName);
+                }
               } else {
-                showStatus("Unknown", "ID: " + String(face_id));
+                // First Match for this ID
+                last_matched_id = face_id;
+                match_count = 1;
+                Serial.printf("New Match ID: %d\n", face_id);
+
+                // SHOW NAME IMMEDIATELY ON FIRST MATCH
+                showStatus("Verifying...", dispName);
               }
+
             } else {
               Serial.println("Not Recognized");
+              last_matched_id = -1;
+              match_count = 0;
             }
           }
         } else {
@@ -458,6 +497,13 @@ void loop() {
       dl_lib_free(boxes->box);
       dl_lib_free(boxes->landmark);
       dl_lib_free(boxes);
+    } else {
+      // No Faces detected
+      no_face_count++;
+      if (no_face_count > 5) {
+        last_matched_id = -1;
+        match_count = 0;
+      }
     }
   }
 

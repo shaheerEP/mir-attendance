@@ -1,0 +1,4 @@
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
