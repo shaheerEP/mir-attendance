@@ -25,18 +25,18 @@ export async function POST(req: NextRequest) {
 
         console.log(`[Recognize] Processing Image size: ${buffer.length} bytes`);
 
-        // Perform Recognition
-        const result = await recognizeFace(buffer);
+        // Perform Recognition - Returns Array
+        const results = await recognizeFace(buffer);
 
-        if (!result) {
-            console.log("[Recognize] Face mismatched or not found.");
+        if (!results || results.length === 0) {
+            console.log("[Recognize] No faces found or matched.");
             return NextResponse.json({ message: "Not Recognized", status: "error" }, { status: 401 });
         }
 
-        console.log(`[Recognize] Match Found: ${result.name} (${result.studentId}) Distance: ${result.distance}`);
+        console.log(`[Recognize] Matches Found: ${results.length}`);
 
         // ---------------------------------------------------------
-        // Attendance Marking Logic (Duplicated for Independence)
+        // Attendance Marking Logic
         // ---------------------------------------------------------
 
         await dbConnect();
@@ -50,62 +50,94 @@ export async function POST(req: NextRequest) {
         const IST_OFFSET = 5.5 * 60 * 60 * 1000;
         const schoolTime = new Date(now.getTime() + IST_OFFSET);
 
-        // Identify Current Period
+        // Identify Current Period (Same for all students)
         const activePeriod = getCurrentActivePeriod(schoolTime, periods);
+
+        // Calculate common constraints
+        let startOfPeriod: Date, endOfPeriod: Date, queryStart: Date, queryEnd: Date;
+
+        if (activePeriod) {
+            startOfPeriod = new Date(schoolTime);
+            const [h, m] = activePeriod.startTime.split(":").map(Number);
+            startOfPeriod.setHours(h, m, 0, 0);
+            endOfPeriod = new Date(startOfPeriod.getTime() + activePeriod.durationMinutes * 60000);
+            queryStart = new Date(startOfPeriod.getTime() - IST_OFFSET);
+            queryEnd = new Date(endOfPeriod.getTime() - IST_OFFSET);
+        }
+
+        let presentCount = 0;
+        let names = [];
+
+        for (const result of results) {
+            console.log(`Processing: ${result.name} (${result.studentId})`);
+
+            if (!activePeriod) {
+                // No Class, just list name? Or skip?
+                // For now, let's just list them but not mark attendance
+                names.push(result.name.split(' ')[0]);
+                continue;
+            }
+
+            // Check for Duplicates
+            const existingLog = await AttendanceLog.findOne({
+                student_id: result.studentId,
+                timestamp: { $gte: queryStart, $lt: queryEnd }
+            });
+
+            if (existingLog) {
+                console.log(`- Already marked: ${existingLog.status}`);
+                names.push(result.name.split(' ')[0]); // Still list them
+                presentCount++;
+                continue;
+            }
+
+            // Status
+            const status = getAttendanceStatusForPeriod(activePeriod, schoolTime, gracePeriod);
+
+            if (status === "NONE" || status === "LATE") {
+                console.log(`- Late/Closed`);
+                // Optionally list them as Late?
+                continue;
+            }
+
+            // Save
+            await AttendanceLog.create({
+                student_id: result.studentId,
+                timestamp: now,
+                status: status,
+                periodId: activePeriod.id,
+                deviceId: "ESP32_Headless"
+            });
+
+            console.log(`- Marked ${status}`);
+            names.push(result.name.split(' ')[0]);
+            presentCount++;
+        }
+
+        // Construct OLED Message
+        // Format: "3 Present\nAli, Bob, Cat"
 
         if (!activePeriod) {
             return NextResponse.json(
-                { message: `Hi ${result.name}\nNo Class Now`, status: "error" }, // Short msg for OLED
+                { message: `Hi! No Class\n${names.join(', ')}`, status: "error" },
                 { status: 423 }
             );
         }
 
-        // Check for Duplicates for this period
-        const startOfPeriod = new Date(schoolTime);
-        const [h, m] = activePeriod.startTime.split(":").map(Number);
-        startOfPeriod.setHours(h, m, 0, 0);
-        const endOfPeriod = new Date(startOfPeriod.getTime() + activePeriod.durationMinutes * 60000);
-
-        const queryStart = new Date(startOfPeriod.getTime() - IST_OFFSET);
-        const queryEnd = new Date(endOfPeriod.getTime() - IST_OFFSET);
-
-        const existingLog = await AttendanceLog.findOne({
-            student_id: result.studentId,
-            timestamp: { $gte: queryStart, $lt: queryEnd }
-        });
-
-        if (existingLog) {
+        if (presentCount === 0) {
             return NextResponse.json(
-                { message: `Already Marked\n${existingLog.status}`, status: "error" },
-                { status: 409 }
-            );
-        }
-
-        // Calculate Status
-        const status = getAttendanceStatusForPeriod(activePeriod, schoolTime, gracePeriod);
-
-        if (status === "NONE" || status === "LATE") {
-            return NextResponse.json(
-                { message: "Late!\nClass Closed", status: "error" },
+                { message: "Late / None", status: "error" },
                 { status: 403 }
             );
         }
 
-        // Save
-        await AttendanceLog.create({
-            student_id: result.studentId,
-            timestamp: now,
-            status: status,
-            periodId: activePeriod.id,
-            deviceId: "ESP32_Headless"
-        });
-
-        const displayMsg = status === "HALF_PRESENT" ? "Half Day" : "Present";
+        const nameList = names.join(', ').substring(0, 50); // Truncate for OLED
+        const msg = `${presentCount} Present\n${nameList}`;
 
         return NextResponse.json({
-            message: `Welcome\n${result.name.split(' ')[0]}`, // Short name for OLED
+            message: msg,
             status: "success",
-            details: displayMsg
+            details: "Multi-Attendance Marked"
         }, { status: 200 });
 
     } catch (error: any) {
