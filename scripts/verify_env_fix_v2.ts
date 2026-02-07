@@ -14,7 +14,10 @@ if (process.versions) {
 async function main() {
     console.log('Importing face-recognition...');
     try {
-        const { loadModels } = await import('../src/lib/face-recognition');
+        // Now face-recognition handles internal dynamic import
+        const { loadModels, recognizeFace } = await import('../src/lib/face-recognition');
+
+        console.log('Loading models...');
         await loadModels();
         console.log('SUCCESS: Models loaded successfully');
     } catch (error) {

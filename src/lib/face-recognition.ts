@@ -1,18 +1,9 @@
-import * as faceapi from 'face-api.js';
+import './polyfill-node'; // Ensure environment is patched first
 import { Canvas, Image, ImageData } from 'canvas';
 import path from 'path';
 import Student from '@/models/Student';
 import dbConnect from '@/lib/db';
 
-// Polyfill for face-api.js environment detection in Vercel/Next.js
-if (typeof process === 'undefined') {
-    (global as any).process = { versions: { node: '18.17.0' } };
-} else {
-    if (!process.versions) (process as any).versions = {};
-    if (!process.versions.node) (process.versions as any).node = '18.17.0';
-}
-
-// Patch face-api.js for Node.js environment - Lazy load
 // Helper to load image
 import * as canvasLib from 'canvas';
 let canvas: any = canvasLib;
@@ -22,40 +13,47 @@ if (canvas.default) {
     canvas = canvas.default;
 }
 
-const monkeyPatchFaceApi = () => {
-    if (!faceapi.env.monkeyPatch) {
-        console.warn('[FaceRec] faceapi.env.monkeyPatch is undefined - Environment not detected correctly');
-        return;
-    }
-
-    try {
-        faceapi.env.monkeyPatch({
-            Canvas: canvas.Canvas,
-            Image: canvas.Image,
-            ImageData: canvas.ImageData
-        });
-        console.log('[FaceRec] FaceAPI monkeyPatched successfully');
-    } catch (err: any) {
-        console.error('[FaceRec] monkeyPatch failed:', err);
-    }
-}
-
-
+let faceapi: any = null;
 let modelsLoaded = false;
-
 const MODELS_PATH = path.join(process.cwd(), 'public', 'models');
+
+async function getFaceApi() {
+    if (faceapi) return faceapi;
+
+    // Dynamically load face-api.js so polyfills apply first
+    const faceApiModule = await import('face-api.js');
+    faceapi = faceApiModule;
+
+    // Patch environment
+    if (!faceapi.env.monkeyPatch) {
+        console.warn('[FaceRec] faceapi.env.monkeyPatch is undefined');
+    } else {
+        try {
+            faceapi.env.monkeyPatch({
+                Canvas: canvas.Canvas,
+                Image: canvas.Image,
+                ImageData: canvas.ImageData
+            });
+            console.log('[FaceRec] FaceAPI monkeyPatched successfully');
+        } catch (err: any) {
+            console.error('[FaceRec] monkeyPatch failed:', err);
+        }
+    }
+
+    return faceapi;
+}
 
 export async function loadModels() {
     if (modelsLoaded) return;
 
-    monkeyPatchFaceApi();
+    const api = await getFaceApi();
 
     console.log('[FaceRec] Loading models from:', MODELS_PATH);
 
     try {
-        await faceapi.nets.ssdMobilenetv1.loadFromDisk(MODELS_PATH);
-        await faceapi.nets.faceLandmark68Net.loadFromDisk(MODELS_PATH);
-        await faceapi.nets.faceRecognitionNet.loadFromDisk(MODELS_PATH);
+        await api.nets.ssdMobilenetv1.loadFromDisk(MODELS_PATH);
+        await api.nets.faceLandmark68Net.loadFromDisk(MODELS_PATH);
+        await api.nets.faceRecognitionNet.loadFromDisk(MODELS_PATH);
         modelsLoaded = true;
         console.log('[FaceRec] Models loaded successfully');
     } catch (error) {
@@ -65,13 +63,14 @@ export async function loadModels() {
 }
 
 export async function recognizeFace(imageBuffer: Buffer) {
-    await loadModels();
+    const api = await getFaceApi(); // Ensure loaded and patched
+    await loadModels(); // Ensure models loaded
 
     // 1. Detect ALL Faces in Image
     const img = await canvas.loadImage(imageBuffer);
 
     // Detect all faces
-    const detections = await faceapi.detectAllFaces(img as any)
+    const detections = await api.detectAllFaces(img as any)
         .withFaceLandmarks()
         .withFaceDescriptors();
 
@@ -90,13 +89,13 @@ export async function recognizeFace(imageBuffer: Buffer) {
 
     // 3. Create Face Matcher
     const labeledDescriptors = students.map(student => {
-        return new faceapi.LabeledFaceDescriptors(
+        return new api.LabeledFaceDescriptors(
             student._id.toString(),
             [new Float32Array((student.faceDescriptor || []) as any)]
         );
     });
 
-    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6);
+    const faceMatcher = new api.FaceMatcher(labeledDescriptors, 0.6);
 
     const results = [];
 
