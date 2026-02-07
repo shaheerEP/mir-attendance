@@ -5,15 +5,31 @@ import Student from '@/models/Student';
 import dbConnect from '@/lib/db';
 
 // Patch face-api.js for Node.js environment - Lazy load
-let canvas: any;
-
 // Helper to load image
 import * as canvasLib from 'canvas';
-canvas = canvasLib;
+let canvas: any = canvasLib;
+
+// Handle CommonJS/ESM interop for canvas in Next.js/TS
+if (canvas.default) {
+    canvas = canvas.default;
+}
 
 const monkeyPatchFaceApi = () => {
-    if (!faceapi.env.monkeyPatch) return;
-    faceapi.env.monkeyPatch({ Canvas: canvas.Canvas, Image: canvas.Image, ImageData: canvas.ImageData });
+    if (!faceapi.env.monkeyPatch) {
+        console.warn('[FaceRec] faceapi.env.monkeyPatch is undefined - Environment not detected correctly');
+        return;
+    }
+
+    try {
+        faceapi.env.monkeyPatch({
+            Canvas: canvas.Canvas,
+            Image: canvas.Image,
+            ImageData: canvas.ImageData
+        });
+        console.log('[FaceRec] FaceAPI monkeyPatched successfully');
+    } catch (err: any) {
+        console.error('[FaceRec] monkeyPatch failed:', err);
+    }
 }
 
 
