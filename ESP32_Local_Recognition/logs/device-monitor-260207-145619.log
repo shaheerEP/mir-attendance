@@ -74,3 +74,60 @@ Redirecting...
 [OLED] Result: Timeout
 Result: Timeout
 [OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 14049 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[OLED] Result: Timeout
+Result: Timeout
+[OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 13470 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Sat, 07 Feb 2026 10:06:31 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /api/recognize
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::fvml9-1770458787424-09bf914c913e
+Transfer-Encoding: chunked
+
+80
+{"message":"Server Error","status":"error","error":"monkeyPatch - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error
+[OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 12664 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Sat, 07 Feb 2026 10:11:14 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /api/recognize
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::pwkgt-1770459059551-79cbf1a41b78
+Transfer-Encoding: chunked
+
+80
+{"message":"Server Error","status":"error","error":"monkeyPatch - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error

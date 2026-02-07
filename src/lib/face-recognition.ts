@@ -43,6 +43,9 @@ export async function loadModels() {
 export async function recognizeFace(imageBuffer: Buffer) {
     await loadModels();
 
+    // Ensure monkeyPatch is applied for this request context
+    monkeyPatchFaceApi();
+
     // 1. Detect ALL Faces in Image
     const img = await canvas.loadImage(imageBuffer);
 

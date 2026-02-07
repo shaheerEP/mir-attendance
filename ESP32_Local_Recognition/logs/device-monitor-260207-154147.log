@@ -1,0 +1,55 @@
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Ready: Btn or Serial 'c'
+System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 11778 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Sat, 07 Feb 2026 10:12:17 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /api/recognize
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::wblxp-1770459131951-d6ffb1dc7e2c
+Transfer-Encoding: chunked
+
+80
+{"message":"Server Error","status":"error","error":"monkeyPatch - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error
+[OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 12478 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: application/json
+Date: Sat, 07 Feb 2026 10:12:43 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /api/recognize
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::fxnb6-1770459160829-7e1a16be3917
+Transfer-Encoding: chunked
+
+80
+{"message":"Server Error","status":"error","error":"monkeyPatch - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error
+[OLED] Ready: Btn or Serial 'c'
