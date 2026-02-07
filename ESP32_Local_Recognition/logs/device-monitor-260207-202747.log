@@ -1,0 +1,293 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Connecting...: WiFi 5
+[OLED] Connecting...: WiFi 6
+[OLED] Connecting...: WiFi 7
+[OLED] Connecting...: WiFi 8
+[OLED] Connecting...: WiFi 9
+[OLED] Connecting...: WiFi 10
+[OLED] Connecting...: WiFi 11
+[OLED] Connecting...: WiFi 12
+[OLED] Connecting...: WiFi 13
+[OLED] Connecting...: WiFi 14
+[OLED] Connecting...: WiFi 15
+[OLED] Connecting...: WiFi 16
+[OLED] Connecting...: WiFi 17
+[OLED] Connecting...: WiFi 18
+[OLED] Connecting...: WiFi 19
+[OLED] WiFi Error: Check SSID
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Connecting...: WiFi 5
+[OLED] Connecting...: WiFi 6
+[OLED] Connecting...: WiFi 7
+[OLED] Connecting...: WiFi 8
+[OLED] Connecting...: WiFi 9
+[OLED] Connecting...: WiFi 10
+[OLED] Connecting...: WiFi 11
+[OLED] Connecting...: WiFi 12
+[OLED] Connecting...: WiFi 13
+[OLED] Connecting...: WiFi 14
+[OLED] Connecting...: WiFi 15
+[OLED] Connecting...: WiFi 16
+[OLED] Connecting...: WiFi 17
+[OLED] Connecting...: WiFi 18
+[OLED] Connecting...: WiFi 19
+[OLED] WiFi Error: Check SSID
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Connecting...: WiFi 5
+[OLED] Connecting...: WiFi 6
+[OLED] Connecting...: WiFi 7
+[OLED] Ready: Btn or Serial 'c'
+System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 14966 bytes
+[OLED] Uploading...: Please Wait
+[E][WiFiClient.cpp:258] connect(): socket error on fd 54, errno: 113, "Software caused connection abort"
+[OLED] Result: Conn. Error
+Result: Conn. Error
+[OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 30770 bytes
+[OLED] Uploading...: Please Wait
+[E][WiFiClient.cpp:395] write(): fail on fd 55, errno: 104, "Connection reset by peer"
+[OLED] Processing...: Analyzing
+[OLED] Result: Timeout
+Result: Timeout
+[OLED] Ready: Btn or Serial 'c'
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Connecting...: WiFi 5
+[OLED] Connecting...: WiFi 6
+[OLED] Ready: Btn or Serial 'c'
+System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 12495 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Sat, 07 Feb 2026 15:08:44 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+7b
+{"message":"Server Error","status":"error","error":"getEnv - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error
+[OLED] Ready: Btn or Serial 'c'
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 12419 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Sat, 07 Feb 2026 15:13:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+7b
+{"message":"Server Error","status":"error","error":"getEnv - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error
+[OLED] Ready: Btn or Serial 'c'
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Connecting...: WiFi 5
+[OLED] Connecting...: WiFi 6
+[OLED] Ready: Btn or Serial 'c'
+System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 13082 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[OLED] Result: Timeout
+Result: Timeout
+[OLED] Ready: Btn or Serial 'c'
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Connecting...: WiFi 5
+[OLED] Connecting...: WiFi 6
+[OLED] Connecting...: WiFi 7
+[OLED] Ready: Btn or Serial 'c'
+System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 12209 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[Response] HTTP/1.1 500 Internal Server Error
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Sat, 07 Feb 2026 15:18:30 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+7b
+{"message":"Server Error","status":"error","error":"getEnv - environment is not defined, check isNodejs() and isBrowser()"}
+0
+
+
+[OLED] Result: Server Error
+Result: Server Error
+[OLED] Ready: Btn or Serial 'c'
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] Connecting...: WiFi 0
+[OLED] Connecting...: WiFi 1
+[OLED] Connecting...: WiFi 2
+[OLED] Connecting...: WiFi 3
+[OLED] Connecting...: WiFi 4
+[OLED] Connecting...: WiFi 5
+[OLED] Connecting...: WiFi 6
+[OLED] Connecting...: WiFi 7
+[OLED] Connecting...: WiFi 8
+[OLED] Connecting...: WiFi 9
+[OLED] Ready: Btn or Serial 'c'
+System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+Trigger: Serial Command
+Starting Capture Sequence...
+Image Captured. Size: 11715 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Processing...: Analyzing
+[OLED] Result: Timeout
+Result: Timeout
+[OLED] Ready: Btn or Serial 'c'

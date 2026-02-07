@@ -12,8 +12,9 @@
 const char *ssid = "IRIS_FOUNDATION_JIO";
 const char *password = "iris916313";
 const char *serverUrl = "mir-attendance.vercel.app";
+// const char *serverUrl = "192.168.31.3"; // Local Computer IP
 const char *serverPath = "/api/recognize";
-const int serverPort = 443;
+const int serverPort = 443; // HTTPS Port
 
 // GPIO PINS
 #define BUTTON_PIN 12 // Button to GND
@@ -114,8 +115,8 @@ void setFlash(bool on) {
 }
 
 String uploadPhoto(camera_fb_t *fb) {
-  WiFiClientSecure client;
-  client.setInsecure(); // Skip cert validation for speed/memory
+  WiFiClientSecure client; // HTTPS
+  client.setInsecure();    // Skip certificate validation
 
   showStatus("Uploading...", "Please Wait");
 
@@ -158,7 +159,7 @@ String uploadPhoto(camera_fb_t *fb) {
   showStatus("Processing...", "Analyzing");
 
   unsigned long timeout = millis();
-  while (client.connected() && millis() - timeout < 20000) {
+  while (client.connected() && millis() - timeout < 60000) {
     if (client.available()) {
       String response = client.readString();
       Serial.println("[Response] " + response); // Debug full response

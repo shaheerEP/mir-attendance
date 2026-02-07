@@ -20,26 +20,38 @@ const MODELS_PATH = path.join(process.cwd(), 'public', 'models');
 async function getFaceApi() {
     if (faceapi) return faceapi;
 
-    // Dynamically load face-api.js so polyfills apply first
+    // 1. Import canvas
+    const canvas = await import('canvas');
+
+    // 2. Force Global Patching (Just in case polyfill didn't stick or isolated context)
+    const { Canvas, Image, ImageData } = canvas;
+    (global as any).Canvas = Canvas;
+    (global as any).Image = Image;
+    (global as any).ImageData = ImageData;
+    (global as any).HTMLCanvasElement = Canvas;
+    (global as any).HTMLImageElement = Image;
+
+    console.log('[FaceRec] Globals set manually in getFaceApi');
+
+    // 3. Import face-api.js
     const faceApiModule = await import('face-api.js');
     faceapi = faceApiModule;
 
-    // Patch environment
+    // 4. Force MonkeyPatch
     try {
-        if (!faceapi.env) {
-            console.warn('[FaceRec] faceapi.env is undefined. Environment might be corrupt.');
-        } else if (faceapi.env.monkeyPatch) {
-            faceapi.env.monkeyPatch({
-                Canvas: canvas.Canvas,
-                Image: canvas.Image,
-                ImageData: canvas.ImageData
-            });
-            console.log('[FaceRec] FaceAPI monkeyPatched successfully');
-        } else {
-            console.log('[FaceRec] faceapi.env.monkeyPatch not needed or not found.');
+        if (faceapi.env) {
+            console.log('[FaceRec] faceapi.env exists. isNode:', faceapi.env.isNodejs());
+            if (faceapi.env.monkeyPatch) {
+                faceapi.env.monkeyPatch({
+                    Canvas: Canvas,
+                    Image: Image,
+                    ImageData: ImageData
+                });
+                console.log('[FaceRec] monkeyPatch called successfully');
+            }
         }
     } catch (err: any) {
-        console.error('[FaceRec] monkeyPatch failed (non-fatal if globals are set):', err.message);
+        console.error('[FaceRec] Error during patching:', err);
     }
 
     return faceapi;
