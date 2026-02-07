@@ -54,7 +54,10 @@ export async function POST(req: NextRequest) {
         const activePeriod = getCurrentActivePeriod(schoolTime, periods);
 
         // Calculate common constraints
-        let startOfPeriod: Date, endOfPeriod: Date, queryStart: Date, queryEnd: Date;
+        let startOfPeriod: Date = new Date();
+        let endOfPeriod: Date = new Date();
+        let queryStart: Date = new Date();
+        let queryEnd: Date = new Date();
 
         if (activePeriod) {
             startOfPeriod = new Date(schoolTime);
