@@ -1,0 +1,66 @@
+22:20:19.323 > �
+22:20:19.323 > 
+22:20:19.323 > --- ESP32 Online Snapshot Firmware ---
+22:20:19.323 > [OLED] Booting...: Init System
+22:20:19.323 > [OLED] Connecting...: WiFi 0
+22:20:19.323 > [OLED] Connecting...: WiFi 1
+22:20:19.323 > [OLED] Connecting...: WiFi 2
+22:20:19.323 > [OLED] Connecting...: WiFi 3
+22:20:19.815 > [OLED] Connecting...: WiFi 4
+22:20:20.318 > [OLED] Connecting...: WiFi 5
+22:20:20.318 > [OLED] Ready: Btn or Serial 'c'
+22:20:20.324 > System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+22:20:26.876 > Trigger: Serial Command
+22:20:26.876 > Starting Capture Sequence...
+22:20:27.071 > Image Captured. Size: 12461 bytes
+22:20:27.071 > [OLED] Uploading...: Please Wait
+22:20:44.618 > [OLED] Processing...: Analyzing
+22:21:15.350 > [Response] HTTP/1.1 200 OK
+22:21:15.350 > Cache-Control: public, max-age=0, must-revalidate
+22:21:15.355 > Content-Type: application/json
+22:21:15.355 > Date: Sat, 07 Feb 2026 16:51:14 GMT
+22:21:15.360 > Server: Vercel
+22:21:15.360 > Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+22:21:15.367 > Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+22:21:15.378 > X-Matched-Path: /api/recognize
+22:21:15.378 > X-Vercel-Cache: MISS
+22:21:15.383 > X-Vercel-Id: bom1::iad1::6765f-1770483041150-b41a005379a7
+22:21:15.388 > Transfer-Encoding: chunked
+22:21:15.388 > 
+22:21:15.388 > 57
+22:21:15.388 > {"message":"1 Present\nshaheer","status":"success","details":"Multi-Attendance Marked"}
+22:21:15.398 > 0
+22:21:15.398 > 
+22:21:15.398 > 
+22:21:15.398 > [OLED] Result: 1 Present
+22:21:15.398 > shaheer
+22:21:15.398 > Result: 1 Present
+22:21:15.398 > shaheer
+22:21:19.397 > [OLED] Ready: Btn or Serial 'c'
+22:23:21.068 > Trigger: Serial Command
+22:23:21.068 > Starting Capture Sequence...
+22:23:21.218 > Image Captured. Size: 12022 bytes
+22:23:21.218 > [OLED] Uploading...: Please Wait
+22:23:29.864 > [OLED] Processing...: Analyzing
+22:23:56.143 > [Response] HTTP/1.1 200 OK
+22:23:56.145 > Cache-Control: public, max-age=0, must-revalidate
+22:23:56.149 > Content-Type: application/json
+22:23:56.149 > Date: Sat, 07 Feb 2026 16:53:55 GMT
+22:23:56.154 > Server: Vercel
+22:23:56.154 > Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+22:23:56.160 > Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+22:23:56.171 > X-Matched-Path: /api/recognize
+22:23:56.171 > X-Vercel-Cache: MISS
+22:23:56.175 > X-Vercel-Id: bom1::iad1::kkh25-1770483209029-ed279d04f5cd
+22:23:56.181 > Transfer-Encoding: chunked
+22:23:56.181 > 
+22:23:56.181 > 57
+22:23:56.181 > {"message":"1 Present\nshaheer","status":"success","details":"Multi-Attendance Marked"}
+22:23:56.191 > 0
+22:23:56.191 > 
+22:23:56.191 > 
+22:23:56.191 > [OLED] Result: 1 Present
+22:23:56.191 > shaheer
+22:23:56.191 > Result: 1 Present
+22:23:56.191 > shaheer
+22:24:00.190 > [OLED] Ready: Btn or Serial 'c'

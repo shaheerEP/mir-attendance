@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -133,26 +133,42 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
         }
     };
 
-    const handleDetectFromImage = async () => {
-        if (!isModelLoaded) return;
-        setCapturing(true);
-        const img = document.getElementById('uploaded-preview') as HTMLImageElement;
+    const imgRef = useRef<HTMLImageElement>(null);
 
-        if (img) {
+    const handleDetectFromImage = async () => {
+        if (!isModelLoaded) {
+            alert("Models are still loading, please wait...");
+            return;
+        }
+        setCapturing(true);
+        console.log("Starting detection from image...");
+
+        if (imgRef.current) {
             try {
+                // Ensure image is loaded
+                if (!imgRef.current.complete) {
+                    await new Promise((resolve) => {
+                        if (imgRef.current) imgRef.current.onload = resolve;
+                    });
+                }
+
                 // face-api.js detection
-                const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+                console.log("Detecting face...");
+                const detection = await faceapi.detectSingleFace(imgRef.current).withFaceLandmarks().withFaceDescriptor();
+                console.log("Detection result:", detection);
 
                 if (detection) {
                     setFaceDescriptor(Array.from(detection.descriptor));
                     alert("Face descriptor generated successfully!");
                 } else {
-                    alert("No face detected in this photo. Please use a clearer photo.");
+                    alert("No face detected in this photo. Please use a clearer photo or ensure the face is clearly visible.");
                 }
             } catch (error) {
                 console.error("Detection error:", error);
-                alert("Failed to process image.");
+                alert("Failed to process image. Check console for details.");
             }
+        } else {
+            console.error("Image reference not found");
         }
         setCapturing(false);
     };
@@ -270,7 +286,7 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
                                 {previewUrl && (
                                     <div className="mt-2 relative">
                                         <img
-                                            id="uploaded-preview"
+                                            ref={imgRef}
                                             src={previewUrl}
                                             alt="Preview"
                                             className="h-40 w-full object-contain rounded-md border text-center"
