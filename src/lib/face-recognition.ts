@@ -132,4 +132,20 @@ export async function recognizeFace(imageBuffer: Buffer) {
     return results;
 }
 
+export async function getDescriptor(imageBuffer: Buffer) {
+    const api = await getFaceApi();
+    await loadModels();
+
+    const img = await canvas.loadImage(imageBuffer);
+    const detection = await api.detectSingleFace(img as any)
+        .withFaceLandmarks()
+        .withFaceDescriptor();
+
+    if (!detection) {
+        return null;
+    }
+
+    return Array.from(detection.descriptor);
+}
+
 // Helper to load image since we need 'canvas' package specific loadImage

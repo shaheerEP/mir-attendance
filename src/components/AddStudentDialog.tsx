@@ -23,7 +23,6 @@ import { Label } from "@/components/ui/label";
 
 import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import * as faceapi from 'face-api.js';
 
 export function AddStudentDialog({ defaultClassName }: { defaultClassName?: string }) {
     const [open, setOpen] = useState(false);
@@ -34,7 +33,6 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
     const [faceDescriptor, setFaceDescriptor] = useState<number[] | null>(null);
     const [image, setImage] = useState<string | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [capturing, setCapturing] = useState(false);
     const [availableClasses, setAvailableClasses] = useState<string[]>([]);
     const router = useRouter();
@@ -43,21 +41,6 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
     const [streamUrl, setStreamUrl] = useState("http://192.168.31.160/stream");
 
     useEffect(() => {
-        const loadModels = async () => {
-            const MODEL_URL = "/models";
-            try {
-                await Promise.all([
-                    faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-                    faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-                    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-                ]);
-                setIsModelLoaded(true);
-                console.log("Face models loaded");
-            } catch (err) {
-                console.error("Failed to load models", err);
-            }
-        };
-
         const fetchClasses = async () => {
             try {
                 const res = await fetch("/api/classes");
@@ -71,7 +54,6 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
         };
 
         if (open) {
-            loadModels();
             fetchClasses();
             if (defaultClassName) {
                 setClassName(defaultClassName);
@@ -81,8 +63,35 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
         }
     }, [open, defaultClassName]);
 
+    const generateDescriptor = async (imageBlob: Blob) => {
+        setCapturing(true);
+        const formData = new FormData();
+        formData.append("image", imageBlob);
+
+        try {
+            const res = await fetch("/api/generate-descriptor", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setFaceDescriptor(data.descriptor);
+                alert("Face descriptor generated successfully!");
+            } else {
+                const err = await res.json();
+                alert(err.message || "Failed to generate descriptor");
+                setFaceDescriptor(null);
+            }
+        } catch (error) {
+            console.error("Generation error:", error);
+            alert("Failed to connect to server for descriptor generation.");
+        } finally {
+            setCapturing(false);
+        }
+    };
+
     const handleCaptureFace = async () => {
-        if (!isModelLoaded) return;
         setCapturing(true);
         const img = document.getElementById('camera-stream') as HTMLImageElement;
 
@@ -91,31 +100,32 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
                 // crossOrigin must be anonymous for canvas manipulation
                 if (!img.crossOrigin) img.crossOrigin = "anonymous";
 
-                const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+                // Capture image from stream
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                ctx?.drawImage(img, 0, 0);
 
-                if (detection) {
-                    setFaceDescriptor(Array.from(detection.descriptor));
+                const capturedImage = canvas.toDataURL('image/jpeg');
+                setImage(capturedImage);
+                setPreviewUrl(capturedImage);
 
-                    // Capture image from stream
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.naturalWidth;
-                    canvas.height = img.naturalHeight;
-                    const ctx = canvas.getContext('2d');
-                    ctx?.drawImage(img, 0, 0);
-                    const capturedImage = canvas.toDataURL('image/jpeg');
-                    setImage(capturedImage);
-                    setPreviewUrl(capturedImage);
+                // Convert to Blob for API
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        generateDescriptor(blob);
+                    }
+                }, 'image/jpeg');
 
-                    alert("Face captured successfully!");
-                } else {
-                    alert("No face detected. Please try again.");
-                }
             } catch (error) {
-                console.error("Detection error:", error);
-                alert("Failed to detect face. Ensure CORS is allowed on ESP32 or use a proxy.");
+                console.error("Capture error:", error);
+                alert("Failed to capture image. Ensure CORS is allowed on ESP32 or use a proxy.");
+                setCapturing(false);
             }
+        } else {
+            setCapturing(false);
         }
-        setCapturing(false);
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,41 +146,12 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
     const imgRef = useRef<HTMLImageElement>(null);
 
     const handleDetectFromImage = async () => {
-        if (!isModelLoaded) {
-            alert("Models are still loading, please wait...");
-            return;
-        }
-        setCapturing(true);
-        console.log("Starting detection from image...");
+        if (!image) return;
 
-        if (imgRef.current) {
-            try {
-                // Ensure image is loaded
-                if (!imgRef.current.complete) {
-                    await new Promise((resolve) => {
-                        if (imgRef.current) imgRef.current.onload = resolve;
-                    });
-                }
-
-                // face-api.js detection
-                console.log("Detecting face...");
-                const detection = await faceapi.detectSingleFace(imgRef.current).withFaceLandmarks().withFaceDescriptor();
-                console.log("Detection result:", detection);
-
-                if (detection) {
-                    setFaceDescriptor(Array.from(detection.descriptor));
-                    alert("Face descriptor generated successfully!");
-                } else {
-                    alert("No face detected in this photo. Please use a clearer photo or ensure the face is clearly visible.");
-                }
-            } catch (error) {
-                console.error("Detection error:", error);
-                alert("Failed to process image. Check console for details.");
-            }
-        } else {
-            console.error("Image reference not found");
-        }
-        setCapturing(false);
+        // Convert base64 state to blob
+        const res = await fetch(image);
+        const blob = await res.blob();
+        generateDescriptor(blob);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -247,9 +228,9 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
                             variant="secondary"
                             className="mt-2"
                             onClick={handleCaptureFace}
-                            disabled={!isModelLoaded || capturing}
+                            disabled={capturing}
                         >
-                            {capturing ? "Detecting..." : !isModelLoaded ? "Loading Models..." : "Capture Face"}
+                            {capturing ? "Processing..." : "Capture & Detect Face"}
                         </Button>
                         {faceDescriptor && <p className="text-green-500 text-sm mt-1">Face data registered ✓</p>}
                     </div>
@@ -297,7 +278,7 @@ export function AddStudentDialog({ defaultClassName }: { defaultClassName?: stri
                                                 type="button"
                                                 size="sm"
                                                 onClick={() => handleDetectFromImage()}
-                                                disabled={!isModelLoaded || capturing}
+                                                disabled={capturing}
                                             >
                                                 Generate Descriptor from Photo
                                             </Button>
