@@ -25,19 +25,21 @@ async function getFaceApi() {
     faceapi = faceApiModule;
 
     // Patch environment
-    if (!faceapi.env.monkeyPatch) {
-        console.warn('[FaceRec] faceapi.env.monkeyPatch is undefined');
-    } else {
-        try {
+    try {
+        if (!faceapi.env) {
+            console.warn('[FaceRec] faceapi.env is undefined. Environment might be corrupt.');
+        } else if (faceapi.env.monkeyPatch) {
             faceapi.env.monkeyPatch({
                 Canvas: canvas.Canvas,
                 Image: canvas.Image,
                 ImageData: canvas.ImageData
             });
             console.log('[FaceRec] FaceAPI monkeyPatched successfully');
-        } catch (err: any) {
-            console.error('[FaceRec] monkeyPatch failed:', err);
+        } else {
+            console.log('[FaceRec] faceapi.env.monkeyPatch not needed or not found.');
         }
+    } catch (err: any) {
+        console.error('[FaceRec] monkeyPatch failed (non-fatal if globals are set):', err.message);
     }
 
     return faceapi;
