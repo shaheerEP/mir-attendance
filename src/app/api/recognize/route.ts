@@ -48,6 +48,10 @@ export async function POST(req: NextRequest) {
         const periods = settings?.periods || PERIODS;
         const gracePeriod = settings?.gracePeriod || DEFAULT_GRACE;
 
+        // Staff Settings
+        const staffTimeStr = settings?.staffAttendanceTime || "09:00";
+        const staffDuration = settings?.staffAttendanceDuration || 60;
+
         const now = new Date();
         const IST_OFFSET = 5.5 * 60 * 60 * 1000;
         const schoolTime = new Date(now.getTime() + IST_OFFSET);
@@ -55,7 +59,7 @@ export async function POST(req: NextRequest) {
         // Identify Current Period (Same for all students)
         const activePeriod = getCurrentActivePeriod(schoolTime, periods);
 
-        // Calculate common constraints
+        // Calculate common constraints for Students
         let startOfPeriod: Date = new Date();
         let endOfPeriod: Date = new Date();
         let queryStart: Date = new Date();
@@ -70,12 +74,66 @@ export async function POST(req: NextRequest) {
             queryEnd = new Date(endOfPeriod.getTime() - IST_OFFSET);
         }
 
+        // Calculate constraints for Staff
+        // Allow check-in from [StaffTime] to [StaffTime + Duration]
+        const [sh, sm] = staffTimeStr.split(":").map(Number);
+        const staffStartTime = new Date(schoolTime);
+        staffStartTime.setHours(sh, sm, 0, 0);
+        const staffEndTime = new Date(staffStartTime.getTime() + staffDuration * 60000);
+
+        const staffQueryStart = new Date(staffStartTime.getTime() - IST_OFFSET);
+        const staffQueryEnd = new Date(staffEndTime.getTime() - IST_OFFSET);
+
         let presentCount = 0;
-        let names = [];
+        let names: string[] = [];
 
         for (const result of results) {
-            console.log(`Processing: ${result.name} (${result.studentId})`);
+            console.log(`Processing: ${result.name} (${result.studentId || result.staffId}) [Type: ${result.type || 'student'}]`);
 
+            // Handle STAFF
+            if (result.type === 'staff') {
+                const staffAttendanceLog = (await import("@/models/StaffAttendanceLog")).default;
+
+                // Check if already marked today
+                const startOfDay = new Date(schoolTime);
+                startOfDay.setHours(0, 0, 0, 0);
+                const endOfDay = new Date(schoolTime);
+                endOfDay.setHours(23, 59, 59, 999);
+
+                const existingLog = await staffAttendanceLog.findOne({
+                    staff_id: result.staffId,
+                    timestamp: { $gte: new Date(startOfDay.getTime() - IST_OFFSET), $lt: new Date(endOfDay.getTime() - IST_OFFSET) }
+                });
+
+                if (existingLog) {
+                    console.log(`- Staff Already marked: ${existingLog.status}`);
+                    names.push(result.name.split(' ')[0]);
+                    presentCount++;
+                    continue;
+                }
+
+                // Check Time Constraint
+                // If now < staffStartTime -> Too Early? Or allow? Assuming allow if it's same day?
+                // If now > staffEndTime -> Late?
+                let status = "PRESENT";
+                if (schoolTime > staffEndTime) {
+                    status = "LATE";
+                }
+
+                await staffAttendanceLog.create({
+                    staff_id: result.staffId,
+                    timestamp: now,
+                    status: status,
+                    deviceId: "ESP32_Headless"
+                });
+
+                console.log(`- Staff Marked ${status}`);
+                names.push(result.name.split(' ')[0]);
+                presentCount++;
+                continue;
+            }
+
+            // Handle STUDENT (Default fallback if type missing for backward compat)
             if (!activePeriod) {
                 // No Class, just list name? Or skip?
                 // For now, let's just list them but not mark attendance
@@ -122,28 +180,30 @@ export async function POST(req: NextRequest) {
         // Construct OLED Message
         // Format: "3 Present\nAli, Bob, Cat"
 
-        if (!activePeriod) {
+        // If there were any matches (Staff or Student), return success
+        if (presentCount > 0) {
+            const nameList = names.join(', ').substring(0, 50); // Truncate for OLED
+            const msg = `${presentCount} Present\n${nameList}`;
+
+            return NextResponse.json({
+                message: msg,
+                status: "success",
+                details: "Multi-Attendance Marked"
+            }, { status: 200 });
+        }
+
+        // Fallback for no attendance marked
+        if (!activePeriod && results.every((r: any) => r.type !== 'staff')) {
             return NextResponse.json(
                 { message: `Hi! No Class\n${names.join(', ')}`, status: "error" },
                 { status: 423 }
             );
         }
 
-        if (presentCount === 0) {
-            return NextResponse.json(
-                { message: "Late / None", status: "error" },
-                { status: 403 }
-            );
-        }
-
-        const nameList = names.join(', ').substring(0, 50); // Truncate for OLED
-        const msg = `${presentCount} Present\n${nameList}`;
-
-        return NextResponse.json({
-            message: msg,
-            status: "success",
-            details: "Multi-Attendance Marked"
-        }, { status: 200 });
+        return NextResponse.json(
+            { message: "Late / None", status: "error" },
+            { status: 403 }
+        );
 
     } catch (error: any) {
         console.error("[Recognize] Error:", error);

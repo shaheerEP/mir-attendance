@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Radio, LogOut, Settings, School } from "lucide-react";
+import { LayoutDashboard, Users, UserPlus, Settings, LogOut, GraduationCap, Briefcase, School, Radio } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export function Sidebar() {

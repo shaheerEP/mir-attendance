@@ -2,6 +2,7 @@ import './polyfill-node'; // Ensure environment is patched first
 import { Canvas, Image, ImageData } from 'canvas';
 import path from 'path';
 import Student from '@/models/Student';
+import Staff from '@/models/Staff';
 import dbConnect from '@/lib/db';
 
 // Helper to load image
@@ -92,21 +93,33 @@ export async function recognizeFace(imageBuffer: Buffer) {
         return [];
     }
 
-    // 2. Load all students with descriptors
+    // 2. Load all students AND staff with descriptors
     await dbConnect();
     const students = await Student.find({ faceDescriptor: { $exists: true, $ne: [] } });
+    const staffMembers = await Staff.find({ faceDescriptor: { $exists: true, $ne: [] } });
 
-    if (students.length === 0) {
-        console.log("[FaceRec] No students with descriptors found in DB.");
+    if (students.length === 0 && staffMembers.length === 0) {
+        console.log("[FaceRec] No subjects with descriptors found in DB.");
         return [];
     }
 
-    // 3. Create Face Matcher
-    const labeledDescriptors = students.map(student => {
-        return new api.LabeledFaceDescriptors(
-            student._id.toString(),
+    // 3. Create Face Matcher with Labeled Descriptors
+    const labeledDescriptors: any[] = [];
+
+    // Add Students
+    students.forEach(student => {
+        labeledDescriptors.push(new api.LabeledFaceDescriptors(
+            `student:${student._id.toString()}`, // Prefix to distinguish
             [new Float32Array((student.faceDescriptor || []) as any)]
-        );
+        ));
+    });
+
+    // Add Staff
+    staffMembers.forEach((staff: any) => {
+        labeledDescriptors.push(new api.LabeledFaceDescriptors(
+            `staff:${staff._id.toString()}`,
+            [new Float32Array((staff.faceDescriptor || []) as any)]
+        ));
     });
 
     const faceMatcher = new api.FaceMatcher(labeledDescriptors, 0.6);
@@ -118,13 +131,28 @@ export async function recognizeFace(imageBuffer: Buffer) {
         const match = faceMatcher.findBestMatch(detection.descriptor);
 
         if (match.label !== 'unknown') {
-            const matchedStudent = students.find(s => s._id.toString() === match.label);
-            if (matchedStudent) {
-                results.push({
-                    studentId: match.label,
-                    name: matchedStudent.name,
-                    distance: match.distance
-                });
+            const [type, id] = match.label.split(':');
+
+            if (type === 'student') {
+                const matchedStudent = students.find(s => s._id.toString() === id);
+                if (matchedStudent) {
+                    results.push({
+                        type: 'student',
+                        studentId: id,
+                        name: matchedStudent.name,
+                        distance: match.distance
+                    });
+                }
+            } else if (type === 'staff') {
+                const matchedStaff = staffMembers.find((s: any) => s._id.toString() === id);
+                if (matchedStaff) {
+                    results.push({
+                        type: 'staff',
+                        staffId: id,
+                        name: matchedStaff.name,
+                        distance: match.distance
+                    });
+                }
             }
         }
     }

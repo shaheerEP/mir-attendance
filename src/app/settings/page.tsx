@@ -24,6 +24,8 @@ interface SettingsData {
     periods: PeriodConfig[];
     gracePeriod: GracePeriodConfig;
     weeklyHolidays: number[];
+    staffAttendanceTime: string;
+    staffAttendanceDuration: number;
 }
 
 const DAYS = [
@@ -50,7 +52,9 @@ export default function SettingsPage() {
                 setSettings({
                     periods: data.periods,
                     gracePeriod: data.gracePeriod,
-                    weeklyHolidays: data.weeklyHolidays || [5] // Default Friday
+                    weeklyHolidays: data.weeklyHolidays || [5], // Default Friday
+                    staffAttendanceTime: data.staffAttendanceTime || "09:00",
+                    staffAttendanceDuration: data.staffAttendanceDuration || 60
                 });
             }
         } catch (error) {
@@ -73,7 +77,7 @@ export default function SettingsPage() {
 
 
 
-    
+
 
     const handleGraceChange = (field: keyof GracePeriodConfig, value: number) => {
         if (!settings) return;
@@ -81,6 +85,11 @@ export default function SettingsPage() {
             ...settings,
             gracePeriod: { ...settings.gracePeriod, [field]: value },
         });
+    };
+
+    const handleStaffSettingChange = (field: keyof SettingsData, value: string | number) => {
+        if (!settings) return;
+        setSettings({ ...settings, [field]: value });
     };
 
     const handleAddPeriod = () => {
@@ -256,6 +265,35 @@ export default function SettingsPage() {
                                     Students arriving between Grace Period and this limit get Half Day.
                                     <br />After this time, attendance is rejected (Late).
                                 </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="h-fit">
+                        <CardHeader>
+                            <CardTitle>Staff Attendance</CardTitle>
+                            <CardDescription>Configure time window for staff.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label>Check-in Start Time</Label>
+                                <Input
+                                    type="time"
+                                    value={settings?.staffAttendanceTime}
+                                    onChange={(e) => handleStaffSettingChange('staffAttendanceTime', e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Duration (Minutes)</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="number"
+                                        value={settings?.staffAttendanceDuration}
+                                        onChange={(e) => handleStaffSettingChange('staffAttendanceDuration', parseInt(e.target.value))}
+                                        className="w-24"
+                                    />
+                                    <span className="text-sm text-muted-foreground">mins window</span>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
