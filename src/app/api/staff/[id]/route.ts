@@ -8,7 +8,7 @@ const getId = (req: NextRequest) => {
     return url.pathname.split('/').pop();
 };
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     await dbConnect();
     const { id } = await params; // Await params in Next.js 15+ 
     // Wait, check Next version. Package.json said "next": "16.1.1".
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     await dbConnect();
     const { id } = await params;
 
@@ -43,7 +43,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     await dbConnect();
     const { id } = await params;
 
