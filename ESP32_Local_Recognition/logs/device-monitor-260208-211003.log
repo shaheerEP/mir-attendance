@@ -222,3 +222,146 @@
 21:25:09.997 > Result: 1 Present
 21:25:09.997 > shaheer
 21:25:13.997 > [OLED] Ready: Btn or Serial 'c'
+21:41:33.127 > ets Jul 29 2019 12:21:46
+21:41:33.127 > 
+21:41:33.127 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+21:41:33.132 > configsip: 0, SPIWP:0xee
+21:41:33.132 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+21:41:33.138 > mode:DIO, clock div:2
+21:41:33.143 > load:0x3fff0018,len:4
+21:41:33.143 > load:0x3fff001c,len:1044
+21:41:33.149 > load:0x40078000,len:10124
+21:41:33.149 > load:0x40080400,len:5828
+21:41:33.149 > entry 0x400806a8
+21:41:34.434 > 
+21:41:34.434 > 
+21:41:34.434 > --- ESP32 Online Snapshot Firmware ---
+21:41:34.440 > [OLED] Booting...: Init System
+21:41:35.531 > [OLED] Connecting...: WiFi 0
+21:41:36.035 > [OLED] Connecting...: WiFi 1
+21:41:36.536 > [OLED] Connecting...: WiFi 2
+21:41:37.038 > [OLED] Connecting...: WiFi 3
+21:41:37.540 > [OLED] Connecting...: WiFi 4
+21:41:38.045 > [OLED] Connecting...: WiFi 5
+21:41:38.045 > [OLED] Ready: Btn or Serial 'c'
+21:41:38.049 > System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+21:43:38.055 > Trigger: Serial Command
+21:43:38.057 > Starting Capture Sequence...
+21:43:38.243 > Image Captured. Size: 15795 bytes
+21:43:38.243 > [OLED] Uploading...: Please Wait
+21:43:48.205 > [OLED] Processing...: Analyzing
+21:44:15.395 > [Response] HTTP/1.1 200 OK
+21:44:15.397 > Cache-Control: public, max-age=0, must-revalidate
+21:44:15.402 > Content-Type: application/json
+21:44:15.402 > Date: Sun, 08 Feb 2026 16:14:14 GMT
+21:44:15.407 > Server: Vercel
+21:44:15.407 > Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+21:44:15.413 > Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+21:44:15.424 > X-Matched-Path: /api/recognize
+21:44:15.424 > X-Vercel-Cache: MISS
+21:44:15.429 > X-Vercel-Id: bom1::iad1::ljvg9-1770567221890-f60db6778d2e
+21:44:15.435 > Transfer-Encoding: chunked
+21:44:15.435 > 
+21:44:15.435 > 57
+21:44:15.435 > {"message":"1 Present\nshaheer","status":"success","details":"Multi-Attendance Marked"}
+21:44:15.445 > 0
+21:44:15.445 > 
+21:44:15.445 > 
+21:44:15.445 > [OLED] Result: 1 Present
+21:44:15.445 > shaheer
+21:44:15.445 > Result: 1 Present
+21:44:15.445 > shaheer
+21:44:19.443 > [OLED] Ready: Btn or Serial 'c'
+21:46:59.749 > Trigger: Serial Command
+21:46:59.750 > Starting Capture Sequence...
+21:46:59.900 > Image Captured. Size: 12469 bytes
+21:46:59.900 > [OLED] Uploading...: Please Wait
+21:47:05.942 > [E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+21:47:05.947 > [E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+21:47:05.953 > [OLED] Result: Conn. Error
+21:47:05.953 > Result: Conn. Error
+21:47:09.948 > [OLED] Ready: Btn or Serial 'c'
+21:47:18.278 > Trigger: Serial Command
+21:47:18.278 > Starting Capture Sequence...
+21:47:18.430 > Image Captured. Size: 14071 bytes
+21:47:18.432 > [OLED] Uploading...: Please Wait
+21:49:23.819 > [E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+21:49:23.826 > [OLED] Result: Conn. Error
+21:49:23.826 > Result: Conn. Error
+21:49:27.827 > [OLED] Ready: Btn or Serial 'c'
+21:49:45.723 > ets Jul 29 2019 12:21:46
+21:49:45.723 > 
+21:49:45.723 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+21:49:45.730 > configsip: 0, SPIWP:0xee
+21:49:45.730 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+21:49:45.735 > mode:DIO, clock div:2
+21:49:45.740 > load:0x3fff0018,len:4
+21:49:45.740 > load:0x3fff001c,len:1044
+21:49:45.745 > load:0x40078000,len:10124
+21:49:45.745 > load:0x40080400,len:5828
+21:49:45.745 > entry 0x400806a8
+21:49:47.030 > �
+21:49:47.030 > 
+21:49:47.030 > --- ESP32 Online Snapshot Firmware ---
+21:49:47.036 > [OLED] Booting...: Init System
+21:49:48.140 > [OLED] Connecting...: WiFi 0
+21:49:48.643 > [OLED] Connecting...: WiFi 1
+21:49:49.145 > [OLED] Connecting...: WiFi 2
+21:49:49.647 > [OLED] Connecting...: WiFi 3
+21:49:50.147 > [OLED] Connecting...: WiFi 4
+21:49:50.650 > [OLED] Connecting...: WiFi 5
+21:49:51.155 > [OLED] Connecting...: WiFi 6
+21:49:51.155 > [OLED] Ready: Btn or Serial 'c'
+21:49:51.161 > System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+21:49:59.632 > Trigger: Serial Command
+21:49:59.632 > Starting Capture Sequence...
+21:49:59.833 > Image Captured. Size: 16757 bytes
+21:49:59.833 > [OLED] Uploading...: Please Wait
+21:50:09.949 > [OLED] Processing...: Analyzing
+21:50:41.275 > [Response] HTTP/1.1 200 OK
+21:50:41.277 > Cache-Control: public, max-age=0, must-revalidate
+21:50:41.281 > Content-Type: application/json
+21:50:41.281 > Date: Sun, 08 Feb 2026 16:20:37 GMT
+21:50:41.287 > Server: Vercel
+21:50:41.287 > Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+21:50:41.293 > Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+21:50:41.302 > X-Matched-Path: /api/recognize
+21:50:41.302 > X-Vercel-Cache: MISS
+21:50:41.311 > X-Vercel-Id: bom1::iad1::k69bf-1770567606370-de709d9f3ed0
+21:50:41.313 > Transfer-Encoding: chunked
+21:50:41.313 > 
+21:50:41.313 > 57
+21:50:41.313 > {"message":"1 Present\nshaheer","status":"success","details":"Multi-Attendance Marked"}
+21:50:41.326 > 0
+21:50:41.326 > 
+21:50:41.326 > 
+21:50:41.326 > [OLED] Result: 1 Present
+21:50:41.326 > shaheer
+21:50:41.326 > Result: 1 Present
+21:50:41.326 > shaheer
+21:50:45.322 > [OLED] Ready: Btn or Serial 'c'
+21:51:10.119 > Trigger: Serial Command
+21:51:10.120 > Starting Capture Sequence...
+21:51:10.270 > Image Captured. Size: 12956 bytes
+21:51:10.270 > [OLED] Uploading...: Please Wait
+21:51:26.220 > [OLED] Processing...: Analyzing
+21:51:47.466 > [Response] HTTP/1.1 401 Unauthorized
+21:51:47.466 > Cache-Control: public, max-age=0, must-revalidate
+21:51:47.473 > Content-Type: application/json
+21:51:47.473 > Date: Sun, 08 Feb 2026 16:21:45 GMT
+21:51:47.479 > Server: Vercel
+21:51:47.479 > Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+21:51:47.484 > Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+21:51:47.495 > X-Matched-Path: /api/recognize
+21:51:47.495 > X-Vercel-Cache: MISS
+21:51:47.500 > X-Vercel-Id: bom1::iad1::c6bj6-1770567680920-5a4916e0a890
+21:51:47.506 > Transfer-Encoding: chunked
+21:51:47.506 > 
+21:51:47.506 > 2d
+21:51:47.506 > {"message":"Not Recognized","status":"error"}
+21:51:47.511 > 0
+21:51:47.511 > 
+21:51:47.511 > 
+21:51:47.511 > [OLED] Result: Not Recognized
+21:51:47.513 > Result: Not Recognized
+21:51:51.513 > [OLED] Ready: Btn or Serial 'c'
