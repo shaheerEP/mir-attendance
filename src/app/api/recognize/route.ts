@@ -87,8 +87,15 @@ export async function POST(req: NextRequest) {
         let presentCount = 0;
         let names: string[] = [];
 
+        let unknownCount = 0;
+
         for (const result of results) {
-            console.log(`Processing: ${result.name} (${result.studentId || result.staffId}) [Type: ${result.type || 'student'}]`);
+            console.log(`Processing: ${result.name || 'Unknown'} [Type: ${result.type}]`);
+
+            if (result.type === 'unknown') {
+                unknownCount++;
+                continue;
+            }
 
             // Handle STAFF
             if (result.type === 'staff') {
@@ -138,6 +145,7 @@ export async function POST(req: NextRequest) {
                 // No Class, just list name? Or skip?
                 // For now, let's just list them but not mark attendance
                 names.push(result.name.split(' ')[0]);
+                presentCount++; // Count them as seen
                 continue;
             }
 
@@ -160,6 +168,8 @@ export async function POST(req: NextRequest) {
             if (status === "NONE" || status === "LATE") {
                 console.log(`- Late/Closed`);
                 // Optionally list them as Late?
+                // names.push(result.name.split(' ')[0] + " (Late)");
+                // presentCount++;
                 continue;
             }
 
@@ -182,17 +192,37 @@ export async function POST(req: NextRequest) {
 
         // If there were any matches (Staff or Student), return success
         if (presentCount > 0) {
-            const nameList = names.join(', ').substring(0, 50); // Truncate for OLED
-            const msg = `${presentCount} Present\n${nameList}`;
+            let nameList = names.join(', ').substring(0, 50); // Truncate for OLED
+            let msg = `${presentCount} Present\n${nameList}`;
+
+            if (unknownCount > 0) {
+                msg += ` +${unknownCount}?`;
+            }
 
             return NextResponse.json({
                 message: msg,
                 status: "success",
-                details: "Multi-Attendance Marked"
+                details: {
+                    recognized: presentCount,
+                    unknown: unknownCount,
+                    names: names
+                }
             }, { status: 200 });
         }
 
-        // Fallback for no attendance marked
+        // If only unknowns found
+        if (unknownCount > 0) {
+            return NextResponse.json({
+                message: `${unknownCount} Unknown\nFace Detected`,
+                status: "success", // Return success so OLED shows message instead of error
+                details: {
+                    recognized: 0,
+                    unknown: unknownCount
+                }
+            }, { status: 200 });
+        }
+
+        // Fallback for no attendance marked but nothing detected (should shouldn't happen due to check at top)
         if (!activePeriod && results.every((r: any) => r.type !== 'staff')) {
             return NextResponse.json(
                 { message: `Hi! No Class\n${names.join(', ')}`, status: "error" },

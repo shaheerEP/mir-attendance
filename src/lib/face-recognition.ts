@@ -154,6 +154,11 @@ export async function recognizeFace(imageBuffer: Buffer) {
                     });
                 }
             }
+        } else {
+            results.push({
+                type: 'unknown',
+                distance: match.distance
+            });
         }
     }
 
