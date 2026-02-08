@@ -35,11 +35,22 @@ export async function POST(req: NextRequest) {
             const arrayBuffer = await file.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
 
-            // 1. Generate Descriptor
-            try {
-                faceDescriptor = await getDescriptor(buffer) as number[];
-            } catch (e) {
-                console.error("Error generating descriptor:", e);
+            // 1. Generate Descriptor if not provided
+            const descriptorStr = formData.get("faceDescriptor") as string;
+            if (descriptorStr) {
+                try {
+                    faceDescriptor = JSON.parse(descriptorStr);
+                } catch (e) {
+                    console.error("Error parsing face descriptor:", e);
+                }
+            }
+
+            if (!faceDescriptor) {
+                try {
+                    faceDescriptor = await getDescriptor(buffer) as number[];
+                } catch (e) {
+                    console.error("Error generating descriptor:", e);
+                }
             }
 
             // 2. Upload to Cloudinary (Mocking or implementing if env vars exist, 

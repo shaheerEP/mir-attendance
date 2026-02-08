@@ -21,6 +21,8 @@ export function AddStaffDialog({ open, onOpenChange, onSuccess }: AddStaffDialog
     const [designation, setDesignation] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [faceDescriptor, setFaceDescriptor] = useState<number[] | null>(null);
+    const [generating, setGenerating] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,6 +31,36 @@ export function AddStaffDialog({ open, onOpenChange, onSuccess }: AddStaffDialog
             const file = e.target.files[0];
             setImageFile(file);
             setPreviewUrl(URL.createObjectURL(file));
+            setFaceDescriptor(null); // Reset descriptor when new image is selected
+        }
+    };
+
+    const generateDescriptor = async () => {
+        if (!imageFile) return;
+        setGenerating(true);
+        const formData = new FormData();
+        formData.append("image", imageFile);
+
+        try {
+            const res = await fetch("/api/generate-descriptor", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setFaceDescriptor(data.descriptor);
+                alert("Face descriptor generated successfully!");
+            } else {
+                const err = await res.json();
+                alert(err.message || "Failed to generate descriptor");
+                setFaceDescriptor(null);
+            }
+        } catch (error) {
+            console.error("Generation error:", error);
+            alert("Failed to connect to server for descriptor generation.");
+        } finally {
+            setGenerating(false);
         }
     };
 
@@ -45,6 +77,10 @@ export function AddStaffDialog({ open, onOpenChange, onSuccess }: AddStaffDialog
 
             if (imageFile) {
                 formData.append("image", imageFile);
+            }
+
+            if (faceDescriptor) {
+                formData.append("faceDescriptor", JSON.stringify(faceDescriptor));
             }
 
             const res = await fetch("/api/staff", {
@@ -64,8 +100,10 @@ export function AddStaffDialog({ open, onOpenChange, onSuccess }: AddStaffDialog
             setStaffId("");
             setDepartment("");
             setDesignation("");
+            setDesignation("");
             setImageFile(null);
             setPreviewUrl(null);
+            setFaceDescriptor(null);
 
         } catch (error: any) {
             console.error(error);
@@ -135,9 +173,30 @@ export function AddStaffDialog({ open, onOpenChange, onSuccess }: AddStaffDialog
                                     accept="image/*"
                                     onChange={handleFileChange}
                                 />
-                                <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                                    <Upload className="mr-2 h-4 w-4" /> Select Image
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                                        <Upload className="mr-2 h-4 w-4" /> Select Image
+                                    </Button>
+                                    {imageFile && (
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            onClick={generateDescriptor}
+                                            disabled={generating || !!faceDescriptor}
+                                            className={faceDescriptor ? "bg-green-600 hover:bg-green-700 text-white" : ""}
+                                        >
+                                            {generating ? (
+                                                <>
+                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...
+                                                </>
+                                            ) : faceDescriptor ? (
+                                                "Descriptor Generated ✓"
+                                            ) : (
+                                                "Generate Descriptor"
+                                            )}
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
