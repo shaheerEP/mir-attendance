@@ -23,6 +23,12 @@ export function Sidebar() {
             active: pathname === "/classes",
         },
         {
+            label: "Staff",
+            icon: Users,
+            href: "/staff",
+            active: pathname === "/staff",
+        },
+        {
             label: "Settings",
             icon: Settings,
             href: "/settings",
