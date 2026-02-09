@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Clock, Calendar, Users, Activity, ScanFace } from "lucide-react";
+import { RefreshCw, Clock, Calendar, Users, Activity } from "lucide-react";
 import { getCurrentActivePeriod, PERIODS } from "@/lib/periods";
 import {
   BarChart,
@@ -196,10 +196,7 @@ export default function Dashboard() {
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh Data
           </Button>
-          <Button onClick={() => window.location.href = '/scan'} variant="secondary" size="sm">
-            <ScanFace className="mr-2 h-4 w-4" />
-            Launch Scanner
-          </Button>
+
         </div>
       </div>
 
