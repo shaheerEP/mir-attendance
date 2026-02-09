@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Radio, LogOut, Settings, School } from "lucide-react";
+import { LayoutDashboard, LogOut, Settings, School } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export function Sidebar() {
@@ -34,7 +35,13 @@ export function Sidebar() {
         <div className="space-y-4 py-4 flex flex-col h-full bg-slate-900 text-white w-64">
             <div className="px-3 py-2 flex-1">
                 <Link href="/" className="flex items-center pl-3 mb-14">
-                    <Radio className="h-8 w-8 mr-4 text-emerald-500" />
+                    <div className="relative h-8 w-8 mr-4">
+                        <Image
+                            fill
+                            alt="Logo"
+                            src="/mir-logo.png"
+                        />
+                    </div>
                     <h1 className="text-2xl font-bold">MIR Attendance</h1>
                 </Link>
                 <div className="space-y-1">
