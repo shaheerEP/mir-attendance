@@ -1,0 +1,72 @@
+22:04:53.422 > ets Jul 29 2019 12:21:46
+22:04:53.422 > 
+22:04:53.422 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+22:04:53.422 > configsip: 0, SPIWP:0xee
+22:04:53.422 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+22:04:53.422 > mode:DIO, clock div:2
+22:04:53.422 > load:0x3fff0018,len:4
+22:04:53.422 > load:0x3fff001c,len:1044
+22:04:53.422 > load:0x40078000,len:10124
+22:04:53.422 > load:0x40080400,len:5828
+22:04:53.422 > entry 0x400806a8
+22:04:53.422 > �[OLED] Booting...: Ver: 1.0.0
+22:04:53.422 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+22:04:53.422 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+22:04:53.422 > Connecting to: IRIS_FOUNDATION_JIO
+22:04:53.422 > [OLED] Connecting...: 0
+22:04:53.422 > [OLED] Connecting...: 1
+22:04:53.871 > [OLED] Connecting...: 2
+22:04:54.374 > [OLED] Connecting...: 3
+22:04:54.875 > [OLED] Connecting...: 4
+22:04:55.377 > [OLED] Connecting...: 5
+22:04:55.880 > [OLED] Connecting...: 6
+22:04:56.381 > [OLED] Connecting...: 7
+22:04:56.882 > [OLED] Connecting...: 8
+22:04:57.385 > [OLED] Connecting...: 9
+22:04:57.887 > [OLED] Connecting...: 10
+22:04:58.390 > [OLED] Connecting...: 11
+22:04:58.892 > [OLED] Connecting...: 12
+22:04:59.400 > [OLED] Connecting...: 13
+22:04:59.895 > [OLED] Connecting...: 14
+22:05:00.397 > [OLED] Connecting...: 15
+22:05:00.900 > [OLED] Connecting...: 16
+22:05:01.401 > [OLED] Connecting...: 17
+22:05:01.904 > [OLED] Connecting...: 18
+22:05:02.405 > [OLED] Connecting...: 19
+22:05:02.409 > [OLED] WiFi Error: Using Defaults
+22:05:50.358 > ets Jul 29 2019 12:21:46
+22:05:50.358 > 
+22:05:50.358 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+22:05:50.364 > configsip: 0, SPIWP:0xee
+22:05:50.364 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+22:05:50.369 > mode:DIO, clock div:2
+22:05:50.374 > load:0x3fff0018,len:4
+22:05:50.374 > load:0x3fff001c,len:1044
+22:05:50.380 > load:0x40078000,len:10124
+22:05:50.380 > load:0x40080400,len:5828
+22:05:50.380 > entry 0x400806a8
+22:05:51.676 > �[OLED] Booting...: Ver: 1.0.0
+22:05:53.147 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+22:05:53.152 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+22:05:53.157 > Connecting to: IRIS_FOUNDATION_JIO
+22:05:53.782 > [OLED] Connecting...: 0
+22:05:54.285 > [OLED] Connecting...: 1
+22:05:54.787 > [OLED] Connecting...: 2
+22:05:55.289 > [OLED] Connecting...: 3
+22:05:55.790 > [OLED] Connecting...: 4
+22:05:56.292 > [OLED] Connecting...: 5
+22:05:56.794 > [OLED] Connecting...: 6
+22:05:57.296 > [OLED] Connecting...: 7
+22:05:57.802 > [OLED] Connecting...: 8
+22:05:58.300 > [OLED] Connecting...: 9
+22:05:58.803 > [OLED] Connecting...: 10
+22:05:59.305 > [OLED] Connecting...: 11
+22:05:59.810 > [OLED] Connecting...: 12
+22:06:00.309 > [OLED] Connecting...: 13
+22:06:00.811 > [OLED] Connecting...: 14
+22:06:01.313 > [OLED] Connecting...: 15
+22:06:01.815 > [OLED] Connecting...: 16
+22:06:02.317 > [OLED] Connecting...: 17
+22:06:02.819 > [OLED] Connecting...: 18
+22:06:03.321 > [OLED] Connecting...: 19
+22:06:03.325 > [OLED] WiFi Error: Using Defaults

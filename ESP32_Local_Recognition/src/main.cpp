@@ -8,7 +8,6 @@
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 
-
 // ===========================
 // CONFIGURATION
 // ===========================
@@ -54,6 +53,8 @@ unsigned long lastButtonPress = 0;
 const unsigned long DEBOUNCE_DELAY = 1000;
 Preferences preferences;
 String currentVersion = "1.0.0"; // FIRMWARE VERSION
+String currentPeriod = "Free";   // Default before fetch
+String attendanceCounts = "-/-"; // Default before fetch
 
 void showStatus(String title, String msg) {
   display.clearDisplay();
@@ -199,6 +200,14 @@ void checkSettingsUpdates() {
         }
       }
     }
+
+    // 3. Check Status (Period + Counts)
+    if (doc.containsKey("status")) {
+      currentPeriod = doc["status"]["period"].as<String>();
+      attendanceCounts = doc["status"]["counts"].as<String>();
+      Serial.println("Status Updated: " + currentPeriod + " " +
+                     attendanceCounts);
+    }
   }
 }
 
@@ -300,10 +309,13 @@ void setup() {
   }
 
   if (WiFi.status() == WL_CONNECTED) {
-    showStatus("Ready", "Btn/Serial");
+    showStatus("Ready", "Checking...");
 
-    // Check for updates on boot
+    // Check for updates on boot (fetches status too)
     checkSettingsUpdates();
+
+    // Show the fetched status
+    showStatus(currentPeriod, attendanceCounts);
 
   } else {
     showStatus("WiFi Error", "Using Defaults");
@@ -337,16 +349,41 @@ void loop() {
 
     if (!fb) {
       showStatus("Error", "Capture Fail");
+      delay(2000); // Small delay to read error
     } else {
       String result = uploadPhoto(fb);
+      // Show Result matches
       showStatus("Result", result);
       esp_camera_fb_return(fb);
-      delay(4000);
+
+      // HOLD LOGIC: Wait for button press to dismiss/next
+      // User request: "The presented names... want to stay... until press the
+      // button" "when it will click... show message to press button to next
+      // capture"
+
+      // Wait while button is NOT pressed (HIGH because INPUT_PULLUP)
+      while (digitalRead(BUTTON_PIN) == HIGH) {
+        delay(50); // prevent watchdog trigger, small poll
+      }
+
+      // Button is now PRESSED (LOW)
+      // Display prompt for next capture
+      showStatus(currentPeriod, attendanceCounts);
+
+      // Debounce release
+      delay(200);
+      while (digitalRead(BUTTON_PIN) == LOW) {
+        delay(50);
+      }
     }
-    showStatus("Ready", "Btn/Serial");
+
+    // showStatus("Ready", "Btn/Serial"); // Old logic
     isCapturing = false;
 
     // Also check for updates after a capture?
     checkSettingsUpdates();
+
+    // Update display in case stats changed
+    showStatus(currentPeriod, attendanceCounts);
   }
 }
