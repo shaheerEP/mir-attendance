@@ -26,12 +26,12 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { periods, gracePeriod, weeklyHolidays } = body;
+        const { periods, gracePeriod, weeklyHolidays, wifi, firmware } = body;
 
         // Upsert the single settings document
         const settings = await Settings.findOneAndUpdate(
             {}, // filter - match any (we only want one doc)
-            { periods, gracePeriod, weeklyHolidays },
+            { periods, gracePeriod, weeklyHolidays, wifi, firmware },
             { new: true, upsert: true, setDefaultsOnInsert: true }
         );
 
