@@ -445,7 +445,7 @@ void loop() {
     // Action: Wait for Button to Dismiss/Next
     if (btnPressed) {
       // Dismiss result, go back to IDLE
-      showStatus("Ready", "Press Button");
+      showStatus("Ready", "Press Button and stand away from camera");
       currentState = STATE_IDLE;
     }
     break;
