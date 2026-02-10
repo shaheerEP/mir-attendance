@@ -24,6 +24,8 @@ interface SettingsData {
     periods: PeriodConfig[];
     gracePeriod: GracePeriodConfig;
     weeklyHolidays: number[];
+    wifi?: { ssid: string; password?: string };
+    firmware?: { version: string; url: string };
 }
 
 const DAYS = [
@@ -50,7 +52,9 @@ export default function SettingsPage() {
                 setSettings({
                     periods: data.periods,
                     gracePeriod: data.gracePeriod,
-                    weeklyHolidays: data.weeklyHolidays || [5] // Default Friday
+                    weeklyHolidays: data.weeklyHolidays || [5], // Default Friday
+                    wifi: data.wifi || { ssid: "", password: "" },
+                    firmware: data.firmware || { version: "1.0.0", url: "" }
                 });
             }
         } catch (error) {
@@ -260,6 +264,97 @@ export default function SettingsPage() {
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Device Management */}
+                <Card className="col-span-2">
+                    <CardHeader>
+                        <CardTitle>Device Management (ESP32)</CardTitle>
+                        <CardDescription>Configure WiFi and update firmware OTA.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-6 md:grid-cols-2">
+                        {/* WiFi Config */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-medium">WiFi Configuration</h3>
+                            <div className="grid gap-2">
+                                <Label htmlFor="wifi-ssid">SSID</Label>
+                                <Input
+                                    id="wifi-ssid"
+                                    placeholder="Network Name"
+                                    value={settings?.wifi?.ssid || ""}
+                                    onChange={(e) => setSettings(prev => prev ? ({
+                                        ...prev,
+                                        wifi: { ...prev.wifi!, ssid: e.target.value }
+                                    }) : null)}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="wifi-pass">Password</Label>
+                                <Input
+                                    id="wifi-pass"
+                                    type="password"
+                                    placeholder="Network Password"
+                                    value={settings?.wifi?.password || ""}
+                                    onChange={(e) => setSettings(prev => prev ? ({
+                                        ...prev,
+                                        wifi: { ...prev.wifi!, password: e.target.value }
+                                    }) : null)}
+                                />
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Click "Save Changes" at the top to push these credentials to the device.
+                            </p>
+                        </div>
+
+                        {/* Firmware Update */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-medium">Firmware Update</h3>
+                            <div className="grid gap-2">
+                                <Label>Current Version</Label>
+                                <div className="text-sm font-mono bg-slate-100 p-2 rounded">
+                                    {settings?.firmware?.version || "Unknown"}
+                                </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="firmware-file">Upload New Firmware (.bin)</Label>
+                                <Input
+                                    id="firmware-file"
+                                    type="file"
+                                    accept=".bin"
+                                    onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+
+                                        const formData = new FormData();
+                                        formData.append("file", file);
+                                        formData.append("version", file.name.replace(".bin", ""));
+
+                                        try {
+                                            setSaving(true);
+                                            const res = await fetch("/api/device/ota", {
+                                                method: "POST",
+                                                body: formData
+                                            });
+                                            if (res.ok) {
+                                                alert("Firmware uploaded successfully!");
+                                                fetchSettings(); // Refresh to see new version
+                                            } else {
+                                                const err = await res.json();
+                                                alert("Upload failed: " + err.error);
+                                            }
+                                        } catch (error) {
+                                            alert("Upload error");
+                                        } finally {
+                                            setSaving(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                The ESP32 will automatically download and apply this update on its next poll.
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

@@ -17,6 +17,20 @@ export interface ISettings extends Document {
     weeklyHolidays: number[]; // 0=Sun, 1=Mon...
 }
 
+export interface IDeviceConfig {
+    wifiSSID?: string;
+    wifiPassword?: string;
+    firmwareVersion?: string;
+    firmwareUrl?: string;
+}
+
+export interface ISettings extends Document {
+    periods: IPeriodConfig[];
+    gracePeriod: IGracePeriodConfig;
+    weeklyHolidays: number[];
+    deviceConfig: IDeviceConfig;
+}
+
 const PeriodSchema = new Schema<IPeriodConfig>({
     id: { type: Number, required: true },
     startTime: { type: String, required: true },
@@ -31,6 +45,12 @@ const SettingsSchema = new Schema<ISettings>(
             halfPresentMins: { type: Number, default: 20 },
         },
         weeklyHolidays: { type: [Number], default: [5] }, // Default Friday (5)
+        deviceConfig: {
+            wifiSSID: { type: String, default: "" },
+            wifiPassword: { type: String, default: "" },
+            firmwareVersion: { type: String, default: "" },
+            firmwareUrl: { type: String, default: "" },
+        },
     },
     { timestamps: true }
 );
