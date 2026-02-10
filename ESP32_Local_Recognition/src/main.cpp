@@ -63,7 +63,7 @@ bool isCapturing = false;
 unsigned long lastButtonPress = 0;
 const unsigned long DEBOUNCE_DELAY = 1000;
 Preferences preferences;
-String currentVersion = "1.0.1"; // FIRMWARE VERSION
+String currentVersion = "1.0.3 "; // FIRMWARE VERSION
 
 void showStatus(String title, String msg) {
   display.clearDisplay();
@@ -264,7 +264,7 @@ void checkSettingsUpdates() {
           WiFiClientSecure otaClient;
           otaClient.setInsecure();
           // REDUCE BUFFER SIZE TO SAVE RAM (Critical for ESP32-CAM)
-          otaClient.setBufferSizes(512, 512);
+          // otaClient.setBufferSizes(512, 512);
 
           // Allow redirects for OTA URL if needed (though httpUpdate handles
           // some)
@@ -421,7 +421,7 @@ void setup() {
     fetchStatus();          // Get initial status
     checkSettingsUpdates(); // Check for firmware/wifi updates
 
-    showStatus("Ready....", "please the Press Button ");
+    showStatus("Ready....", "Press Button by standing away from camera ");
     currentState = STATE_IDLE;
   } else {
     showStatus("WiFi Error", "Check SSID");

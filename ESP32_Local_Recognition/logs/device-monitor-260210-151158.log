@@ -1,0 +1,72 @@
+15:12:02.025 > ets Jul 29 2019 12:21:46
+15:12:02.025 > 
+15:12:02.025 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+15:12:02.025 > configsip: 0, SPIWP:0xee
+15:12:02.025 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+15:12:02.025 > mode:DIO, clock div:2
+15:12:02.025 > load:0x3fff0018,len:4
+15:12:02.025 > load:0x3fff001c,len:1044
+15:12:02.025 > load:0x40078000,len:10124
+15:12:02.025 > load:0x40080400,len:5828
+15:12:02.025 > entry 0x400806a8
+15:12:02.025 > �
+15:12:02.025 > 
+15:12:02.025 > --- ESP32 Online Snapshot Firmware ---
+15:12:02.025 > [OLED] Booting...: Init System
+15:12:02.025 > [OLED] : WiFi 0
+15:12:02.025 > [OLED] : WiFi 1
+15:12:02.025 > [OLED] : WiFi 2
+15:12:02.332 > [OLED] : WiFi 3
+15:12:02.835 > [OLED] : WiFi 4
+15:12:03.339 > [OLED] : WiFi 5
+15:12:03.842 > [OLED] : WiFi 6
+15:12:04.345 > [OLED] : WiFi 7
+15:12:04.848 > [OLED] : WiFi 8
+15:12:05.350 > [OLED] : WiFi 9
+15:12:05.854 > [OLED] : WiFi 10
+15:12:06.357 > [OLED] : WiFi 11
+15:12:06.869 > [OLED] : WiFi 12
+15:12:07.363 > [OLED] : WiFi 13
+15:12:07.866 > [OLED] : WiFi 14
+15:12:08.368 > [OLED] : WiFi 15
+15:12:08.872 > [OLED] : WiFi 16
+15:12:09.374 > [OLED] : WiFi 17
+15:12:09.878 > [OLED] : WiFi 18
+15:12:10.381 > [OLED] : WiFi 19
+15:12:10.385 > [OLED] WiFi Error: Check SSID
+15:12:14.959 > ets Jul 29 2019 12:21:46
+15:12:14.959 > 
+15:12:14.959 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+15:12:14.964 > configsip: 0, SPIWP:0xee
+15:12:14.964 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+15:12:14.970 > mode:DIO, clock div:2
+15:12:14.976 > load:0x3fff0018,len:4
+15:12:14.976 > load:0x3fff001c,len:1044
+15:12:14.981 > load:0x40078000,len:10124
+15:12:14.981 > load:0x40080400,len:5828
+15:12:14.981 > entry 0x400806a8
+15:12:16.282 > �
+15:12:16.282 > 
+15:12:16.282 > --- ESP32 Online Snapshot Firmware ---
+15:12:16.290 > [OLED] Booting...: Init System
+15:12:17.386 > [OLED] : WiFi 0
+15:12:17.889 > [OLED] : WiFi 1
+15:12:18.393 > [OLED] : WiFi 2
+15:12:18.896 > [OLED] : WiFi 3
+15:12:19.398 > [OLED] : WiFi 4
+15:12:19.900 > [OLED] : WiFi 5
+15:12:20.404 > [OLED] : WiFi 6
+15:12:20.907 > [OLED] : WiFi 7
+15:12:21.410 > [OLED] : WiFi 8
+15:12:21.913 > [OLED] : WiFi 9
+15:12:22.416 > [OLED] : WiFi 10
+15:12:22.920 > [OLED] : WiFi 11
+15:12:23.423 > [OLED] : WiFi 12
+15:12:23.926 > [OLED] : WiFi 13
+15:12:24.429 > [OLED] : WiFi 14
+15:12:24.932 > [OLED] : WiFi 15
+15:12:25.432 > [OLED] : WiFi 16
+15:12:25.938 > [OLED] : WiFi 17
+15:12:26.440 > [OLED] : WiFi 18
+15:12:26.944 > [OLED] : WiFi 19
+15:12:26.948 > [OLED] WiFi Error: Check SSID
