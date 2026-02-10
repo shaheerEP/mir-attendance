@@ -14,6 +14,8 @@ export interface IGracePeriodConfig {
 export interface IDeviceConfig {
     wifiSSID?: string;
     wifiPassword?: string;
+    firmwareVersion?: string;
+    firmwareUrl?: string;
 }
 
 export interface ISettings extends Document {
@@ -40,6 +42,8 @@ const SettingsSchema = new Schema<ISettings>(
         deviceConfig: {
             wifiSSID: { type: String, default: "" },
             wifiPassword: { type: String, default: "" },
+            firmwareVersion: { type: String, default: "" },
+            firmwareUrl: { type: String, default: "" },
         },
     },
     { timestamps: true }
