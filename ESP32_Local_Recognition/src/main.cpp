@@ -63,7 +63,7 @@ bool isCapturing = false;
 unsigned long lastButtonPress = 0;
 const unsigned long DEBOUNCE_DELAY = 1000;
 Preferences preferences;
-String currentVersion = "1.0.0"; // FIRMWARE VERSION
+String currentVersion = "1.0.1"; // FIRMWARE VERSION
 
 void showStatus(String title, String msg) {
   display.clearDisplay();
@@ -185,108 +185,112 @@ void initCamera() {
 void setFlash(bool on) { digitalWrite(FLASH_PIN, on ? HIGH : LOW); }
 
 // Check for Settings Updates (WiFi & Firmware)
+// Check for Settings Updates (WiFi & Firmware)
 void checkSettingsUpdates() {
   if (WiFi.status() != WL_CONNECTED)
     return;
 
   Serial.println("Checking for updates...");
+
   WiFiClientSecure client;
-  client.setInsecure();
+  client.setInsecure(); // Required for HTTPS without cert
 
-  if (!client.connect(serverUrl, serverPort)) {
-    Serial.println("Connection failed");
-    return;
-  }
+  HTTPClient http;
+  http.begin(client, String("https://") + serverUrl + settingsPath);
+  http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
 
-  client.println("GET " + String(settingsPath) + " HTTP/1.1");
-  client.println("Host: " + String(serverUrl));
-  client.println("Connection: close");
-  client.println();
+  int httpCode = http.GET();
 
-  // Read response
-  String body = "";
-  bool bodyStarted = false;
-  unsigned long timeout = millis();
-  while (client.connected() && millis() - timeout < 10000) {
-    String line = client.readStringUntil('\n');
-    if (line == "\r") {
-      bodyStarted = true;
-    } else if (bodyStarted) {
-      body += line;
-    }
-  }
+  if (httpCode > 0) {
+    String body = http.getString();
+    Serial.println("[Debug] Settings Response: " + body);
 
-  // ARDUINOJSON v7
-  JsonDocument doc;
-  DeserializationError error = deserializeJson(doc, body);
+    // ARDUINOJSON v7
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, body);
 
-  if (!error) {
-    // 1. Check WiFi Update
-    if (doc["wifi"].is<JsonObject>()) {
-      String newSSID = doc["wifi"]["ssid"].as<String>();
-      String newPass = doc["wifi"]["password"].as<String>();
+    if (!error) {
+      // 1. Check WiFi Update
+      if (doc["wifi"].is<JsonObject>()) {
+        String newSSID = doc["wifi"]["ssid"].as<String>();
+        String newPass = doc["wifi"]["password"].as<String>();
 
-      String currentSSID = preferences.getString("ssid", default_ssid);
-      String currentPass = preferences.getString("password", default_password);
+        String currentSSID = preferences.getString("ssid", default_ssid);
+        String currentPass =
+            preferences.getString("password", default_password);
 
-      Serial.print("[Debug] Current SSID: ");
-      Serial.println(currentSSID);
-      Serial.print("[Debug] New SSID: ");
-      Serial.println(newSSID);
-      Serial.print("[Debug] Pass Changed? ");
-      Serial.println(newPass != currentPass ? "Yes" : "No");
+        Serial.print("[Debug] Current SSID: ");
+        Serial.println(currentSSID);
+        Serial.print("[Debug] New SSID: ");
+        Serial.println(newSSID);
 
-      if (newSSID != "" && (newSSID != currentSSID || newPass != currentPass)) {
-        Serial.println("New WiFi Credentials found. Saving...");
-        preferences.putString("ssid", newSSID);
-        preferences.putString("password", newPass);
-        showStatus("Config", "WiFi Updated");
-        delay(2000);
-        // Optionally restart or reconnect?
-        // ESP.restart(); // Let's not restart immediately, maybe next boot
+        if (newSSID != "" &&
+            (newSSID != currentSSID || newPass != currentPass)) {
+          Serial.println("New WiFi Credentials found. Saving...");
+          preferences.putString("ssid", newSSID);
+          preferences.putString("password", newPass);
+          showStatus("Config", "WiFi Updated");
+          delay(2000);
+        } else {
+          Serial.println("[Debug] WiFi credentials match. No update.");
+        }
       } else {
-        Serial.println(
-            "[Debug] WiFi credentials match or empty. No update needed.");
+        Serial.println("[Debug] 'wifi' key missing/invalid");
       }
-    } else {
-      Serial.println("[Debug] 'wifi' key missing or not an object");
-    }
 
-    // 2. Check Firmware Update
-    if (doc["firmware"].is<JsonObject>()) {
-      String newVersion = doc["firmware"]["version"].as<String>();
-      String firmwareUrl = doc["firmware"]["url"].as<String>();
+      // 2. Check Firmware Update
+      if (doc["firmware"].is<JsonObject>()) {
+        String newVersion = doc["firmware"]["version"].as<String>();
+        String firmwareUrl = doc["firmware"]["url"].as<String>();
 
-      if (newVersion != currentVersion && firmwareUrl != "") {
-        Serial.println("New Firmware found: " + newVersion);
-        showStatus("Update", "New Firmware");
-        delay(2000);
+        Serial.print("[Debug] FW Version: ");
+        Serial.println(newVersion);
 
-        // Perform OTA Update
-        // The URL in DB might be relative path e.g. /firmware/abc.bin
-        // We need full URL
-        String fullUrl = "https://" + String(serverUrl) + firmwareUrl;
+        if (newVersion != currentVersion && firmwareUrl != "") {
+          Serial.println("New Firmware found: " + newVersion);
+          showStatus("Update", "New Firmware");
+          delay(2000);
 
-        // Note: WiFiClientSecure is needed for HTTPS OTA
-        t_httpUpdate_return ret = httpUpdate.update(client, fullUrl);
+          String fullUrl = "https://" + String(serverUrl) + firmwareUrl;
 
-        switch (ret) {
-        case HTTP_UPDATE_FAILED:
-          Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n",
-                        httpUpdate.getLastError(),
-                        httpUpdate.getLastErrorString().c_str());
-          showStatus("Error", "Update Fail");
-          break;
-        case HTTP_UPDATE_NO_UPDATES:
-          Serial.println("HTTP_UPDATE_NO_UPDATES");
-          break;
-        case HTTP_UPDATE_OK:
-          Serial.println("HTTP_UPDATE_OK");
-          break;
+          // Note: reuse the secure client for OTA?
+          // HTTPUpdate needs a client. We can use the one declared above?
+          // But HTTPClient might still be using it?
+          // Safer to end HTTPClient first.
+          http.end();
+
+          // Re-init client for OTA just in case
+          WiFiClientSecure otaClient;
+          otaClient.setInsecure();
+
+          t_httpUpdate_return ret = httpUpdate.update(otaClient, fullUrl);
+
+          switch (ret) {
+          case HTTP_UPDATE_FAILED:
+            Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n",
+                          httpUpdate.getLastError(),
+                          httpUpdate.getLastErrorString().c_str());
+            showStatus("Error", "Update Fail");
+            break;
+          case HTTP_UPDATE_NO_UPDATES:
+            Serial.println("HTTP_UPDATE_NO_UPDATES");
+            break;
+          case HTTP_UPDATE_OK:
+            Serial.println("HTTP_UPDATE_OK");
+            break;
+          }
+          return; // Exit function after update attempt
         }
       }
+    } else {
+      Serial.print("[Debug] JSON Error: ");
+      Serial.println(error.c_str());
     }
+  } else {
+    Serial.printf("[Debug] HTTP Error: %s\n",
+                  http.errorToString(httpCode).c_str());
   }
+  http.end();
 }
 
 String uploadPhoto(camera_fb_t *fb) {
@@ -410,7 +414,7 @@ void setup() {
     fetchStatus();          // Get initial status
     checkSettingsUpdates(); // Check for firmware/wifi updates
 
-    showStatus("Ready", "Press Button");
+    showStatus("Ready to capture", "Press on the Button");
     currentState = STATE_IDLE;
   } else {
     showStatus("WiFi Error", "Check SSID");

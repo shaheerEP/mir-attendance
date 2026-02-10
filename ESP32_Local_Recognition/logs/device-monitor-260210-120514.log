@@ -1,0 +1,76 @@
+12:05:18.198 > [OLED] : WiFi 2
+12:05:18.198 > [OLED] : WiFi 3
+12:05:18.198 > [OLED] : WiFi 4
+12:05:22.832 > [Status] {"period":"Free","present":0,"total":7}
+12:05:22.832 > Checking for updates...
+12:05:26.633 > [Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"wifiSSID":"Redmi Note 8","wifiPassword":"12345678","firmwareVersion":"","firmwareUrl":""},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"15:24","durationMinutes":120,"_id":"69895c32f7d1fed91a48fefd"}],"updatedAt":"2026-02-10T06:24:28.159Z","weeklyHolidays":[5],"firmware":{"version":"","url":""},"wifi":{"ssid":"Redmi Note 8","password":"12345678"}}
+12:05:26.679 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+12:05:26.682 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+12:05:26.686 > [Debug] Current SSID: IRIS_FOUNDATION_JIO
+12:05:26.692 > [Debug] New SSID: Redmi Note 8
+12:05:26.698 > New WiFi Credentials found. Saving...
+12:05:26.698 > [OLED] Config: WiFi Updated
+12:05:28.695 > [Debug] FW Version: 
+12:05:28.704 > [OLED] Ready: Press Button
+12:06:07.244 > ets Jul 29 2019 12:21:46
+12:06:07.244 > 
+12:06:07.244 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+12:06:07.249 > configsip: 0, SPIWP:0xee
+12:06:07.249 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+12:06:07.255 > mode:DIO, clock div:2
+12:06:07.260 > load:0x3fff0018,len:4
+12:06:07.260 > load:0x3fff001c,len:1044
+12:06:07.266 > load:0x40078000,len:10124
+12:06:07.266 > load:0x40080400,len:5828
+12:06:07.266 > entry 0x400806a8
+12:06:08.569 > �
+12:06:08.569 > 
+12:06:08.569 > --- ESP32 Online Snapshot Firmware ---
+12:06:08.576 > [OLED] Booting...: Init System
+12:06:09.690 > [OLED] : WiFi 0
+12:06:10.194 > [OLED] : WiFi 1
+12:06:10.697 > [OLED] : WiFi 2
+12:06:11.200 > [OLED] : WiFi 3
+12:06:12.035 > [OLED] : WiFi 4
+12:06:12.538 > [OLED] : WiFi 5
+12:06:13.041 > [OLED] : WiFi 6
+12:06:13.544 > [OLED] : WiFi 7
+12:06:14.047 > [OLED] : WiFi 8
+12:06:14.550 > [OLED] : WiFi 9
+12:06:15.053 > [OLED] : WiFi 10
+12:06:21.791 > [E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+12:06:21.796 > [E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+12:06:21.804 > [Status] HTTP Error: connection refused
+12:06:21.804 > Checking for updates...
+12:06:28.791 > [E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+12:06:28.796 > [E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+12:06:28.802 > [Debug] HTTP Error: connection refused
+12:06:28.802 > [OLED] Ready: Press Button
+12:06:45.365 > ets Jul 29 2019 12:21:46
+12:06:45.365 > 
+12:06:45.365 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+12:06:45.370 > configsip: 0, SPIWP:0xee
+12:06:45.370 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+12:06:45.376 > mode:DIO, clock div:2
+12:06:45.382 > load:0x3fff0018,len:4
+12:06:45.382 > load:0x3fff001c,len:1044
+12:06:45.388 > load:0x40078000,len:10124
+12:06:45.388 > load:0x40080400,len:5828
+12:06:45.388 > entry 0x400806a8
+12:06:46.689 > �
+12:06:46.689 > 
+12:06:46.689 > --- ESP32 Online Snapshot Firmware ---
+12:06:46.696 > [OLED] Booting...: Init System
+12:06:47.788 > [OLED] : WiFi 0
+12:06:48.289 > [OLED] : WiFi 1
+12:06:48.795 > [OLED] : WiFi 2
+12:06:49.298 > [OLED] : WiFi 3
+12:06:49.800 > [OLED] : WiFi 4
+12:06:57.974 > [Status] {"period":"Free","present":0,"total":7}
+12:06:57.975 > Checking for updates...
+12:07:02.084 > [Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"wifiSSID":"Redmi Note 8","wifiPassword":"12345678","firmwareVersion":"","firmwareUrl":""},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"15:24","durationMinutes":120,"_id":"69895c32f7d1fed91a48fefd"}],"updatedAt":"2026-02-10T06:24:28.159Z","weeklyHolidays":[5],"firmware":{"version":"","url":""},"wifi":{"ssid":"Redmi Note 8","password":"12345678"}}
+12:07:02.126 > [Debug] Current SSID: Redmi Note 8
+12:07:02.126 > [Debug] New SSID: Redmi Note 8
+12:07:02.132 > [Debug] WiFi credentials match. No update.
+12:07:02.138 > [Debug] FW Version: 
+12:07:02.138 > [OLED] Ready: Press Button

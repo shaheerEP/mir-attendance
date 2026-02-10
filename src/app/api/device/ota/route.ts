@@ -1,9 +1,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
 import dbConnect from "@/lib/db";
 import Settings from "@/models/Settings";
+import Firmware from "@/models/Firmware";
 
 // Prevent Next.js from caching
 export const dynamic = 'force-dynamic';
@@ -19,32 +18,41 @@ export async function POST(req: NextRequest) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        // Sanitize filename to prevent directory traversal
+        // Sanitize filename
         const filename = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-        const relativePath = `/firmware/${filename}`;
-        const uploadDir = path.join(process.cwd(), "public", "firmware");
-        const filePath = path.join(uploadDir, filename);
 
-        // Ensure directory exists (handled by mkdir previously, but good to be safe - skipping for brevity/assuming previous step worked)
-
-        await writeFile(filePath, buffer);
-        console.log(`Saved firmware to ${filePath}`);
-
-        // Update Settings DB
         await dbConnect();
 
-        // We update the firmware config. 
-        // Note: We need to ensure deviceConfig exists or is created.
+        // Save to MongoDB (Vercel has read-only filesystem)
+        // Check if version exists
+        let fw = await Firmware.findOne({ version: version || filename });
+        if (fw) {
+            fw.data = buffer;
+            fw.filename = filename;
+            await fw.save();
+        } else {
+            fw = await Firmware.create({
+                version: version || filename,
+                filename: filename,
+                data: buffer
+            });
+        }
+
+        console.log(`Saved firmware version ${fw.version} to DB`);
+
+        // Dynamic URL for downloading from DB
+        const relativePath = `/api/device/firmware?version=${fw.version}`;
+
+        // Update Settings DB
         const settings = await Settings.findOne();
         if (settings) {
             settings.deviceConfig = {
                 ...settings.deviceConfig,
                 firmwareUrl: relativePath,
-                firmwareVersion: version || filename // Use filename as version if not provided
+                firmwareVersion: version || filename
             };
             await settings.save();
         } else {
-            // Create new if strictly necessary, but Settings should exist by now.
             await Settings.create({
                 deviceConfig: {
                     firmwareUrl: relativePath,
