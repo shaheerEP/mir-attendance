@@ -229,6 +229,13 @@ void checkSettingsUpdates() {
       String currentSSID = preferences.getString("ssid", default_ssid);
       String currentPass = preferences.getString("password", default_password);
 
+      Serial.print("[Debug] Current SSID: ");
+      Serial.println(currentSSID);
+      Serial.print("[Debug] New SSID: ");
+      Serial.println(newSSID);
+      Serial.print("[Debug] Pass Changed? ");
+      Serial.println(newPass != currentPass ? "Yes" : "No");
+
       if (newSSID != "" && (newSSID != currentSSID || newPass != currentPass)) {
         Serial.println("New WiFi Credentials found. Saving...");
         preferences.putString("ssid", newSSID);
@@ -237,7 +244,12 @@ void checkSettingsUpdates() {
         delay(2000);
         // Optionally restart or reconnect?
         // ESP.restart(); // Let's not restart immediately, maybe next boot
+      } else {
+        Serial.println(
+            "[Debug] WiFi credentials match or empty. No update needed.");
       }
+    } else {
+      Serial.println("[Debug] 'wifi' key missing or not an object");
     }
 
     // 2. Check Firmware Update
