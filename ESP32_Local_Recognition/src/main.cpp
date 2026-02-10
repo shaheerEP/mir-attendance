@@ -258,10 +258,17 @@ void checkSettingsUpdates() {
           // But HTTPClient might still be using it?
           // Safer to end HTTPClient first.
           http.end();
+          delay(100); // Give time for sockets to close
 
-          // Re-init client for OTA just in case
+          // Re-init client for OTA
           WiFiClientSecure otaClient;
           otaClient.setInsecure();
+          // REDUCE BUFFER SIZE TO SAVE RAM (Critical for ESP32-CAM)
+          otaClient.setBufferSizes(512, 512);
+
+          // Allow redirects for OTA URL if needed (though httpUpdate handles
+          // some)
+          httpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
 
           t_httpUpdate_return ret = httpUpdate.update(otaClient, fullUrl);
 
@@ -414,7 +421,7 @@ void setup() {
     fetchStatus();          // Get initial status
     checkSettingsUpdates(); // Check for firmware/wifi updates
 
-    showStatus("Ready to capture", "Press on the Button");
+    showStatus("Ready....", "please the Press Button ");
     currentState = STATE_IDLE;
   } else {
     showStatus("WiFi Error", "Check SSID");
