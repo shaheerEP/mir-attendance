@@ -305,54 +305,7 @@ export default function SettingsPage() {
                             </p>
                         </div>
 
-                        {/* Firmware Update */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-medium">Firmware Update</h3>
-                            <div className="grid gap-2">
-                                <Label>Current Version</Label>
-                                <div className="text-sm font-mono bg-slate-100 p-2 rounded">
-                                    {settings?.firmware?.version || "Unknown"}
-                                </div>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="firmware-file">Upload New Firmware (.bin)</Label>
-                                <Input
-                                    id="firmware-file"
-                                    type="file"
-                                    accept=".bin"
-                                    onChange={async (e) => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
 
-                                        const formData = new FormData();
-                                        formData.append("file", file);
-                                        formData.append("version", file.name.replace(".bin", ""));
-
-                                        try {
-                                            setSaving(true);
-                                            const res = await fetch("/api/device/ota", {
-                                                method: "POST",
-                                                body: formData
-                                            });
-                                            if (res.ok) {
-                                                alert("Firmware uploaded successfully!");
-                                                fetchSettings(); // Refresh to see new version
-                                            } else {
-                                                const err = await res.json();
-                                                alert("Upload failed: " + err.error);
-                                            }
-                                        } catch (error) {
-                                            alert("Upload error");
-                                        } finally {
-                                            setSaving(false);
-                                        }
-                                    }}
-                                />
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                                The ESP32 will automatically download and apply this update on its next poll.
-                            </p>
-                        </div>
                     </CardContent>
                 </Card>
             </div>

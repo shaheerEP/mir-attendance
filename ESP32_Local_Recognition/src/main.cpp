@@ -238,57 +238,6 @@ void checkSettingsUpdates() {
         Serial.println("[Debug] 'wifi' key missing/invalid");
       }
 
-      // 2. Check Firmware Update
-      if (doc["firmware"].is<JsonObject>()) {
-        String newVersion = doc["firmware"]["version"].as<String>();
-        String firmwareUrl = doc["firmware"]["url"].as<String>();
-
-        Serial.print("[Debug] FW Version: ");
-        Serial.println(newVersion);
-
-        if (newVersion != currentVersion && firmwareUrl != "") {
-          Serial.println("New Firmware found: " + newVersion);
-          showStatus("Update", "New Firmware");
-          delay(2000);
-
-          String fullUrl = "https://" + String(serverUrl) + firmwareUrl;
-
-          // Note: reuse the secure client for OTA?
-          // HTTPUpdate needs a client. We can use the one declared above?
-          // But HTTPClient might still be using it?
-          // Safer to end HTTPClient first.
-          http.end();
-          delay(100); // Give time for sockets to close
-
-          // Re-init client for OTA
-          WiFiClientSecure otaClient;
-          otaClient.setInsecure();
-          // REDUCE BUFFER SIZE TO SAVE RAM (Critical for ESP32-CAM)
-          // otaClient.setBufferSizes(512, 512);
-
-          // Allow redirects for OTA URL if needed (though httpUpdate handles
-          // some)
-          httpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
-
-          t_httpUpdate_return ret = httpUpdate.update(otaClient, fullUrl);
-
-          switch (ret) {
-          case HTTP_UPDATE_FAILED:
-            Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n",
-                          httpUpdate.getLastError(),
-                          httpUpdate.getLastErrorString().c_str());
-            showStatus("Error", "Update Fail");
-            break;
-          case HTTP_UPDATE_NO_UPDATES:
-            Serial.println("HTTP_UPDATE_NO_UPDATES");
-            break;
-          case HTTP_UPDATE_OK:
-            Serial.println("HTTP_UPDATE_OK");
-            break;
-          }
-          return; // Exit function after update attempt
-        }
-      }
     } else {
       Serial.print("[Debug] JSON Error: ");
       Serial.println(error.c_str());
