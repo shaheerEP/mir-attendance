@@ -13,3 +13,30 @@ entry 0x400806a8
 
 --- ESP32 Online Snapshot Firmware ---
 [OLED] Booting...: Init System
+[OLED] : WiFi 0
+[OLED] : WiFi 1
+[OLED] : WiFi 2
+[OLED] : WiFi 3
+[OLED] : WiFi 4
+[OLED] : WiFi 5
+[OLED] : WiFi 6
+[OLED] : WiFi 7
+[OLED] : WiFi 8
+[OLED] : WiFi 9
+[OLED] : WiFi 10
+[Status] {"period":"P1","present":0,"total":7}
+Checking for updates...
+[Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"wifiSSID":"IRIS_FOUNDATION_JIO","wifiPassword":"iris916313","firmwareVersion":"firmware","firmwareUrl":"/api/device/firmware?version=firmware"},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"15:24","durationMinutes":120,"_id":"69895c32f7d1fed91a48fefd"}],"updatedAt":"2026-02-10T09:58:29.894Z","weeklyHolidays":[5],"firmware":{"version":"firmware","url":"/api/device/firmware?version=firmware"},"wifi":{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313"}}
+[Debug] Current SSID: IRIS_FOUNDATION_JIO
+[Debug] New SSID: IRIS_FOUNDATION_JIO
+[Debug] WiFi credentials match. No update.
+[Debug] FW Version: firmware
+New Firmware found: firmware
+[OLED] Update: New Firmware
+[E][ssl_client.cpp:36] _handle_error(): [start_ssl_client():216]: (-17040) RSA - The public key operation failed : BIGNUM - Memory allocation failed
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -17040
+[E][HTTPUpdate.cpp:231] handleUpdate(): HTTP error: connection refused
+
+HTTP_UPDATE_FAILED Error (-1): HTTP error: connection refused
+[OLED] Error: Update Fail
+[OLED] Ready to capture: Press on the Button
