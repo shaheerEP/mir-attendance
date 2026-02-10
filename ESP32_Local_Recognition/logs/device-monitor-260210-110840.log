@@ -1,0 +1,135 @@
+11:08:44.212 > ets Jul 29 2019 12:21:46
+11:08:44.212 > 
+11:08:44.212 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+11:08:44.212 > configsip: 0, SPIWP:0xee
+11:08:44.212 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+11:08:44.212 > mode:DIO, clock div:2
+11:08:44.212 > load:0x3fff0018,len:4
+11:08:44.212 > load:0x3fff001c,len:1044
+11:08:44.212 > load:0x40078000,len:10124
+11:08:44.212 > load:0x40080400,len:5828
+11:08:44.212 > entry 0x400806a8
+11:08:44.212 > 
+11:08:44.212 > 
+11:08:44.212 > --- ESP32 Online Snapshot Firmware ---
+11:08:44.212 > [OLED] Booting...: Init System
+11:08:44.212 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+11:08:44.212 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+11:08:44.212 > ets Jul 29 2019 12:21:46
+11:08:44.212 > 
+11:08:44.212 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+11:08:44.212 > configsip: 0, SPIWP:0xee
+11:08:44.212 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+11:08:44.212 > mode:DIO, clock div:2
+11:08:44.212 > load:0x3fff0018,len:4
+11:08:44.212 > load:0x3fff001c,len:1044
+11:08:44.212 > load:0x40078000,len:10124
+11:08:44.212 > load:0x40080400,len:5828
+11:08:44.212 > entry 0x400806a8
+11:08:44.750 > �
+11:08:44.750 > 
+11:08:44.750 > --- ESP32 Online Snapshot Firmware ---
+11:08:44.750 > [OLED] Booting...: Init System
+11:08:45.281 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+11:08:45.286 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+11:08:45.912 > [OLED] : WiFi 0
+11:08:46.413 > [OLED] : WiFi 1
+11:08:46.917 > [OLED] : WiFi 2
+11:08:47.419 > [OLED] : WiFi 3
+11:08:47.923 > [OLED] : WiFi 4
+11:08:54.348 > 
+11:08:54.349 > [Status] JSON Error
+11:08:54.353 > Checking for updates...
+11:08:58.341 > [OLED] Ready: Press Button
+11:09:21.774 > ets Jul 29 2019 12:21:46
+11:09:21.775 > 
+11:09:21.775 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+11:09:21.780 > configsip: 0, SPIWP:0xee
+11:09:21.780 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+11:09:21.785 > mode:DIO, clock div:2
+11:09:21.791 > load:0x3fff0018,len:4
+11:09:21.791 > load:0x3fff001c,len:1044
+11:09:21.797 > load:0x40078000,len:10124
+11:09:21.797 > load:0x40080400,len:5828
+11:09:21.797 > entry 0x400806a8
+11:09:23.098 > �
+11:09:23.098 > 
+11:09:23.098 > --- ESP32 Online Snapshot Firmware ---
+11:09:23.103 > [OLED] Booting...: Init System
+11:09:23.637 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+11:09:23.642 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+11:09:24.271 > [OLED] : WiFi 0
+11:09:24.774 > [OLED] : WiFi 1
+11:09:25.277 > [OLED] : WiFi 2
+11:09:25.778 > [OLED] : WiFi 3
+11:09:26.280 > [OLED] : WiFi 4
+11:09:26.784 > [OLED] : WiFi 5
+11:09:33.895 > 
+11:09:33.895 > [Status] JSON Error
+11:09:33.897 > Checking for updates...
+11:09:37.693 > [OLED] Ready: Press Button
+11:09:49.143 > Button Pressed
+11:09:49.143 > Starting Capture Sequence...
+11:09:49.336 > Image Captured. Size: 14051 bytes
+11:09:49.336 > [OLED] Uploading...: Please Wait
+11:10:11.875 > ets Jul 29 2019 12:21:46
+11:10:11.879 > 
+11:10:11.879 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+11:10:11.882 > configsip: 0, SPIWP:0xee
+11:10:11.882 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+11:10:11.885 > mode:DIO, clock div:2
+11:10:11.893 > load:0x3fff0018,len:4
+11:10:11.893 > load:0x3fff001c,len:1044
+11:10:11.893 > load:0x40078000,len:10124
+11:10:11.893 > load:0x40080400,len:5828
+11:10:11.893 > entry 0x400806a8
+11:10:13.194 > �
+11:10:13.194 > 
+11:10:13.194 > --- ESP32 Online Snapshot Firmware ---
+11:10:13.200 > [OLED] Booting...: Init System
+11:10:13.733 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+11:10:13.738 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+11:10:14.376 > [OLED] : WiFi 0
+11:10:14.879 > [OLED] : WiFi 1
+11:10:15.381 > [OLED] : WiFi 2
+11:10:15.883 > [OLED] : WiFi 3
+11:10:16.396 > [OLED] : WiFi 4
+11:10:16.898 > [OLED] : WiFi 5
+11:10:27.281 > 
+11:10:27.281 > [Status] JSON Error
+11:10:27.284 > Checking for updates...
+11:10:31.229 > [OLED] Ready: Press Button
+11:10:58.709 > Button Pressed
+11:10:58.709 > Starting Capture Sequence...
+11:10:58.953 > Image Captured. Size: 20554 bytes
+11:10:58.953 > [OLED] Uploading...: Please Wait
+11:12:54.756 > ets Jul 29 2019 12:21:46
+11:12:54.756 > 
+11:12:54.756 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+11:12:54.760 > configsip: 0, SPIWP:0xee
+11:12:54.760 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+11:12:54.767 > mode:DIO, clock div:2
+11:12:54.773 > load:0x3fff0018,len:4
+11:12:54.773 > load:0x3fff001c,len:1044
+11:12:54.778 > load:0x40078000,len:10124
+11:12:54.778 > load:0x40080400,len:5828
+11:12:54.778 > entry 0x400806a8
+11:12:56.079 > �
+11:12:56.079 > 
+11:12:56.079 > --- ESP32 Online Snapshot Firmware ---
+11:12:56.086 > [OLED] Booting...: Init System
+11:12:56.619 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+11:12:56.624 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+11:12:57.253 > [OLED] : WiFi 0
+11:12:57.756 > [OLED] : WiFi 1
+11:12:58.258 > [OLED] : WiFi 2
+11:12:58.759 > [OLED] : WiFi 3
+11:12:59.263 > [OLED] : WiFi 4
+11:13:13.033 > [Status] HTTP Error: no HTTP server
+11:13:13.035 > Checking for updates...
+11:13:18.769 > [OLED] Ready: Press Button
+11:13:32.192 > Button Pressed
+11:13:32.192 > Starting Capture Sequence...
+11:13:32.475 > Image Captured. Size: 22538 bytes
+11:13:32.476 > [OLED] Uploading...: Please Wait
+11:15:51.879 > [OLED] Result: Timeout
