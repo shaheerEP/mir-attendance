@@ -1,0 +1,73 @@
+10:05:04.732 > ets Jul 29 2019 12:21:46
+10:05:04.732 > 
+10:05:04.732 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+10:05:04.732 > configsip: 0, SPIWP:0xee
+10:05:04.732 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:05:04.732 > mode:DIO, clock div:2
+10:05:04.732 > load:0x3fff0018,len:4
+10:05:04.732 > load:0x3fff001c,len:1044
+10:05:04.732 > load:0x40078000,len:10124
+10:05:04.732 > load:0x40080400,len:5828
+10:05:04.732 > entry 0x400806a8
+10:05:04.732 > 
+10:05:04.732 > 
+10:05:04.732 > --- ESP32 Online Snapshot Firmware ---
+10:05:04.732 > [OLED] Booting...: Init System
+10:05:04.732 > ets Jul 29 2019 12:21:46
+10:05:04.732 > 
+10:05:04.732 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:05:04.732 > configsip: 0, SPIWP:0xee
+10:05:04.732 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:05:04.732 > mode:DIO, clock div:2
+10:05:04.732 > load:0x3fff0018,len:4
+10:05:04.732 > load:0x3fff001c,len:1044
+10:05:04.732 > load:0x40078000,len:10124
+10:05:04.732 > load:0x40080400,len:5828
+10:05:04.732 > entry 0x400806a8
+10:05:05.688 > �
+10:05:05.688 > 
+10:05:05.688 > --- ESP32 Online Snapshot Firmware ---
+10:05:05.694 > [OLED] Booting...: Init System
+10:05:06.788 > [OLED] Connecting...: WiFi 0
+10:05:07.290 > [OLED] Connecting...: WiFi 1
+10:05:07.793 > [OLED] Connecting...: WiFi 2
+10:05:08.296 > [OLED] Connecting...: WiFi 3
+10:05:08.801 > [OLED] Connecting...: WiFi 4
+10:05:09.300 > [OLED] Connecting...: WiFi 5
+10:05:09.802 > [OLED] Connecting...: WiFi 6
+10:05:10.305 > [OLED] Connecting...: WiFi 7
+10:05:10.807 > [OLED] Connecting...: WiFi 8
+10:05:11.309 > [OLED] Connecting...: WiFi 9
+10:05:11.811 > [OLED] Connecting...: WiFi 10
+10:05:12.326 > [OLED] Connecting...: WiFi 11
+10:05:12.818 > [OLED] Connecting...: WiFi 12
+10:05:13.322 > [OLED] Connecting...: WiFi 13
+10:05:13.323 > [OLED] Ready: Btn or Serial 'c'
+10:05:13.326 > System Ready. Press Button (GPIO 12) or type 'c' in Serial to Capture.
+10:05:29.190 > Trigger: Serial Command
+10:05:29.190 > Starting Capture Sequence...
+10:05:29.512 > Image Captured. Size: 30297 bytes
+10:05:29.512 > [OLED] Uploading...: Please Wait
+10:07:24.748 > [OLED] Processing...: Analyzing
+10:08:03.020 > [Response] HTTP/1.1 423 Locked
+10:08:03.020 > Cache-Control: public, max-age=0, must-revalidate
+10:08:03.026 > Content-Type: application/json
+10:08:03.026 > Date: Tue, 10 Feb 2026 04:38:01 GMT
+10:08:03.031 > Server: Vercel
+10:08:03.031 > Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+10:08:03.036 > Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+10:08:03.047 > X-Matched-Path: /api/recognize
+10:08:03.047 > X-Vercel-Cache: MISS
+10:08:03.052 > X-Vercel-Id: bom1::iad1::px222-1770698153475-222fed55ed2d
+10:08:03.057 > Transfer-Encoding: chunked
+10:08:03.057 > 
+10:08:03.057 > 34
+10:08:03.057 > {"message":"Hi! No Class\nShaheer","status":"error"}
+10:08:03.063 > 0
+10:08:03.063 > 
+10:08:03.063 > 
+10:08:03.063 > [OLED] Result: Hi! No Class
+10:08:03.067 > Shaheer
+10:08:03.067 > Result: Hi! No Class
+10:08:03.067 > Shaheer
+10:08:07.064 > [OLED] Ready: Btn or Serial 'c'
