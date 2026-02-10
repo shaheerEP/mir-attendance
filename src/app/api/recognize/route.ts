@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { recognizeFace } from "@/lib/face-recognition";
 import dbConnect from "@/lib/db";
 import AttendanceLog from "@/models/AttendanceLog";
+import Student from "@/models/Student";
 import Settings from "@/models/Settings";
 import { getCurrentActivePeriod, getAttendanceStatusForPeriod, PERIODS, DEFAULT_GRACE } from "@/lib/periods";
 
@@ -138,10 +139,25 @@ export async function POST(req: NextRequest) {
 
         const nameList = names.join(', ').substring(0, 50); // Truncate for OLED
         const msg = `${presentCount} Present\n${nameList}`;
+        const totalStudents = await Student.countDocuments();
+        const periodNameRaw = activePeriod ? `P${activePeriod.id}` : "Free";
+
+        let totalPresent = presentCount; // Just for this call if not tracking total yet?
+        // Actually, we should fetch the total unique count for the period to be accurate
+        if (activePeriod) {
+            const presentLogs = await AttendanceLog.distinct('student_id', {
+                timestamp: { $gte: queryStart, $lt: queryEnd },
+                status: { $ne: 'NONE' }
+            });
+            totalPresent = presentLogs.length;
+        }
 
         return NextResponse.json({
             message: msg,
             status: "success",
+            period: periodNameRaw,
+            present: totalPresent,
+            total: totalStudents,
             details: "Multi-Attendance Marked"
         }, { status: 200 });
 
