@@ -4,6 +4,8 @@
 #include <Adafruit_SSD1306.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
+#include <HTTPUpdate.h>  // ABSOLUTELY REQUIRED for httpUpdate
+#include <Preferences.h> // ABSOLUTELY REQUIRED for Preferences
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 
@@ -16,7 +18,8 @@ const char *serverUrl = "mir-attendance.vercel.app";
 const char *serverPath = "/api/recognize";
 const char *statusPath =
     "https://mir-attendance.vercel.app/api/status"; // Full URL for HTTPClient
-const int serverPort = 443;                         // HTTPS Port
+const char *settingsPath = "/api/settings"; // Endpoint for checking updates
+const int serverPort = 443;                 // HTTPS Port
 
 // STATE MACHINE
 enum AppState { STATE_IDLE, STATE_CAPTURING, STATE_SHOWING_RESULT };
@@ -102,26 +105,38 @@ void showStatus(String title, String msg) {
 
 void fetchStatus() {
   if (WiFi.status() == WL_CONNECTED) {
+    WiFiClientSecure client;
+    client.setInsecure(); // Required for HTTPS without cert
+
     HTTPClient http;
-    http.begin(statusPath);
+    http.begin(client, statusPath);
+    http.setFollowRedirects(
+        HTTPC_FORCE_FOLLOW_REDIRECTS); // Handle 307 Redirects
+
     int httpCode = http.GET();
 
     if (httpCode > 0) {
       String payload = http.getString();
       Serial.println("[Status] " + payload);
 
-      DynamicJsonDocument doc(512);
+      // ARDUINOJSON v7 specific: Use JsonDocument instead of
+      // DynamicJsonDocument
+      JsonDocument doc;
       DeserializationError error = deserializeJson(doc, payload);
 
       if (!error) {
-        currentPeriod = doc["period"].as<String>();
-        presentCount = doc["present"];
-        totalCount = doc["total"];
+        if (doc["period"].is<String>())
+          currentPeriod = doc["period"].as<String>();
+        if (doc["present"].is<int>())
+          presentCount = doc["present"];
+        if (doc["total"].is<int>())
+          totalCount = doc["total"];
       } else {
         Serial.println(F("[Status] JSON Error"));
       }
     } else {
-      Serial.println(F("[Status] HTTP Error"));
+      Serial.printf("[Status] HTTP Error: %s\n",
+                    http.errorToString(httpCode).c_str());
     }
     http.end();
   }
@@ -201,12 +216,13 @@ void checkSettingsUpdates() {
     }
   }
 
-  DynamicJsonDocument doc(2048);
+  // ARDUINOJSON v7
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, body);
 
   if (!error) {
     // 1. Check WiFi Update
-    if (doc.containsKey("wifi")) {
+    if (doc["wifi"].is<JsonObject>()) {
       String newSSID = doc["wifi"]["ssid"].as<String>();
       String newPass = doc["wifi"]["password"].as<String>();
 
@@ -225,7 +241,7 @@ void checkSettingsUpdates() {
     }
 
     // 2. Check Firmware Update
-    if (doc.containsKey("firmware")) {
+    if (doc["firmware"].is<JsonObject>()) {
       String newVersion = doc["firmware"]["version"].as<String>();
       String firmwareUrl = doc["firmware"]["url"].as<String>();
 
@@ -239,6 +255,7 @@ void checkSettingsUpdates() {
         // We need full URL
         String fullUrl = "https://" + String(serverUrl) + firmwareUrl;
 
+        // Note: WiFiClientSecure is needed for HTTPS OTA
         t_httpUpdate_return ret = httpUpdate.update(client, fullUrl);
 
         switch (ret) {
@@ -308,18 +325,20 @@ String uploadPhoto(camera_fb_t *fb) {
         int jsonEnd = jsonStr.lastIndexOf("}");
         if (jsonEnd != -1) {
           jsonStr = jsonStr.substring(0, jsonEnd + 1);
-          DynamicJsonDocument doc(1024);
+
+          // ARDUINOJSON v7
+          JsonDocument doc;
           DeserializationError error = deserializeJson(doc, jsonStr);
 
           if (!error) {
             String msg = doc["message"].as<String>();
 
             // Update Globals if present
-            if (doc.containsKey("period"))
+            if (doc["period"].is<String>())
               currentPeriod = doc["period"].as<String>();
-            if (doc.containsKey("present"))
+            if (doc["present"].is<int>())
               presentCount = doc["present"];
-            if (doc.containsKey("total"))
+            if (doc["total"].is<int>())
               totalCount = doc["total"];
 
             return msg; // Should be "Welcome Shaheer" or error msg
@@ -330,130 +349,133 @@ String uploadPhoto(camera_fb_t *fb) {
       }
       delay(10);
     }
-    return "Timeout";
+  }
+  return "Timeout";
+}
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("\n\n--- ESP32 Online Snapshot Firmware ---");
+
+  // INIT PREFERENCES
+  preferences.begin("cam-app", false); // Namespace "cam-app"
+
+  // 1. Init Button
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+
+  // 2. Init Flash
+  pinMode(FLASH_PIN, OUTPUT);
+  setFlash(false);
+
+  // 3. Init OLED
+  Wire.begin(14, 15);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ; // Loop forever
+  }
+  display.clearDisplay();
+  display.display();
+
+  showStatus("Booting...", "Init System");
+
+  // 4. Init Camera
+  initCamera();
+
+  // 5. Connect WiFi
+  String ssid = preferences.getString("ssid", default_ssid);
+  String password = preferences.getString("password", default_password);
+
+  WiFi.begin(ssid.c_str(), password.c_str());
+  int retry = 0;
+  while (WiFi.status() != WL_CONNECTED && retry < 20) {
+    delay(500);
+    showStatus("", "WiFi " + String(retry));
+    retry++;
   }
 
-  void setup() {
-    Serial.begin(115200);
-    Serial.println("\n\n--- ESP32 Online Snapshot Firmware ---");
+  if (WiFi.status() == WL_CONNECTED) {
+    fetchStatus();          // Get initial status
+    checkSettingsUpdates(); // Check for firmware/wifi updates
 
-    // 1. Init Button
-    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    showStatus("Ready", "Press Button");
+    currentState = STATE_IDLE;
+  } else {
+    showStatus("WiFi Error", "Check SSID");
+  }
+}
 
-    // 2. Init Flash
-    pinMode(FLASH_PIN, OUTPUT);
+void loop() {
+  // Global Button Handling (Available in all states?)
+  // NO, context sensitive.
+
+  bool btnPressed = false;
+  if (digitalRead(BUTTON_PIN) == LOW) {
+    if (millis() - lastButtonPress > DEBOUNCE_DELAY) {
+      lastButtonPress = millis();
+      btnPressed = true;
+      Serial.println("Button Pressed");
+    }
+  }
+
+  switch (currentState) {
+  case STATE_IDLE:
+    // Action: Wait for Button to Capture
+    if (btnPressed) {
+      currentState = STATE_CAPTURING;
+      return; // Next loop iteration handles capture
+    }
+
+    // Serial Trigger
+    if (Serial.available()) {
+      char c = Serial.read();
+      if (c == 'c' || c == 'C') {
+        currentState = STATE_CAPTURING;
+      }
+    }
+    break;
+
+  case STATE_CAPTURING: {
+    Serial.println("Starting Capture Sequence...");
+
+    // 1. Turn on Flash
+    setFlash(true);
+    delay(150);
+
+    // 2. Capture Frame
+    camera_fb_t *fb = esp_camera_fb_get();
+
+    // 3. Turn off Flash
     setFlash(false);
 
-    // 3. Init OLED
-    Wire.begin(14, 15);
-    if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-      Serial.println(F("SSD1306 allocation failed"));
-      for (;;)
-        ; // Loop forever
-    }
-    display.clearDisplay();
-    display.display();
-
-    showStatus("Booting...", "Init System");
-
-    // 4. Init Camera
-    initCamera();
-
-    // 5. Connect WiFi
-    WiFi.begin(ssid, password);
-    int retry = 0;
-    while (WiFi.status() != WL_CONNECTED && retry < 20) {
-      delay(500);
-      showStatus("", "WiFi " + String(retry));
-      retry++;
-    }
-
-    if (WiFi.status() == WL_CONNECTED) {
-      fetchStatus(); // Get initial status
-      showStatus("Ready", "Press Button");
+    if (!fb) {
+      showStatus("Error", "Cam Fail");
+      delay(2000);
+      showStatus("Ready", "Press Button"); // Go back to ready
       currentState = STATE_IDLE;
     } else {
-      showStatus("WiFi Error", "Check SSID");
+      Serial.printf("Image Captured. Size: %u bytes\n", fb->len);
+
+      // 4. Upload
+      String result = uploadPhoto(fb);
+      esp_camera_fb_return(fb);
+
+      // 5. Show Result
+      showStatus("Result", result);
+
+      // 6. Wait for user to dismiss
+      currentState = STATE_SHOWING_RESULT;
     }
+    break;
   }
 
-  void loop() {
-    // Global Button Handling (Available in all states?)
-    // NO, context sensitive.
-
-    bool btnPressed = false;
-    if (digitalRead(BUTTON_PIN) == LOW) {
-      if (millis() - lastButtonPress > DEBOUNCE_DELAY) {
-        lastButtonPress = millis();
-        btnPressed = true;
-        Serial.println("Button Pressed");
-      }
+  case STATE_SHOWING_RESULT:
+    // Action: Wait for Button to Dismiss/Next
+    if (btnPressed) {
+      // Dismiss result, go back to IDLE
+      showStatus("Ready", "Press Button");
+      currentState = STATE_IDLE;
     }
-
-    switch (currentState) {
-    case STATE_IDLE:
-      // Action: Wait for Button to Capture
-      if (btnPressed) {
-        currentState = STATE_CAPTURING;
-        return; // Next loop iteration handles capture
-      }
-
-      // Serial Trigger
-      if (Serial.available()) {
-        char c = Serial.read();
-        if (c == 'c' || c == 'C') {
-          currentState = STATE_CAPTURING;
-        }
-      }
-      break;
-
-    case STATE_CAPTURING:
-      Serial.println("Starting Capture Sequence...");
-
-      // 1. Turn on Flash
-      setFlash(true);
-      delay(150);
-
-      // 2. Capture Frame
-      camera_fb_t *fb = esp_camera_fb_get();
-
-      // 3. Turn off Flash
-      setFlash(false);
-
-      if (!fb) {
-        showStatus("Error", "Cam Fail");
-        delay(2000);
-        showStatus("Ready", "Press Button"); // Go back to ready
-        currentState = STATE_IDLE;
-      } else {
-        Serial.printf("Image Captured. Size: %u bytes\n", fb->len);
-
-        // 4. Upload
-        // Note: modify uploadPhoto to NOT call showStatus internally if we want
-        // to control it here? Actually uploadPhoto calls
-        // showStatus("Uploading..."). That's fine.
-
-        String result = uploadPhoto(fb);
-        esp_camera_fb_return(fb);
-
-        // 5. Show Result
-        // uploadPhoto returns the message string.
-        // And it updates globals (period, counts).
-
-        showStatus("Result", result);
-
-        // 6. Wait for user to dismiss
-        currentState = STATE_SHOWING_RESULT;
-      }
-      break;
-
-    case STATE_SHOWING_RESULT:
-      // Action: Wait for Button to Dismiss/Next
-      if (btnPressed) {
-        // Dismiss result, go back to IDLE
-        showStatus("Ready", "Press Button");
-        currentState = STATE_IDLE;
-      }
-      break;
-    }
+    break;
   }
+}
