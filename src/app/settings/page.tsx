@@ -24,14 +24,6 @@ interface SettingsData {
     periods: PeriodConfig[];
     gracePeriod: GracePeriodConfig;
     weeklyHolidays: number[];
-    wifi?: {
-        ssid: string;
-        password: string;
-    };
-    firmware?: {
-        version: string;
-        url: string;
-    };
 }
 
 const DAYS = [
@@ -49,12 +41,6 @@ export default function SettingsPage() {
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState<SettingsData | null>(null);
 
-    const [wifiSSID, setWifiSSID] = useState("");
-    const [wifiPassword, setWifiPassword] = useState("");
-    const [firmwareFile, setFirmwareFile] = useState<File | null>(null);
-    const [firmwareVersion, setFirmwareVersion] = useState("");
-    const [uploading, setUploading] = useState(false);
-
     const fetchSettings = async () => {
         setLoading(true);
         try {
@@ -64,17 +50,8 @@ export default function SettingsPage() {
                 setSettings({
                     periods: data.periods,
                     gracePeriod: data.gracePeriod,
-                    weeklyHolidays: data.weeklyHolidays || [5],
-                    wifi: data.wifi || { ssid: "", password: "" },
-                    firmware: data.firmware || { version: "1.0.0", url: "" }
+                    weeklyHolidays: data.weeklyHolidays || [5] // Default Friday
                 });
-                if (data.wifi) {
-                    setWifiSSID(data.wifi.ssid);
-                    setWifiPassword(data.wifi.password);
-                }
-                if (data.firmware) {
-                    setFirmwareVersion(data.firmware.version);
-                }
             }
         } catch (error) {
             console.error("Failed to fetch settings", error);
@@ -93,6 +70,10 @@ export default function SettingsPage() {
         newPeriods[index] = { ...newPeriods[index], [field]: value };
         setSettings({ ...settings, periods: newPeriods });
     };
+
+
+
+
 
     const handleGraceChange = (field: keyof GracePeriodConfig, value: number) => {
         if (!settings) return;
@@ -133,23 +114,14 @@ export default function SettingsPage() {
         if (!settings) return;
         setSaving(true);
         try {
-            const updatedSettings = {
-                ...settings,
-                wifi: {
-                    ssid: wifiSSID,
-                    password: wifiPassword
-                }
-            };
-
             const res = await fetch("/api/settings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatedSettings),
+                body: JSON.stringify(settings),
             });
 
             if (res.ok) {
                 alert("Settings saved successfully!");
-                setSettings(updatedSettings);
             } else {
                 alert("Failed to save settings.");
             }
@@ -158,37 +130,6 @@ export default function SettingsPage() {
             alert("Error saving settings");
         } finally {
             setSaving(false);
-        }
-    };
-
-    const handleFirmwareUpload = async () => {
-        if (!firmwareFile || !firmwareVersion) {
-            alert("Please select a file and enter a version.");
-            return;
-        }
-
-        setUploading(true);
-        const formData = new FormData();
-        formData.append("file", firmwareFile);
-        formData.append("version", firmwareVersion);
-
-        try {
-            const res = await fetch("/api/settings/firmware", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (res.ok) {
-                alert("Firmware uploaded successfully! restart ESP32 to update.");
-                fetchSettings(); // Refresh settings to show new version
-            } else {
-                alert("Firmware upload failed.");
-            }
-        } catch (error) {
-            console.error("Upload error:", error);
-            alert("Error uploading firmware.");
-        } finally {
-            setUploading(false);
         }
     };
 
@@ -205,7 +146,7 @@ export default function SettingsPage() {
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight text-slate-900">Settings</h2>
-                    <p className="text-muted-foreground">Configure class periods, attendance rules, and device settings.</p>
+                    <p className="text-muted-foreground">Configure class periods and attendance rules.</p>
                 </div>
                 <Button onClick={saveSettings} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
                     {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
@@ -315,70 +256,6 @@ export default function SettingsPage() {
                                     Students arriving between Grace Period and this limit get Half Day.
                                     <br />After this time, attendance is rejected (Late).
                                 </p>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Device Configuration */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Device Configuration</CardTitle>
-                            <CardDescription>Manage ESP32 WiFi and Firmware.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="space-y-4">
-                                <h3 className="font-medium">WiFi Settings</h3>
-                                <div className="grid gap-2">
-                                    <Label>SSID</Label>
-                                    <Input
-                                        value={wifiSSID}
-                                        onChange={(e) => setWifiSSID(e.target.value)}
-                                        placeholder="Enter WiFi Name"
-                                    />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label>Password</Label>
-                                    <Input
-                                        type="password"
-                                        value={wifiPassword}
-                                        onChange={(e) => setWifiPassword(e.target.value)}
-                                        placeholder="Enter WiFi Password"
-                                    />
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            <div className="space-y-4">
-                                <h3 className="font-medium">Firmware Update</h3>
-                                <div className="text-sm text-muted-foreground">
-                                    Current Version: <span className="font-mono text-slate-900">{settings?.firmware?.version || "Unknown"}</span>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label>New Version</Label>
-                                    <Input
-                                        value={firmwareVersion}
-                                        onChange={(e) => setFirmwareVersion(e.target.value)}
-                                        placeholder="e.g. 1.0.1"
-                                    />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label>Firmware File (.bin)</Label>
-                                    <Input
-                                        type="file"
-                                        accept=".bin"
-                                        onChange={(e) => setFirmwareFile(e.target.files?.[0] || null)}
-                                    />
-                                </div>
-                                <Button
-                                    onClick={handleFirmwareUpload}
-                                    disabled={uploading || !firmwareFile}
-                                    className="w-full"
-                                    variant="secondary"
-                                >
-                                    {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                    Upload & Flash
-                                </Button>
                             </div>
                         </CardContent>
                     </Card>

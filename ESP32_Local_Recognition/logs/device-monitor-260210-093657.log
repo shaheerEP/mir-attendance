@@ -1,0 +1,213 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�[OLED] Booting...: Ver: 1.0.0
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+Connecting to: IRIS_FOUNDATION_JIO
+[OLED] Connecting...: 0
+[OLED] Connecting...: 1
+[OLED] Connecting...: 2
+[OLED] Connecting...: 3
+[OLED] Connecting...: 4
+[OLED] Connecting...: 5
+[OLED] Ready: Btn/Serial
+Checking for updates...
+[OLED] Uploading...: Please Wait
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�[OLED] Booting...: Ver: 1.0.0
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+Connecting to: IRIS_FOUNDATION_JIO
+[OLED] Connecting...: 0
+[OLED] Connecting...: 1
+[OLED] Connecting...: 2
+[OLED] Connecting...: 3
+[OLED] Connecting...: 4
+[OLED] Connecting...: 5
+[OLED] Connecting...: 6
+[OLED] Connecting...: 7
+[OLED] Connecting...: 8
+[OLED] Connecting...: 9
+[OLED] Connecting...: 10
+[OLED] Connecting...: 11
+[OLED] Ready: Btn/Serial
+Checking for updates...
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+Connection failed
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+[OLED] Booting...: Ver: 1.0.0
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+Connecting to: IRIS_FOUNDATION_JIO
+[OLED] Connecting...: 0
+[OLED] Connecting...: 1
+[OLED] Connecting...: 2
+[OLED] Connecting...: 3
+[OLED] Connecting...: 4
+[OLED] Connecting...: 5
+[OLED] Connecting...: 6
+[OLED] Connecting...: 7
+[OLED] Connecting...: 8
+[OLED] Connecting...: 9
+[OLED] Connecting...: 10
+[OLED] Connecting...: 11
+[OLED] Connecting...: 12
+[OLED] Connecting...: 13
+[OLED] Connecting...: 14
+[OLED] Connecting...: 15
+[OLED] Connecting...: 16
+[OLED] Connecting...: 17
+[OLED] Connecting...: 18
+[OLED] Connecting...: 19
+[OLED] WiFi Error: Using Defaults
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�[OLED] Booting...: Ver: 1.0.0
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+Connecting to: IRIS_FOUNDATION_JIO
+[OLED] Connecting...: 0
+[OLED] Connecting...: 1
+[OLED] Connecting...: 2
+[OLED] Connecting...: 3
+[OLED] Connecting...: 4
+[OLED] Connecting...: 5
+[OLED] Connecting...: 6
+[OLED] Connecting...: 7
+[OLED] Connecting...: 8
+[OLED] Connecting...: 9
+[OLED] Connecting...: 10
+[OLED] Connecting...: 11
+[OLED] Connecting...: 12
+[OLED] Connecting...: 13
+[OLED] Connecting...: 14
+[OLED] Connecting...: 15
+[OLED] Connecting...: 16
+[OLED] Connecting...: 17
+[OLED] Connecting...: 18
+[OLED] Connecting...: 19
+[OLED] WiFi Error: Using Defaults
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�[OLED] Booting...: Ver: 1.0.0
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+Connecting to: IRIS_FOUNDATION_JIO
+[OLED] Connecting...: 0
+[OLED] Connecting...: 1
+[OLED] Connecting...: 2
+[OLED] Connecting...: 3
+[OLED] Connecting...: 4
+[OLED] Ready: Btn/Serial
+Checking for updates...
+[OLED] Uploading...: Please Wait
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[OLED] Result: Conn. Error
+[OLED] Ready: Btn/Serial
+Checking for updates...
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+Connection failed
+[OLED] Uploading...: Please Wait
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[OLED] Result: Conn. Error
+[OLED] Ready: Btn/Serial
+Checking for updates...
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+Connection failed
+[OLED] Uploading...: Please Wait
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+[OLED] Result: Conn. Error
+[OLED] Ready: Btn/Serial
+Checking for updates...
+[E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+[E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+Connection failed
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+[OLED] Booting...: Ver: 1.0.0
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid NOT_FOUND
+[E][Preferences.cpp:472] getString(): nvs_get_str len fail: password NOT_FOUND
+Connecting to: IRIS_FOUNDATION_JIO
+[OLED] Connecting...: 0
+[OLED] Connecting...: 1
+[OLED] Connecting...: 2
+[OLED] Connecting...: 3
+[OLED] Connecting...: 4
+[OLED] Connecting...: 5
+[OLED] Connecting...: 6
+[OLED] Connecting...: 7
+[OLED] Connecting...: 8
+[OLED] Connecting...: 9
+[OLED] Connecting...: 10
+[OLED] Connecting...: 11
+[OLED] Connecting...: 12
+[OLED] Connecting...: 13
+[OLED] Connecting...: 14
+[OLED] Connecting...: 15
+[OLED] Connecting...: 16
+[OLED] Connecting...: 17
+[OLED] Connecting...: 18
+[OLED] Connecting...: 19
+[OLED] WiFi Error: Using Defaults
