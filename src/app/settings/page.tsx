@@ -27,7 +27,6 @@ interface SettingsData {
     wifi?: {
         ssid: string;
         password?: string;
-        networks?: { ssid: string; password?: string }[]
     };
 }
 
@@ -57,7 +56,7 @@ export default function SettingsPage() {
                     periods: data.periods,
                     gracePeriod: data.gracePeriod,
                     weeklyHolidays: data.weeklyHolidays || [5], // Default Friday
-                    wifi: data.wifi || { ssid: "", password: "", networks: [] }
+                    wifi: data.wifi || { ssid: "", password: "" }
                 });
             }
         } catch (error) {
@@ -117,34 +116,11 @@ export default function SettingsPage() {
         setSettings({ ...settings, weeklyHolidays: updated });
     };
 
-    const handleAddNetwork = () => {
+    const handleWifiChange = (field: 'ssid' | 'password', value: string) => {
         if (!settings) return;
-        const currentNetworks = settings.wifi?.networks || [];
-        const updatedNetworks = [...currentNetworks, { ssid: "", password: "" }];
         setSettings({
             ...settings,
-            wifi: { ...settings.wifi!, networks: updatedNetworks }
-        });
-    };
-
-    const handleRemoveNetwork = (index: number) => {
-        if (!settings) return;
-        const currentNetworks = settings.wifi?.networks || [];
-        const updatedNetworks = currentNetworks.filter((_, i) => i !== index);
-        setSettings({
-            ...settings,
-            wifi: { ...settings.wifi!, networks: updatedNetworks }
-        });
-    };
-
-    const handleNetworkChange = (index: number, field: 'ssid' | 'password', value: string) => {
-        if (!settings) return;
-        const currentNetworks = settings.wifi?.networks || [];
-        const updatedNetworks = [...currentNetworks];
-        updatedNetworks[index] = { ...updatedNetworks[index], [field]: value };
-        setSettings({
-            ...settings,
-            wifi: { ...settings.wifi!, networks: updatedNetworks }
+            wifi: { ...settings.wifi!, [field]: value }
         });
     };
 
@@ -307,70 +283,40 @@ export default function SettingsPage() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {/* WiFi Config */}
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-medium">WiFi Configuration</h3>
-                                <Button variant="outline" size="sm" onClick={handleAddNetwork}>
-                                    <Plus className="h-4 w-4 mr-2" /> Add Network
-                                </Button>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>WiFi SSID</Label>
+                                <Input
+                                    placeholder="Network Name"
+                                    value={settings?.wifi?.ssid || ""}
+                                    onChange={(e) => handleWifiChange('ssid', e.target.value)}
+                                />
                             </div>
-
-                            {settings?.wifi?.networks && settings.wifi.networks.length > 0 ? (
-                                settings.wifi.networks.map((network, index) => (
-                                    <div key={index} className="grid grid-cols-12 gap-2 items-end border-b pb-4 last:border-0 last:pb-0">
-                                        <div className="col-span-5 space-y-1">
-                                            <Label className="text-xs">SSID</Label>
-                                            <Input
-                                                placeholder="Network Name"
-                                                value={network.ssid}
-                                                onChange={(e) => handleNetworkChange(index, 'ssid', e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="col-span-6 space-y-1">
-                                            <Label className="text-xs">Password</Label>
-                                            <div className="relative">
-                                                <Input
-                                                    type={showPassword ? "text" : "password"}
-                                                    placeholder="Network Password"
-                                                    value={network.password || ""}
-                                                    onChange={(e) => handleNetworkChange(index, 'password', e.target.value)}
-                                                    className="pr-10"
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                >
-                                                    {showPassword ? (
-                                                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                                                    ) : (
-                                                        <Eye className="h-4 w-4 text-muted-foreground" />
-                                                    )}
-                                                </Button>
-                                            </div>
-                                        </div>
-                                        <div className="col-span-1 flex justify-end">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleRemoveNetwork(index)}
-                                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-sm text-muted-foreground italic">No WiFi networks configured.</p>
-                            )}
-
-                            <p className="text-xs text-muted-foreground">
-                                Click "Save Changes" at the top to push these credentials to the device.
-                                The device will automatically connect to the strongest signal found.
-                            </p>
+                            <div className="space-y-2">
+                                <Label>WiFi Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Network Password"
+                                        value={settings?.wifi?.password || ""}
+                                        onChange={(e) => handleWifiChange('password', e.target.value)}
+                                        className="pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                        ) : (
+                                            <Eye className="h-4 w-4 text-muted-foreground" />
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
 
 

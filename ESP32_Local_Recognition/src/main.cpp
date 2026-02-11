@@ -7,7 +7,6 @@
 #include <Preferences.h> // ABSOLUTELY REQUIRED for Preferences
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-#include <WiFiMulti.h> // Include WiFiMulti
 
 // ===========================
 // CONFIGURATION
@@ -59,7 +58,6 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 #define PCLK_GPIO_NUM 22
 
 // GLOBALS
-WiFiMulti wifiMulti; // Global WiFiMulti instance
 bool isCapturing = false;
 unsigned long lastButtonPress = 0;
 const unsigned long DEBOUNCE_DELAY = 1000;
@@ -211,45 +209,22 @@ void checkSettingsUpdates() {
     DeserializationError error = deserializeJson(doc, body);
 
     if (!error) {
-      // 1. Check WiFi Update (Multiple Networks)
+      // 1. Check WiFi Update
       if (doc["wifi"].is<JsonObject>()) {
-        JsonArray networks = doc["wifi"]["networks"].as<JsonArray>();
+        String newSSID = doc["wifi"]["ssid"].as<String>();
+        String newPass = doc["wifi"]["password"].as<String>();
 
-        if (networks.size() > 0) {
-          int count = networks.size();
-          Serial.printf("Found %d new WiFi networks. Saving...\n", count);
+        if (newSSID != "") {
+          String currentSSID = preferences.getString("wifi_ssid", "");
+          String currentPass = preferences.getString("wifi_pass", "");
 
-          preferences.putInt("wifi_count", count);
-
-          for (int i = 0; i < count; i++) {
-            String ssid = networks[i]["ssid"].as<String>();
-            String pass = networks[i]["password"].as<String>();
-
-            // Save using indexed keys: wifi_0_ssid, wifi_0_pass, etc.
-            String ssidKey = "wifi_" + String(i) + "_ssid";
-            String passKey = "wifi_" + String(i) + "_pass";
-
-            preferences.putString(ssidKey.c_str(), ssid);
-            preferences.putString(passKey.c_str(), pass);
-
-            Serial.printf("Saved: %s\n", ssid.c_str());
-          }
-          showStatus("Config", "WiFi List Updated");
-          delay(2000);
-        } else {
-          // Backward compatibility: Check single SSID
-          String newSSID = doc["wifi"]["ssid"].as<String>();
-          String newPass = doc["wifi"]["password"].as<String>();
-
-          // If single SSID is present and valid, treat as 1 network
-          if (newSSID != "") {
-            Serial.println(
-                "Single WiFi Credential found. Saving as network 0...");
-            preferences.putInt("wifi_count", 1);
-            preferences.putString("wifi_0_ssid", newSSID);
-            preferences.putString("wifi_0_pass", newPass);
+          if (newSSID != currentSSID || newPass != currentPass) {
+            Serial.println("New WiFi Credentials found. Saving...");
+            preferences.putString("wifi_ssid", newSSID);
+            preferences.putString("wifi_pass", newPass);
             showStatus("Config", "WiFi Updated");
             delay(2000);
+            ESP.restart();
           }
         }
       } else {
@@ -373,41 +348,21 @@ void setup() {
   initCamera();
 
   // 5. Connect WiFi (Multi)
-  // Load saved networks
-  int wifiCount = preferences.getInt("wifi_count", 0);
-  int addedCount = 0;
+  // 5. Connect WiFi
+  String savedSSID = preferences.getString("wifi_ssid", "");
+  String savedPass = preferences.getString("wifi_pass", "");
 
-  Serial.printf("Saved WiFi Count: %d\n", wifiCount);
-
-  if (wifiCount > 0) {
-    for (int i = 0; i < wifiCount; i++) {
-      String ssidKey = "wifi_" + String(i) + "_ssid";
-      String passKey = "wifi_" + String(i) + "_pass";
-      String ssid = preferences.getString(ssidKey.c_str(), "");
-      String pass = preferences.getString(passKey.c_str(), "");
-
-      if (ssid != "") {
-        wifiMulti.addAP(ssid.c_str(), pass.c_str());
-        Serial.printf("Added Saved AP: %s\n", ssid.c_str());
-        addedCount++;
-      }
-    }
-  }
-
-  // Fallback: If no networks added (either count 0 OR all keys missing/empty)
-  if (addedCount == 0) {
-    Serial.println("No saved networks valid. Adding Default.");
-    wifiMulti.addAP(default_ssid, default_password);
+  if (savedSSID != "") {
+    Serial.println("Connecting to Saved WiFi: " + savedSSID);
+    WiFi.begin(savedSSID.c_str(), savedPass.c_str());
   } else {
-    // OPTIONAL: Always add default as a backup?
-    // Uncomment below if you want default to be available even if others exist
-    wifiMulti.addAP(default_ssid, default_password);
+    Serial.println("Connecting to Default WiFi: " + String(default_ssid));
+    WiFi.begin(default_ssid, default_password);
   }
 
-  Serial.println("Connecting to WiFi...");
+  Serial.println("Connecting...");
   int retry = 0;
-  // Use wifiMulti.run() to connect to best AP
-  while (wifiMulti.run() != WL_CONNECTED && retry < 40) {
+  while (WiFi.status() != WL_CONNECTED && retry < 20) {
     delay(500);
     showStatus("Connecting", String(retry));
     retry++;
@@ -439,8 +394,9 @@ void loop() {
   }
 
   // Maintain WiFi connection
-  if (currentState == STATE_IDLE) {
-    wifiMulti.run();
+  if (currentState == STATE_IDLE && WiFi.status() != WL_CONNECTED) {
+    // Optional: explicit reconnect if needed, but ESP32 handles it mostly
+    // WiFi.reconnect();
   }
 
   switch (currentState) {
