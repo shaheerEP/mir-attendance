@@ -17,28 +17,28 @@ let faceapi: any = null;
 let modelsLoaded = false;
 const MODELS_PATH = path.join(process.cwd(), 'public', 'models');
 
+
 async function getFaceApi() {
     if (faceapi) return faceapi;
 
-    // 1. Import canvas
-    const canvas = await import('canvas');
-
-    // 2. Force Global Patching (Just in case polyfill didn't stick or isolated context)
-    const { Canvas, Image, ImageData } = canvas;
-    (global as any).Canvas = Canvas;
-    (global as any).Image = Image;
-    (global as any).ImageData = ImageData;
-    (global as any).HTMLCanvasElement = Canvas;
-    (global as any).HTMLImageElement = Image;
-
-    console.log('[FaceRec] Globals set manually in getFaceApi');
-
-    // 3. Import face-api.js
-    const faceApiModule = await import('face-api.js');
-    faceapi = faceApiModule;
-
-    // 4. Force MonkeyPatch
     try {
+        // 1. Load Canvas via require
+        // Using require ensures we get the CJS module which is more reliable for native bindings
+        const canvas = require('canvas');
+
+        const { Canvas, Image, ImageData } = canvas;
+        (global as any).Canvas = Canvas;
+        (global as any).Image = Image;
+        (global as any).ImageData = ImageData;
+        (global as any).HTMLCanvasElement = Canvas;
+        (global as any).HTMLImageElement = Image;
+
+        console.log('[FaceRec] Globals set manually in getFaceApi');
+
+        // 2. Load face-api.js
+        faceapi = require('face-api.js');
+
+        // 3. Force MonkeyPatch
         if (faceapi.env) {
             console.log('[FaceRec] faceapi.env exists. isNode:', faceapi.env.isNodejs());
             if (faceapi.env.monkeyPatch) {
@@ -50,11 +50,13 @@ async function getFaceApi() {
                 console.log('[FaceRec] monkeyPatch called successfully');
             }
         }
-    } catch (err: any) {
-        console.error('[FaceRec] Error during patching:', err);
-    }
 
-    return faceapi;
+        return faceapi;
+
+    } catch (err) {
+        console.error('[FaceRec] Failed to load modules:', err);
+        throw err;
+    }
 }
 
 export async function loadModels() {
@@ -87,6 +89,8 @@ export async function recognizeFace(imageBuffer: Buffer) {
     const detections = await api.detectAllFaces(img as any)
         .withFaceLandmarks()
         .withFaceDescriptors();
+
+    console.log(`[FaceRec] Detections found: ${detections ? detections.length : 0}`);
 
     if (!detections || detections.length === 0) {
         return [];
@@ -124,13 +128,10 @@ export async function recognizeFace(imageBuffer: Buffer) {
     for (const detection of detections) {
         try {
             const desc = detection.descriptor;
-            const len = desc.length;
-
-            // Validate Matcher Dims (assuming 128)
-            // If the mismatch error occurs, it's likely here.
-            // We can't easily check FaceMatcher's internal dims, but we can catch the error.
+            // console.log(`[FaceRec] Processing face with descriptor length: ${desc.length}`);
 
             const match = faceMatcher.findBestMatch(desc);
+            console.log(`[FaceRec] Best Match: ${match.label} Distance: ${match.distance}`);
 
             if (match.label !== 'unknown') {
                 const matchedStudent = students.find(s => s._id.toString() === match.label);
@@ -144,12 +145,10 @@ export async function recognizeFace(imageBuffer: Buffer) {
             }
         } catch (err: any) {
             console.error(`[FaceRec] Match Error for face: ${err.message}`);
-            console.error(`[FaceRec] Descriptor Length: ${detection.descriptor.length}`);
-            // Skip this face or return error?
-            // If we skip, we might miss attendance, but better than crashing 500.
         }
     }
 
+    console.log(`[FaceRec] Total Results: ${results.length}`);
     return results;
 }
 
