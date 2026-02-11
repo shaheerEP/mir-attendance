@@ -27,6 +27,7 @@ interface SettingsData {
     wifi?: {
         ssid: string;
         password?: string;
+        networks?: { ssid: string; password?: string }[];
     };
 }
 
@@ -45,6 +46,8 @@ export default function SettingsPage() {
     const [saving, setSaving] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [settings, setSettings] = useState<SettingsData | null>(null);
+    const [newWifiSsid, setNewWifiSsid] = useState("");
+    const [newWifiPassword, setNewWifiPassword] = useState("");
 
     const fetchSettings = async () => {
         setLoading(true);
@@ -56,7 +59,11 @@ export default function SettingsPage() {
                     periods: data.periods,
                     gracePeriod: data.gracePeriod,
                     weeklyHolidays: data.weeklyHolidays || [5], // Default Friday
-                    wifi: data.wifi || { ssid: "", password: "" }
+                    wifi: {
+                        ssid: data.wifi?.ssid || "",
+                        password: data.wifi?.password || "",
+                        networks: data.wifi?.networks || []
+                    }
                 });
             }
         } catch (error) {
@@ -121,6 +128,31 @@ export default function SettingsPage() {
         setSettings({
             ...settings,
             wifi: { ...settings.wifi!, [field]: value }
+        });
+    };
+
+    const handleAddWifiNetwork = () => {
+        if (!settings || !newWifiSsid) return;
+        const currentNetworks = settings.wifi?.networks || [];
+        const updatedNetworks = [...currentNetworks, { ssid: newWifiSsid, password: newWifiPassword }];
+
+        setSettings({
+            ...settings,
+            wifi: { ...settings.wifi!, networks: updatedNetworks }
+        });
+
+        setNewWifiSsid("");
+        setNewWifiPassword("");
+    };
+
+    const handleRemoveWifiNetwork = (index: number) => {
+        if (!settings) return;
+        const currentNetworks = settings.wifi?.networks || [];
+        const updatedNetworks = currentNetworks.filter((_, i) => i !== index);
+
+        setSettings({
+            ...settings,
+            wifi: { ...settings.wifi!, networks: updatedNetworks }
         });
     };
 
@@ -316,6 +348,59 @@ export default function SettingsPage() {
                                         )}
                                     </Button>
                                 </div>
+                            </div>
+                        </div>
+
+                        <Separator />
+
+                        <div className="space-y-4">
+                            <Label>Saved Networks (Multi-WiFi)</Label>
+
+                            {settings?.wifi?.networks && settings.wifi.networks.length > 0 ? (
+                                <div className="space-y-2 border rounded-md p-2">
+                                    {settings.wifi.networks.map((net, idx) => (
+                                        <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-md">
+                                            <div className="flex flex-col">
+                                                <span className="font-medium text-sm">{net.ssid}</span>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {net.password ? "Password saved" : "Open network"}
+                                                </span>
+                                            </div>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleRemoveWifiNetwork(idx)}
+                                                className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-muted-foreground italic">No additional networks saved.</p>
+                            )}
+
+                            <div className="flex gap-2 items-end pt-2">
+                                <div className="grid gap-2 flex-1">
+                                    <Label className="text-xs">Add New Network</Label>
+                                    <Input
+                                        placeholder="SSID"
+                                        value={newWifiSsid}
+                                        onChange={(e) => setNewWifiSsid(e.target.value)}
+                                    />
+                                </div>
+                                <div className="grid gap-2 flex-1">
+                                    <Input
+                                        type="password"
+                                        placeholder="Password"
+                                        value={newWifiPassword}
+                                        onChange={(e) => setNewWifiPassword(e.target.value)}
+                                    />
+                                </div>
+                                <Button onClick={handleAddWifiNetwork} disabled={!newWifiSsid} size="sm">
+                                    <Plus className="h-4 w-4 mr-2" /> Add
+                                </Button>
                             </div>
                         </div>
 

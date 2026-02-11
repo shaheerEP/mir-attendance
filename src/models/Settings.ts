@@ -14,6 +14,7 @@ export interface IGracePeriodConfig {
 export interface IDeviceConfig {
     wifiSSID?: string;
     wifiPassword?: string;
+    wifiNetworks?: { ssid: string; password?: string }[];
     firmwareVersion?: string;
     firmwareUrl?: string;
 }
@@ -31,6 +32,11 @@ const PeriodSchema = new Schema<IPeriodConfig>({
     durationMinutes: { type: Number, required: true },
 });
 
+const WifiNetworkSchema = new Schema({
+    ssid: { type: String, required: true },
+    password: { type: String, default: "" }
+}, { _id: false }); // No ID for simple list items
+
 const SettingsSchema = new Schema<ISettings>(
     {
         periods: [PeriodSchema],
@@ -42,6 +48,7 @@ const SettingsSchema = new Schema<ISettings>(
         deviceConfig: {
             wifiSSID: { type: String, default: "" },
             wifiPassword: { type: String, default: "" },
+            wifiNetworks: { type: [WifiNetworkSchema], default: [] },
             firmwareVersion: { type: String, default: "" },
             firmwareUrl: { type: String, default: "" },
         },

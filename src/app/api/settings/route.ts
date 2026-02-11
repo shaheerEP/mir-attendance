@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
             ...settings.toObject(),
             wifi: {
                 ssid: settings.deviceConfig?.wifiSSID || "",
-                password: settings.deviceConfig?.wifiPassword || ""
+                password: settings.deviceConfig?.wifiPassword || "",
+                networks: settings.deviceConfig?.wifiNetworks || []
             }
         };
 
@@ -48,8 +49,11 @@ export async function POST(req: NextRequest) {
             deviceConfig = {
                 wifiSSID: wifi?.ssid,
                 wifiPassword: wifi?.password,
+                wifiNetworks: wifi?.networks || [],
             };
         }
+
+        console.log("Saving Settings - deviceConfig:", JSON.stringify(deviceConfig, null, 2));
 
         // Upsert the single settings document
         const settings = await Settings.findOneAndUpdate(
@@ -58,8 +62,11 @@ export async function POST(req: NextRequest) {
             { new: true, upsert: true, setDefaultsOnInsert: true }
         );
 
+        console.log("Saved Settings Result - wifiNetworks:", JSON.stringify(settings?.deviceConfig?.wifiNetworks, null, 2));
+
         return NextResponse.json(settings);
     } catch (error: any) {
+        console.error("Settings POST Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

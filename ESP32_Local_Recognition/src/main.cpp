@@ -8,7 +8,13 @@
 #include <HTTPClient.h>
 #include <Preferences.h> // ABSOLUTELY REQUIRED for Preferences
 #include <WiFi.h>
-// #include <WiFiClientSecure.h>
+#include <WiFiClientSecure.h>
+#include <WiFiMulti.h>
+
+// ===========================
+// GLOBAL OBJECTS
+// ===========================
+WiFiMulti wifiMulti;
 
 // ===========================
 // STREAM MACROS
@@ -27,12 +33,12 @@ httpd_handle_t stream_httpd = NULL;
 // ===========================
 const char *default_ssid = "IRIS_FOUNDATION_JIO";
 const char *default_password = "iris916313";
-const char *serverUrl = "192.168.31.3";
+const char *serverUrl = "mir-attendance.vercel.app";
 const char *serverPath = "/api/recognize";
 const char *statusPath =
-    "http://192.168.31.3:3000/api/status";  // Full URL for HTTPClient
+    "https://mir-attendance.vercel.app/api/status"; // Full URL for HTTPClient
 const char *settingsPath = "/api/settings"; // Endpoint for checking updates
-const int serverPort = 3000;                // HTTP Port
+const int serverPort = 443;                 // HTTPS Port
 
 // STATE MACHINE
 enum AppState { STATE_IDLE, STATE_CAPTURING, STATE_SHOWING_RESULT };
@@ -118,8 +124,8 @@ void showStatus(String title, String msg) {
 
 void fetchStatus() {
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
-    // client.setInsecure(); // Required for HTTPS without cert
+    WiFiClientSecure client;
+    client.setInsecure(); // Required for HTTPS without cert
 
     HTTPClient http;
     http.begin(client, statusPath);
@@ -205,12 +211,11 @@ void checkSettingsUpdates() {
 
   Serial.println("Checking for updates...");
 
-  WiFiClient client;
-  // client.setInsecure(); // Required for HTTPS without cert
+  WiFiClientSecure client;
+  client.setInsecure(); // Required for HTTPS without cert
 
   HTTPClient http;
-  http.begin(client, String("http://") + serverUrl + ":" + String(serverPort) +
-                         settingsPath);
+  http.begin(client, String("https://") + serverUrl + settingsPath);
   http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
 
   int httpCode = http.GET();
@@ -226,6 +231,9 @@ void checkSettingsUpdates() {
     if (!error) {
       // 1. Check WiFi Update
       if (doc["wifi"].is<JsonObject>()) {
+        bool needsRestart = false;
+
+        // Handle Single (Legacy/Primary) WiFi
         String newSSID = doc["wifi"]["ssid"].as<String>();
         String newPass = doc["wifi"]["password"].as<String>();
 
@@ -234,14 +242,56 @@ void checkSettingsUpdates() {
           String currentPass = preferences.getString("wifi_pass", "");
 
           if (newSSID != currentSSID || newPass != currentPass) {
-            Serial.println("New WiFi Credentials found. Saving...");
+            Serial.println("New Primary WiFi Credentials found. Saving...");
             preferences.putString("wifi_ssid", newSSID);
             preferences.putString("wifi_pass", newPass);
-            showStatus("Config", "WiFi Updated");
-            delay(2000);
-            ESP.restart();
+            needsRestart = true;
           }
         }
+
+        // Handle Multi-WiFi Networks
+        if (doc["wifi"]["networks"].is<JsonArray>()) {
+          JsonArray networks = doc["wifi"]["networks"].as<JsonArray>();
+          int netCount = networks.size();
+          int currentCount = preferences.getInt("wifi_count", 0);
+
+          // Simple check: if count differs or force update logic (Simpler to
+          // just overwrite if count > 0) ideally we compare content, but
+          // rewriting preference is okay.
+
+          if (netCount > 0) {
+            Serial.printf("Saving %d WiFi networks...\n", netCount);
+            preferences.putInt("wifi_count", netCount);
+
+            for (int i = 0; i < netCount; i++) {
+              String s = networks[i]["ssid"].as<String>();
+              String p = networks[i]["password"].as<String>();
+
+              // Keys: wifi_ssid_0, wifi_pass_0, ...
+              String ssidKey = "wifi_ssid_" + String(i);
+              String passKey = "wifi_pass_" + String(i);
+
+              // Only write if changed to save flash writes?
+              // For now, simpler to just write. Preferences library handles
+              // checking diff internally usually? Actually
+              // Preferences.putString writes even if same? Let's assume it's
+              // efficient enough or we don't update often.
+              preferences.putString(ssidKey.c_str(), s);
+              preferences.putString(passKey.c_str(), p);
+            }
+
+            // If we had more networks before, we might want to clean up, but
+            // simpler to just track count.
+            needsRestart = true;
+          }
+        }
+
+        if (needsRestart) {
+          showStatus("Config", "WiFi Updated");
+          delay(2000);
+          ESP.restart();
+        }
+
       } else {
         Serial.println("[Debug] 'wifi' key missing/invalid");
       }
@@ -258,8 +308,8 @@ void checkSettingsUpdates() {
 }
 
 String uploadPhoto(camera_fb_t *fb) {
-  WiFiClient client;
-  // client.setInsecure();
+  WiFiClientSecure client;
+  client.setInsecure();
 
   showStatus("Uploading...", "Please Wait");
 
@@ -453,21 +503,30 @@ void setup() {
   initCamera();
 
   // 5. Connect WiFi (Multi)
-  // 5. Connect WiFi
+  // Always add Default
+  wifiMulti.addAP(default_ssid, default_password);
+
+  // Add Primary Saved
   String savedSSID = preferences.getString("wifi_ssid", "");
   String savedPass = preferences.getString("wifi_pass", "");
-
   if (savedSSID != "") {
-    Serial.println("Connecting to Saved WiFi: " + savedSSID);
-    WiFi.begin(savedSSID.c_str(), savedPass.c_str());
-  } else {
-    Serial.println("Connecting to Default WiFi: " + String(default_ssid));
-    WiFi.begin(default_ssid, default_password);
+    wifiMulti.addAP(savedSSID.c_str(), savedPass.c_str());
   }
 
-  Serial.println("Connecting...");
+  // Add Multi Saved
+  int wifiCount = preferences.getInt("wifi_count", 0);
+  for (int i = 0; i < wifiCount; i++) {
+    String s = preferences.getString(("wifi_ssid_" + String(i)).c_str(), "");
+    String p = preferences.getString(("wifi_pass_" + String(i)).c_str(), "");
+    if (s != "") {
+      wifiMulti.addAP(s.c_str(), p.c_str());
+    }
+  }
+
+  Serial.println("Connecting to WiFi Multi...");
   int retry = 0;
-  while (WiFi.status() != WL_CONNECTED && retry < 20) {
+  // Try to connect for 15 seconds (approx)
+  while (wifiMulti.run() != WL_CONNECTED && retry < 30) {
     delay(500);
     showStatus("Connecting", String(retry));
     retry++;
