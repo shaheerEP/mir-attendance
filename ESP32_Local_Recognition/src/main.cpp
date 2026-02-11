@@ -4,7 +4,6 @@
 #include <Adafruit_SSD1306.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-#include <HTTPUpdate.h>  // ABSOLUTELY REQUIRED for httpUpdate
 #include <Preferences.h> // ABSOLUTELY REQUIRED for Preferences
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
@@ -433,7 +432,7 @@ void loop() {
       esp_camera_fb_return(fb);
 
       // 5. Show Result
-      showStatus("Result", result);
+      showStatus(result, "Repress button to capture another");
 
       // 6. Wait for user to dismiss
       currentState = STATE_SHOWING_RESULT;

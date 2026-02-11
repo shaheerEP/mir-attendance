@@ -1,0 +1,29 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+�
+
+--- ESP32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+[OLED] : WiFi 0
+[OLED] : WiFi 1
+[OLED] : WiFi 2
+[OLED] : WiFi 3
+[OLED] : WiFi 4
+[OLED] : WiFi 5
+[Status] {"period":"Free","present":0,"total":7}
+Checking for updates...
+[Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"wifiSSID":"Redmi Note 8","wifiPassword":"12345678","firmwareVersion":"firmware","firmwareUrl":"/api/device/firmware?version=firmware"},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"15:24","durationMinutes":120,"_id":"69895c32f7d1fed91a48fefd"}],"updatedAt":"2026-02-10T12:10:30.332Z","weeklyHolidays":[5],"firmware":{"version":"firmware","url":"/api/device/firmware?version=firmware"},"wifi":{"ssid":"Redmi Note 8","password":"12345678"}}
+[Debug] Current SSID: IRIS_FOUNDATION_JIO
+[Debug] New SSID: Redmi Note 8
+New WiFi Credentials found. Saving...
+[OLED] Config: WiFi Updated
+[OLED] Ready....: Press Button by standing away from camera 
