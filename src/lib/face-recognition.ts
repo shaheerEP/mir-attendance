@@ -109,23 +109,44 @@ export async function recognizeFace(imageBuffer: Buffer) {
         );
     });
 
-    const faceMatcher = new api.FaceMatcher(labeledDescriptors, 0.6);
+    let faceMatcher: any;
+    try {
+        faceMatcher = new api.FaceMatcher(labeledDescriptors, 0.6);
+    } catch (error: any) {
+        console.error("[FaceRec] Failed to create FaceMatcher:", error);
+        // If we can't create matcher, we can't recognize.
+        return [];
+    }
 
     const results = [];
 
     // 4. Match Each Face
     for (const detection of detections) {
-        const match = faceMatcher.findBestMatch(detection.descriptor);
+        try {
+            const desc = detection.descriptor;
+            const len = desc.length;
 
-        if (match.label !== 'unknown') {
-            const matchedStudent = students.find(s => s._id.toString() === match.label);
-            if (matchedStudent) {
-                results.push({
-                    studentId: match.label,
-                    name: matchedStudent.name,
-                    distance: match.distance
-                });
+            // Validate Matcher Dims (assuming 128)
+            // If the mismatch error occurs, it's likely here.
+            // We can't easily check FaceMatcher's internal dims, but we can catch the error.
+
+            const match = faceMatcher.findBestMatch(desc);
+
+            if (match.label !== 'unknown') {
+                const matchedStudent = students.find(s => s._id.toString() === match.label);
+                if (matchedStudent) {
+                    results.push({
+                        studentId: match.label,
+                        name: matchedStudent.name,
+                        distance: match.distance
+                    });
+                }
             }
+        } catch (err: any) {
+            console.error(`[FaceRec] Match Error for face: ${err.message}`);
+            console.error(`[FaceRec] Descriptor Length: ${detection.descriptor.length}`);
+            // Skip this face or return error?
+            // If we skip, we might miss attendance, but better than crashing 500.
         }
     }
 
