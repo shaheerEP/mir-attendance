@@ -17,6 +17,7 @@ import { AddStudentDialog } from "@/components/AddStudentDialog";
 import { EditStudentDialog } from "@/components/EditStudentDialog";
 import { Search, ArrowLeft, Trash2, Users, Percent, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Student {
     _id: string;
@@ -33,6 +34,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
     const resolvedParams = use(params);
     const className = decodeURIComponent(resolvedParams.className);
     const [students, setStudents] = useState<Student[]>([]);
+    const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const router = useRouter();
@@ -66,6 +68,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
 
             if (res.ok) {
                 setStudents(students.filter((s) => s._id !== id));
+                setSelectedStudents(selectedStudents.filter(sid => sid !== id)); // Remove from selection if present
                 router.refresh();
             } else {
                 alert("Failed to delete student");
@@ -73,6 +76,44 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
         } catch (error) {
             console.error(error);
             alert("Error deleting student");
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedStudents.length === 0) return;
+        if (!confirm(`Are you sure you want to delete ${selectedStudents.length} selected students?`)) return;
+
+        try {
+            const res = await fetch("/api/students/bulk", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: selectedStudents }),
+            });
+
+            if (res.ok) {
+                setStudents(students.filter((s) => !selectedStudents.includes(s._id)));
+                setSelectedStudents([]);
+                router.refresh();
+            } else {
+                alert("Failed to delete students");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error deleting students");
+        }
+    };
+
+    const toggleSelection = (id: string) => {
+        setSelectedStudents(prev =>
+            prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]
+        );
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedStudents.length === filteredStudents.length) {
+            setSelectedStudents([]);
+        } else {
+            setSelectedStudents(filteredStudents.map(s => s._id));
         }
     };
 
@@ -139,7 +180,14 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
                         className="pl-8"
                     />
                 </div>
-                <AddStudentDialog defaultClassName={className} />
+                <div className="flex gap-2">
+                    {selectedStudents.length > 0 && (
+                        <Button variant="destructive" onClick={handleBulkDelete}>
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete ({selectedStudents.length})
+                        </Button>
+                    )}
+                    <AddStudentDialog defaultClassName={className} />
+                </div>
             </div>
 
             <Card>
@@ -157,6 +205,12 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
                         <Table>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead className="w-[50px]">
+                                        <Checkbox
+                                            checked={filteredStudents.length > 0 && selectedStudents.length === filteredStudents.length}
+                                            onCheckedChange={toggleSelectAll}
+                                        />
+                                    </TableHead>
                                     <TableHead>Roll No</TableHead>
                                     <TableHead>Photo</TableHead>
                                     <TableHead>Name</TableHead>
@@ -180,6 +234,12 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ classNa
                                             className="cursor-pointer hover:bg-muted/50"
                                             onClick={() => router.push(`/students/${student._id}`)}
                                         >
+                                            <TableCell onClick={(e) => e.stopPropagation()}>
+                                                <Checkbox
+                                                    checked={selectedStudents.includes(student._id)}
+                                                    onCheckedChange={() => toggleSelection(student._id)}
+                                                />
+                                            </TableCell>
                                             <TableCell>{student.rollNumber || "-"}</TableCell>
                                             <TableCell>
                                                 {student.imageUrl ? (

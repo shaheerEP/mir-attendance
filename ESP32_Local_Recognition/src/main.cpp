@@ -356,12 +356,24 @@ void setup() {
   // 5. Connect WiFi
   String ssid = preferences.getString("ssid", default_ssid);
   String password = preferences.getString("password", default_password);
+  // Force update if defaults are provided
+  if (String(default_ssid) != "" && String(default_ssid) != "YOUR_WIFI_SSID") {
+    // Only update if changed or first run essentially
+    if (ssid != String(default_ssid) || password != String(default_password)) {
+      Serial.println("Forcing WiFi Credentials Update from Code...");
+      preferences.putString("ssid", default_ssid);
+      preferences.putString("password", default_password);
+      ssid = String(default_ssid);
+      password = String(default_password);
+    }
+  }
 
+  Serial.println("Connecting to: " + ssid);
   WiFi.begin(ssid.c_str(), password.c_str());
   int retry = 0;
-  while (WiFi.status() != WL_CONNECTED && retry < 20) {
+  while (WiFi.status() != WL_CONNECTED && retry < 40) {
     delay(500);
-    showStatus("", "WiFi " + String(retry));
+    showStatus("Connecting...", String(ssid) + " " + String(retry));
     retry++;
   }
 

@@ -1,0 +1,36 @@
+08:46:15.191 > ets Jul 29 2019 12:21:46
+08:46:15.191 > 
+08:46:15.191 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+08:46:15.191 > configsip: 0, SPIWP:0xee
+08:46:15.191 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+08:46:15.191 > mode:DIO, clock div:2
+08:46:15.191 > load:0x3fff0018,len:4
+08:46:15.191 > load:0x3fff001c,len:1044
+08:46:15.191 > load:0x40078000,len:10124
+08:46:15.191 > load:0x40080400,len:5828
+08:46:15.191 > entry 0x400806a8
+08:46:15.191 > 
+08:46:15.191 > 
+08:46:15.191 > --- ESP32 Online Snapshot Firmware ---
+08:46:15.191 > [OLED] Booting...: Init System
+08:46:15.191 > [OLED] : WiFi 0
+08:46:15.191 > [OLED] : WiFi 1
+08:46:15.191 > [OLED] : WiFi 2
+08:46:15.505 > [OLED] : WiFi 3
+08:46:16.033 > [OLED] : WiFi 4
+08:46:16.561 > [OLED] : WiFi 5
+08:46:17.088 > [OLED] : WiFi 6
+08:46:17.617 > [OLED] : WiFi 7
+08:46:18.145 > [OLED] : WiFi 8
+08:46:18.673 > [OLED] : WiFi 9
+08:46:19.201 > [OLED] : WiFi 10
+08:46:19.727 > [OLED] : WiFi 11
+08:46:20.257 > [OLED] : WiFi 12
+08:46:20.786 > [OLED] : WiFi 13
+08:46:21.313 > [OLED] : WiFi 14
+08:46:21.841 > [OLED] : WiFi 15
+08:46:22.369 > [OLED] : WiFi 16
+08:46:22.943 > [OLED] : WiFi 17
+08:46:23.428 > [OLED] : WiFi 18
+08:46:23.954 > [OLED] : WiFi 19
+08:46:23.983 > [OLED] WiFi Error: Check SSID
