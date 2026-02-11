@@ -26,9 +26,9 @@ export default function RootLayout({
           </div>
           <main className="md:pl-64 h-full bg-transparent min-h-screen relative overflow-hidden">
             {/* Background Logo */}
-            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-5">
+            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-15">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/mir-logo.png" alt="Logo" className="w-[800px] h-auto object-contain" />
+              <img src="/mir-logo.png" alt="Logo" className="w-[800px] h-auto object-contain brightness-75 contrast-125 saturate-150" />
             </div>
 
             {/* Content */}
