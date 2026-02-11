@@ -1,0 +1,39 @@
+20:53:20.477 > [OLED] Connecting: 2
+20:53:20.477 > [OLED] Connecting: 3
+20:53:20.477 > [OLED] Connecting: 4
+20:53:20.477 > [OLED] Connecting: 5
+20:53:20.477 > WiFi Connected: IRIS_FOUNDATION_JIO
+20:53:23.110 > [Status] {"period":"Free","present":0,"total":2}
+20:53:23.114 > Checking for updates...
+20:53:26.599 > [Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"firmwareVersion":"","firmwareUrl":"","wifiSSID":"IRIS_FOUNDATION_JIO","wifiPassword":"iris916313","wifiNetworks":[{"ssid":"Redmi Note 8","password":"12345678","_id":"698c70b0fb79636e6fc01a52"}]},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"21:41","durationMinutes":45,"_id":"698b58de40ebe20a018b7773"},{"id":2,"startTime":"01:25","durationMinutes":45,"_id":"698c370a9bcf8fbb1752442a"}],"updatedAt":"2026-02-11T12:10:58.122Z","weeklyHolidays":[5],"firmware":{"version":"1.0.0","url":""},"wifi":{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313","networks":[{"ssid":"Redmi Note 8","password":"12345678","_id":"698c70b0fb79636e6fc01a52"}]}}
+20:53:26.667 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: wifi_ssid NOT_FOUND
+20:53:26.673 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: wifi_pass NOT_FOUND
+20:53:26.700 > [OLED] Config: WiFi Updated
+20:53:28.740 > ets Jul 29 2019 12:21:46
+20:53:28.740 > 
+20:53:28.740 > rst:0xc (SW_CPU_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+20:53:28.745 > configsip: 0, SPIWP:0xee
+20:53:28.745 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+20:53:28.750 > mode:DIO, clock div:2
+20:53:28.755 > load:0x3fff0018,len:4
+20:53:28.755 > load:0x3fff001c,len:1044
+20:53:28.761 > load:0x40078000,len:10124
+20:53:28.761 > load:0x40080400,len:5828
+20:53:28.761 > entry 0x400806a8
+20:53:30.056 > 
+20:53:30.056 > 
+20:53:30.056 > --- ESP32 Online Snapshot Firmware ---
+20:53:30.116 > [OLED] Booting...: Init System
+20:53:30.648 > Connecting to Saved WiFi: IRIS_FOUNDATION_JIO
+20:53:30.817 > Connecting...
+20:53:31.348 > [OLED] Connecting: 0
+20:53:31.876 > [OLED] Connecting: 1
+20:53:32.403 > [OLED] Connecting: 2
+20:53:32.947 > [OLED] Connecting: 3
+20:53:33.475 > [OLED] Connecting: 4
+20:53:34.007 > [OLED] Connecting: 5
+20:53:34.007 > WiFi Connected: IRIS_FOUNDATION_JIO
+20:53:40.719 > [Status] {"period":"Free","present":0,"total":2}
+20:53:40.722 > Checking for updates...
+20:53:44.617 > [Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"firmwareVersion":"","firmwareUrl":"","wifiSSID":"IRIS_FOUNDATION_JIO","wifiPassword":"iris916313","wifiNetworks":[{"ssid":"Redmi Note 8","password":"12345678","_id":"698c70b0fb79636e6fc01a52"}]},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"21:41","durationMinutes":45,"_id":"698b58de40ebe20a018b7773"},{"id":2,"startTime":"01:25","durationMinutes":45,"_id":"698c370a9bcf8fbb1752442a"}],"updatedAt":"2026-02-11T12:10:58.122Z","weeklyHolidays":[5],"firmware":{"version":"1.0.0","url":""},"wifi":{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313"}}
+20:53:44.708 > [OLED] Ready....: Press Button by standing away from camera 

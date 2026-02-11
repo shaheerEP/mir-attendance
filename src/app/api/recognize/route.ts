@@ -33,6 +33,14 @@ export async function POST(req: NextRequest) {
 
         if (!results || results.length === 0) {
             console.log("[Recognize] No faces found or matched.");
+
+            // DEBUG: Save failed image
+            const fs = require('fs');
+            const path = require('path');
+            const debugPath = path.join(process.cwd(), 'failed_capture.jpg');
+            fs.writeFileSync(debugPath, buffer);
+            console.log(`[Recognize] Saved failed capture to: ${debugPath}`);
+
             return NextResponse.json({ message: "Not Recognized", status: "error" }, { status: 401 });
         }
 

@@ -131,17 +131,20 @@ export async function recognizeFace(imageBuffer: Buffer) {
             // console.log(`[FaceRec] Processing face with descriptor length: ${desc.length}`);
 
             const match = faceMatcher.findBestMatch(desc);
-            console.log(`[FaceRec] Best Match: ${match.label} Distance: ${match.distance}`);
+            console.log(`[FaceRec] Face ${detections.indexOf(detection) + 1} Best Match: ${match.toString()}`);
 
             if (match.label !== 'unknown') {
                 const matchedStudent = students.find(s => s._id.toString() === match.label);
                 if (matchedStudent) {
+                    console.log(`[FaceRec] FOUND: ${matchedStudent.name} (${match.distance})`);
                     results.push({
                         studentId: match.label,
                         name: matchedStudent.name,
                         distance: match.distance
                     });
                 }
+            } else {
+                console.log(`[FaceRec] Face NOT Recognized. Distance: ${match.distance}`);
             }
         } catch (err: any) {
             console.error(`[FaceRec] Match Error for face: ${err.message}`);
