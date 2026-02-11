@@ -25,11 +25,16 @@ export default function RootLayout({
             <Sidebar />
           </div>
           <main className="md:pl-64 h-full bg-transparent min-h-screen relative overflow-hidden">
-            {/* Background Logo */}
-            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-15">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/mir-logo.png" alt="Logo" className="w-[800px] h-auto object-contain brightness-75 contrast-125 saturate-150" />
-            </div>
+            {/* Tiled Background Logos */}
+            <div
+              className="absolute inset-0 z-0 pointer-events-none opacity-10"
+              style={{
+                backgroundImage: 'url("/mir-logo.png")',
+                backgroundSize: '100px auto',
+                backgroundRepeat: 'repeat',
+                filter: 'brightness(0.8) contrast(1.1) saturate(1.2)'
+              }}
+            />
 
             {/* Content */}
             <div className="relative z-10 h-full">
