@@ -1,0 +1,45 @@
+17:41:23.795 > ets Jul 29 2019 12:21:46
+17:41:23.795 > 
+17:41:23.795 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+17:41:23.795 > configsip: 0, SPIWP:0xee
+17:41:23.795 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+17:41:23.795 > mode:DIO, clock div:2
+17:41:23.795 > load:0x3fff0018,len:4
+17:41:23.795 > load:0x3fff001c,len:1044
+17:41:23.795 > load:0x40078000,len:10124
+17:41:23.795 > load:0x40080400,len:5828
+17:41:23.795 > entry 0x400806a8
+17:41:23.795 > �
+17:41:23.795 > 
+17:41:23.795 > --- ESP32 Online Snapshot Firmware ---
+17:41:23.795 > [OLED] Booting...: Init System
+17:41:23.795 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: ssid_0 NOT_FOUND
+17:41:23.795 > [E][Preferences.cpp:472] getString(): nvs_get_str len fail: pass_0 NOT_FOUND
+17:41:23.795 > Connecting to WiFi...
+17:41:24.317 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:41:25.342 > [OLED] : WiFi 0
+17:41:29.856 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:41:30.882 > [OLED] : WiFi 1
+17:41:35.798 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:41:36.821 > [OLED] : WiFi 2
+17:41:41.537 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:41:42.562 > [OLED] : WiFi 3
+17:41:47.277 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:41:48.298 > [OLED] : WiFi 4
+17:41:52.817 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:41:53.842 > [OLED] : WiFi 5
+17:41:58.556 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:41:59.582 > [OLED] : WiFi 6
+17:42:04.097 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:42:05.121 > [OLED] : WiFi 7
+17:42:09.636 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:42:10.662 > [OLED] : WiFi 8
+17:42:15.377 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:42:16.397 > [OLED] : WiFi 9
+17:42:21.117 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:42:22.142 > [OLED] : WiFi 10
+17:42:26.857 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:42:27.882 > [OLED] : WiFi 11
+17:42:32.398 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
+17:42:33.421 > [OLED] : WiFi 12
+17:42:37.936 > [E][WiFiMulti.cpp:191] run(): [WIFI] no matching wifi found!
