@@ -106,12 +106,29 @@ export async function recognizeFace(imageBuffer: Buffer) {
     }
 
     // 3. Create Face Matcher
-    const labeledDescriptors = students.map(student => {
-        return new api.LabeledFaceDescriptors(
-            student._id.toString(),
-            [new Float32Array((student.faceDescriptor || []) as any)]
-        );
-    });
+    const validDescriptorLength = detections[0].descriptor.length;
+    console.log(`[FaceRec] Detection Descriptor Length: ${validDescriptorLength}`);
+
+    const labeledDescriptors = students
+        .filter(student => {
+            const desc = student.faceDescriptor;
+            if (!desc || desc.length !== validDescriptorLength) {
+                console.warn(`[FaceRec] Skipping student ${student.name} (${student._id}): Invalid descriptor length ${desc?.length}`);
+                return false;
+            }
+            return true;
+        })
+        .map(student => {
+            return new api.LabeledFaceDescriptors(
+                student._id.toString(),
+                [new Float32Array(student.faceDescriptor as any)]
+            );
+        });
+
+    if (labeledDescriptors.length === 0) {
+        console.warn("[FaceRec] No valid student descriptors found after filtering.");
+        return [];
+    }
 
     let faceMatcher: any;
     try {
