@@ -81,13 +81,7 @@ export async function recognizeFace(imageBuffer: Buffer) {
     await loadModels(); // Ensure models loaded
 
     // 1. Detect ALL Faces in Image
-    let img;
-    try {
-        img = await canvas.loadImage(imageBuffer);
-    } catch (err: any) {
-        console.error("[FaceRec] Failed to load image:", err);
-        throw new Error(`Image Load Failed: ${err.message}`);
-    }
+    const img = await canvas.loadImage(imageBuffer);
 
     // Detect all faces
     const detections = await api.detectAllFaces(img as any)
@@ -142,13 +136,7 @@ export async function getDescriptor(imageBuffer: Buffer) {
     const api = await getFaceApi();
     await loadModels();
 
-    let img;
-    try {
-        img = await canvas.loadImage(imageBuffer);
-    } catch (err: any) {
-        console.error("[FaceRec] Failed to load image for descriptor:", err);
-        throw new Error(`Image Load Failed: ${err.message}`);
-    }
+    const img = await canvas.loadImage(imageBuffer);
     const detection = await api.detectSingleFace(img as any)
         .withFaceLandmarks()
         .withFaceDescriptor();
