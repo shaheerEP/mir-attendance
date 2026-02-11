@@ -260,29 +260,54 @@ void checkSettingsUpdates() {
           // rewriting preference is okay.
 
           if (netCount > 0) {
-            Serial.printf("Saving %d WiFi networks...\n", netCount);
-            preferences.putInt("wifi_count", netCount);
+            String countKey = "wifi_count";
 
-            for (int i = 0; i < netCount; i++) {
-              String s = networks[i]["ssid"].as<String>();
-              String p = networks[i]["password"].as<String>();
-
-              // Keys: wifi_ssid_0, wifi_pass_0, ...
-              String ssidKey = "wifi_ssid_" + String(i);
-              String passKey = "wifi_pass_" + String(i);
-
-              // Only write if changed to save flash writes?
-              // For now, simpler to just write. Preferences library handles
-              // checking diff internally usually? Actually
-              // Preferences.putString writes even if same? Let's assume it's
-              // efficient enough or we don't update often.
-              preferences.putString(ssidKey.c_str(), s);
-              preferences.putString(passKey.c_str(), p);
+            // 1. Check if count changed
+            if (preferences.getInt(countKey.c_str(), 0) != netCount) {
+              Serial.printf("WiFi Count Changed: %d -> %d\n",
+                            preferences.getInt(countKey.c_str(), 0), netCount);
+              needsRestart = true;
             }
 
-            // If we had more networks before, we might want to clean up, but
-            // simpler to just track count.
-            needsRestart = true;
+            // 2. Check if any network changed (only if count didn't change, to
+            // avoid double work, but simpler to just check all if count is
+            // same) If count changed, we already need restart.
+
+            if (!needsRestart) {
+              for (int i = 0; i < netCount; i++) {
+                String s = networks[i]["ssid"].as<String>();
+                String p = networks[i]["password"].as<String>();
+
+                String ssidKey = "wifi_ssid_" + String(i);
+                String passKey = "wifi_pass_" + String(i);
+
+                String savedS = preferences.getString(ssidKey.c_str(), "");
+                String savedP = preferences.getString(passKey.c_str(), "");
+
+                if (s != savedS || p != savedP) {
+                  Serial.printf("WiFi Network %d changed.\n", i);
+                  needsRestart = true;
+                  break;
+                }
+              }
+            }
+
+            // 3. Save if needed
+            if (needsRestart) {
+              Serial.printf("Saving %d WiFi networks...\n", netCount);
+              preferences.putInt(countKey.c_str(), netCount);
+
+              for (int i = 0; i < netCount; i++) {
+                String s = networks[i]["ssid"].as<String>();
+                String p = networks[i]["password"].as<String>();
+
+                String ssidKey = "wifi_ssid_" + String(i);
+                String passKey = "wifi_pass_" + String(i);
+
+                preferences.putString(ssidKey.c_str(), s);
+                preferences.putString(passKey.c_str(), p);
+              }
+            }
           }
         }
 
@@ -538,13 +563,13 @@ void setup() {
     Serial.println("IP Address: " + WiFi.localIP().toString());
     startCameraServer(); // Start the stream server
 
-    showStatus("Live Stream", WiFi.localIP().toString());
-    delay(3000); // Show IP for 3 seconds
+    // showStatus("Live Stream", WiFi.localIP().toString());
+    // delay(3000); // Show IP for 3 seconds
 
     fetchStatus();          // Get initial status
     checkSettingsUpdates(); // Check for firmware/wifi updates
 
-    showStatus("Ready....", "Press Button by standing away from camera ");
+    showStatus("Ready....", "Press Button");
     currentState = STATE_IDLE;
   } else {
     showStatus("WiFi Error", "Out of Range");
