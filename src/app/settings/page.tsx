@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Loader2, Plus, Trash2 } from "lucide-react";
+import { Save, Loader2, Plus, Trash2, Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -40,6 +40,7 @@ const DAYS = [
 export default function SettingsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [settings, setSettings] = useState<SettingsData | null>(null);
 
     const fetchSettings = async () => {
@@ -287,16 +288,32 @@ export default function SettingsPage() {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="wifi-pass">Password</Label>
-                                <Input
-                                    id="wifi-pass"
-                                    type="password"
-                                    placeholder="Network Password"
-                                    value={settings?.wifi?.password || ""}
-                                    onChange={(e) => setSettings(prev => prev ? ({
-                                        ...prev,
-                                        wifi: { ...prev.wifi!, password: e.target.value }
-                                    }) : null)}
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="wifi-pass"
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Network Password"
+                                        value={settings?.wifi?.password || ""}
+                                        onChange={(e) => setSettings(prev => prev ? ({
+                                            ...prev,
+                                            wifi: { ...prev.wifi!, password: e.target.value }
+                                        }) : null)}
+                                        className="pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                        ) : (
+                                            <Eye className="h-4 w-4 text-muted-foreground" />
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
                             <p className="text-xs text-muted-foreground">
                                 Click "Save Changes" at the top to push these credentials to the device.
