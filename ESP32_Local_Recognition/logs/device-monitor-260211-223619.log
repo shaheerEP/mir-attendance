@@ -1,0 +1,22 @@
+[OLED] : WiFi 2
+[OLED] : WiFi 3
+[OLED] : WiFi 4
+[OLED] : WiFi 5
+[OLED] : WiFi 6
+[OLED] : WiFi 7
+[OLED] : WiFi 8
+[OLED] : WiFi 9
+[OLED] : WiFi 10
+[OLED] : WiFi 11
+[Status] {"period":"Free","present":0,"total":2}
+Checking for updates...
+[Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"firmwareVersion":"","firmwareUrl":"","wifiSSID":"IRIS_FOUNDATION_JIO","wifiPassword":"iris916313"},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"20:55","durationMinutes":45,"_id":"698c9fe94ca9015e8e611165"},{"id":2,"startTime":"20:55","durationMinutes":45,"_id":"698c9fe94ca9015e8e611166"}],"updatedAt":"2026-02-11T15:27:37.806Z","weeklyHolidays":[5],"firmware":{"version":"","url":""},"wifi":{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313"}}
+[Debug] Current SSID: IRIS_FOUNDATION_JIO
+[Debug] New SSID: IRIS_FOUNDATION_JIO
+[Debug] WiFi credentials match. No update.
+[OLED] Ready....: Press Button by standing away from camera 
+Button Pressed
+Starting Capture Sequence...
+Image Captured. Size: 21330 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Result: Server Error
