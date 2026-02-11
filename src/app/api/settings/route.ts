@@ -12,8 +12,7 @@ export async function GET(req: NextRequest) {
         const defaultResponse = {
             periods: PERIODS,
             gracePeriod: { fullPresentMins: 5, halfPresentMins: 20 },
-            wifi: { ssid: "", password: "" },
-            firmware: { version: "", url: "" }
+            wifi: { ssid: "", password: "" }
         };
 
         if (!settings) {
@@ -26,10 +25,6 @@ export async function GET(req: NextRequest) {
             wifi: {
                 ssid: settings.deviceConfig?.wifiSSID || "",
                 password: settings.deviceConfig?.wifiPassword || ""
-            },
-            firmware: {
-                version: settings.deviceConfig?.firmwareVersion || "",
-                url: settings.deviceConfig?.firmwareUrl || ""
             }
         };
 
@@ -45,16 +40,14 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { periods, gracePeriod, weeklyHolidays, wifi, firmware } = body;
+        const { periods, gracePeriod, weeklyHolidays, wifi } = body;
 
-        // Construct deviceConfig if wifi/firmware are present (from frontend)
+        // Construct deviceConfig if wifi is present (from frontend)
         let deviceConfig = body.deviceConfig;
-        if (!deviceConfig && (wifi || firmware)) {
+        if (!deviceConfig && wifi) {
             deviceConfig = {
                 wifiSSID: wifi?.ssid,
                 wifiPassword: wifi?.password,
-                firmwareVersion: firmware?.version,
-                firmwareUrl: firmware?.url,
             };
         }
 

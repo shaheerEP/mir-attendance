@@ -25,7 +25,6 @@ interface SettingsData {
     gracePeriod: GracePeriodConfig;
     weeklyHolidays: number[];
     wifi?: { ssid: string; password?: string };
-    firmware?: { version: string; url: string };
 }
 
 const DAYS = [
@@ -53,8 +52,7 @@ export default function SettingsPage() {
                     periods: data.periods,
                     gracePeriod: data.gracePeriod,
                     weeklyHolidays: data.weeklyHolidays || [5], // Default Friday
-                    wifi: data.wifi || { ssid: "", password: "" },
-                    firmware: data.firmware || { version: "1.0.0", url: "" }
+                    wifi: data.wifi || { ssid: "", password: "" }
                 });
             }
         } catch (error) {
@@ -269,9 +267,9 @@ export default function SettingsPage() {
                 <Card className="col-span-2">
                     <CardHeader>
                         <CardTitle>Device Management (ESP32)</CardTitle>
-                        <CardDescription>Configure WiFi and update firmware OTA.</CardDescription>
+                        <CardDescription>Configure WiFi credentials.</CardDescription>
                     </CardHeader>
-                    <CardContent className="grid gap-6 md:grid-cols-2">
+                    <CardContent className="space-y-6">
                         {/* WiFi Config */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-medium">WiFi Configuration</h3>
