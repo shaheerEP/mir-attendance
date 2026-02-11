@@ -21,10 +21,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="h-full relative">
-          <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-[80] bg-gray-900">
+          <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-[80] bg-transparent">
             <Sidebar />
           </div>
-          <main className="md:pl-64 h-full bg-slate-100 min-h-screen relative overflow-hidden">
+          <main className="md:pl-64 h-full bg-transparent min-h-screen relative overflow-hidden">
             {/* Background Logo */}
             <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-5">
               {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -32,7 +32,7 @@ export function Sidebar() {
     ];
 
     return (
-        <div className="space-y-4 py-4 flex flex-col h-full bg-slate-900 text-white w-64">
+        <div className="space-y-4 py-4 flex flex-col h-full bg-transparent text-slate-900 w-64 border-r">
             <div className="px-3 py-2 flex-1">
                 <Link href="/" className="flex items-center pl-3 mb-14">
                     <div className="relative h-8 w-8 mr-4">

@@ -182,7 +182,7 @@ export default function Dashboard() {
   const totalPresent = logs.filter((l) => l.status === "PRESENT").length;
 
   return (
-    <div className="p-8 space-y-8 bg-slate-50/50 min-h-screen">
+    <div className="p-8 space-y-8 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h2>
