@@ -163,6 +163,10 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error("[Recognize] Error:", error);
-        return NextResponse.json({ message: "Server Error", status: "error", error: error.message }, { status: 500 });
+        return NextResponse.json({
+            message: `Err: ${error.message.substring(0, 20)}`,
+            status: "error",
+            error: error.message
+        }, { status: 500 });
     }
 }
