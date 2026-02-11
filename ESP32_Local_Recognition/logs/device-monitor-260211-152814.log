@@ -1,0 +1,36 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1044
+load:0x40078000,len:10124
+load:0x40080400,len:5828
+entry 0x400806a8
+
+���	*MA32 Online Snapshot Firmware ---
+[OLED] Booting...: Init System
+Loading 1 saved networks...
+Added: IRIS_FOUNDATION_JIO
+Connecting to WiFi...
+[E][WiFiMulti.cpp:187] run(): [WIFI] Connecting Failed (0).
+[OLED] Connecting: 0
+WiFi Connected: IRIS_FOUNDATION_JIO
+[Status] {"period":"Free","present":0,"total":2}
+Checking for updates...
+[Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"firmwareVersion":"","firmwareUrl":"","wifiSSID":"IRIS_FOUNDATION_JIO","wifiPassword":"iris916313","wifiNetworks":[{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313","_id":"698c52269885b08fc47cfcd2"}]},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"21:41","durationMinutes":45,"_id":"698b58de40ebe20a018b7773"},{"id":2,"startTime":"01:25","durationMinutes":45,"_id":"698c370a9bcf8fbb1752442a"}],"updatedAt":"2026-02-11T09:55:50.437Z","weeklyHolidays":[5],"firmware":{"version":"1.0.0","url":""},"wifi":{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313","networks":[{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313","_id":"698c52269885b08fc47cfcd2"}]}}
+Found 1 new WiFi networks. Saving...
+Saved: IRIS_FOUNDATION_JIO
+[OLED] Config: WiFi List Updated
+[OLED] Ready....: Press Button by standing away from camera 
+Button Pressed
+[OLED] Get Ready!: 3...
+[OLED] Get Ready!: 2...
+[OLED] Get Ready!: 1...
+[OLED] Smile!: Capturing...
+Starting Capture Sequence...
+Image Captured. Size: 14626 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Server Error: Repress button to capture another
