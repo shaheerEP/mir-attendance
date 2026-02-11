@@ -375,17 +375,11 @@ void setup() {
   // 5. Connect WiFi (Multi)
   // Load saved networks
   int wifiCount = preferences.getInt("wifi_count", 0);
+  int addedCount = 0;
 
-  // If no networks saved/count is 0, check backward compatibility or defaults
-  if (wifiCount == 0) {
-    String ssid = preferences.getString("ssid", default_ssid);
-    String password = preferences.getString("password", default_password);
-    if (ssid != "" && ssid != "YOUR_WIFI_SSID") {
-      wifiMulti.addAP(ssid.c_str(), password.c_str());
-      Serial.println("Added default/legacy WiFi: " + ssid);
-    }
-  } else {
-    Serial.printf("Loading %d saved networks...\n", wifiCount);
+  Serial.printf("Saved WiFi Count: %d\n", wifiCount);
+
+  if (wifiCount > 0) {
     for (int i = 0; i < wifiCount; i++) {
       String ssidKey = "wifi_" + String(i) + "_ssid";
       String passKey = "wifi_" + String(i) + "_pass";
@@ -394,13 +388,21 @@ void setup() {
 
       if (ssid != "") {
         wifiMulti.addAP(ssid.c_str(), pass.c_str());
-        Serial.printf("Added: %s\n", ssid.c_str());
+        Serial.printf("Added Saved AP: %s\n", ssid.c_str());
+        addedCount++;
       }
     }
   }
 
-  // Hardcoded Backup (Optional, can be added by user)
-  // wifiMulti.addAP("BACKUP_SSID", "BACKUP_PASS");
+  // Fallback: If no networks added (either count 0 OR all keys missing/empty)
+  if (addedCount == 0) {
+    Serial.println("No saved networks valid. Adding Default.");
+    wifiMulti.addAP(default_ssid, default_password);
+  } else {
+    // OPTIONAL: Always add default as a backup?
+    // Uncomment below if you want default to be available even if others exist
+    wifiMulti.addAP(default_ssid, default_password);
+  }
 
   Serial.println("Connecting to WiFi...");
   int retry = 0;
@@ -419,7 +421,7 @@ void setup() {
     showStatus("Ready....", "Press Button by standing away from camera ");
     currentState = STATE_IDLE;
   } else {
-    showStatus("WiFi Error", "Out of Range"); // Changed as per request
+    showStatus("WiFi Error", "Out of Range");
   }
 }
 
