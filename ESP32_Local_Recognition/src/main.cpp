@@ -7,6 +7,7 @@
 #include <Preferences.h> // ABSOLUTELY REQUIRED for Preferences
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
+#include <WiFiMulti.h> // Include WiFiMulti
 
 // ===========================
 // CONFIGURATION
@@ -31,7 +32,7 @@ int totalCount = 0;
 
 // GPIO PINS
 #define BUTTON_PIN 12 // Button to GND
-#define FLASH_PIN 4   // On-board Flash LED
+#define FLASH_PIN 13  // On-board Flash LED (User requested)
 
 // OLED CONFIG
 #define SCREEN_WIDTH 128
@@ -58,6 +59,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 #define PCLK_GPIO_NUM 22
 
 // GLOBALS
+WiFiMulti wifiMulti; // Global WiFiMulti instance
 bool isCapturing = false;
 unsigned long lastButtonPress = 0;
 const unsigned long DEBOUNCE_DELAY = 1000;
@@ -209,29 +211,46 @@ void checkSettingsUpdates() {
     DeserializationError error = deserializeJson(doc, body);
 
     if (!error) {
-      // 1. Check WiFi Update
+      // 1. Check WiFi Update (Multiple Networks)
       if (doc["wifi"].is<JsonObject>()) {
-        String newSSID = doc["wifi"]["ssid"].as<String>();
-        String newPass = doc["wifi"]["password"].as<String>();
+        JsonArray networks = doc["wifi"]["networks"].as<JsonArray>();
 
-        String currentSSID = preferences.getString("ssid", default_ssid);
-        String currentPass =
-            preferences.getString("password", default_password);
+        if (networks.size() > 0) {
+          int count = networks.size();
+          Serial.printf("Found %d new WiFi networks. Saving...\n", count);
 
-        Serial.print("[Debug] Current SSID: ");
-        Serial.println(currentSSID);
-        Serial.print("[Debug] New SSID: ");
-        Serial.println(newSSID);
+          preferences.putInt("wifi_count", count);
 
-        if (newSSID != "" &&
-            (newSSID != currentSSID || newPass != currentPass)) {
-          Serial.println("New WiFi Credentials found. Saving...");
-          preferences.putString("ssid", newSSID);
-          preferences.putString("password", newPass);
-          showStatus("Config", "WiFi Updated");
+          for (int i = 0; i < count; i++) {
+            String ssid = networks[i]["ssid"].as<String>();
+            String pass = networks[i]["password"].as<String>();
+
+            // Save using indexed keys: wifi_0_ssid, wifi_0_pass, etc.
+            String ssidKey = "wifi_" + String(i) + "_ssid";
+            String passKey = "wifi_" + String(i) + "_pass";
+
+            preferences.putString(ssidKey.c_str(), ssid);
+            preferences.putString(passKey.c_str(), pass);
+
+            Serial.printf("Saved: %s\n", ssid.c_str());
+          }
+          showStatus("Config", "WiFi List Updated");
           delay(2000);
         } else {
-          Serial.println("[Debug] WiFi credentials match. No update.");
+          // Backward compatibility: Check single SSID
+          String newSSID = doc["wifi"]["ssid"].as<String>();
+          String newPass = doc["wifi"]["password"].as<String>();
+
+          // If single SSID is present and valid, treat as 1 network
+          if (newSSID != "") {
+            Serial.println(
+                "Single WiFi Credential found. Saving as network 0...");
+            preferences.putInt("wifi_count", 1);
+            preferences.putString("wifi_0_ssid", newSSID);
+            preferences.putString("wifi_0_pass", newPass);
+            showStatus("Config", "WiFi Updated");
+            delay(2000);
+          }
         }
       } else {
         Serial.println("[Debug] 'wifi' key missing/invalid");
@@ -353,38 +372,54 @@ void setup() {
   // 4. Init Camera
   initCamera();
 
-  // 5. Connect WiFi
-  String ssid = preferences.getString("ssid", default_ssid);
-  String password = preferences.getString("password", default_password);
-  // Force update if defaults are provided
-  if (String(default_ssid) != "" && String(default_ssid) != "YOUR_WIFI_SSID") {
-    // Only update if changed or first run essentially
-    if (ssid != String(default_ssid) || password != String(default_password)) {
-      Serial.println("Forcing WiFi Credentials Update from Code...");
-      preferences.putString("ssid", default_ssid);
-      preferences.putString("password", default_password);
-      ssid = String(default_ssid);
-      password = String(default_password);
+  // 5. Connect WiFi (Multi)
+  // Load saved networks
+  int wifiCount = preferences.getInt("wifi_count", 0);
+
+  // If no networks saved/count is 0, check backward compatibility or defaults
+  if (wifiCount == 0) {
+    String ssid = preferences.getString("ssid", default_ssid);
+    String password = preferences.getString("password", default_password);
+    if (ssid != "" && ssid != "YOUR_WIFI_SSID") {
+      wifiMulti.addAP(ssid.c_str(), password.c_str());
+      Serial.println("Added default/legacy WiFi: " + ssid);
+    }
+  } else {
+    Serial.printf("Loading %d saved networks...\n", wifiCount);
+    for (int i = 0; i < wifiCount; i++) {
+      String ssidKey = "wifi_" + String(i) + "_ssid";
+      String passKey = "wifi_" + String(i) + "_pass";
+      String ssid = preferences.getString(ssidKey.c_str(), "");
+      String pass = preferences.getString(passKey.c_str(), "");
+
+      if (ssid != "") {
+        wifiMulti.addAP(ssid.c_str(), pass.c_str());
+        Serial.printf("Added: %s\n", ssid.c_str());
+      }
     }
   }
 
-  Serial.println("Connecting to: " + ssid);
-  WiFi.begin(ssid.c_str(), password.c_str());
+  // Hardcoded Backup (Optional, can be added by user)
+  // wifiMulti.addAP("BACKUP_SSID", "BACKUP_PASS");
+
+  Serial.println("Connecting to WiFi...");
   int retry = 0;
-  while (WiFi.status() != WL_CONNECTED && retry < 40) {
+  // Use wifiMulti.run() to connect to best AP
+  while (wifiMulti.run() != WL_CONNECTED && retry < 40) {
     delay(500);
-    showStatus("Connecting...", String(ssid) + " " + String(retry));
+    showStatus("Connecting", String(retry));
     retry++;
   }
 
   if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("WiFi Connected: " + WiFi.SSID());
     fetchStatus();          // Get initial status
     checkSettingsUpdates(); // Check for firmware/wifi updates
 
     showStatus("Ready....", "Press Button by standing away from camera ");
     currentState = STATE_IDLE;
   } else {
-    showStatus("WiFi Error", "Check SSID");
+    showStatus("WiFi Error", "Out of Range"); // Changed as per request
   }
 }
 
@@ -399,6 +434,11 @@ void loop() {
       btnPressed = true;
       Serial.println("Button Pressed");
     }
+  }
+
+  // Maintain WiFi connection
+  if (currentState == STATE_IDLE) {
+    wifiMulti.run();
   }
 
   switch (currentState) {
@@ -419,6 +459,14 @@ void loop() {
     break;
 
   case STATE_CAPTURING: {
+    // 3 Second Countdown with OLED update
+    for (int i = 3; i > 0; i--) {
+      showStatus("Get Ready!", String(i) + "...");
+      delay(1000);
+    }
+    showStatus("Smile!", "Capturing...");
+    delay(500); // Brief pause before flash
+
     Serial.println("Starting Capture Sequence...");
 
     // 1. Turn on Flash

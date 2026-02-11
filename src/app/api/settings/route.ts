@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
         const defaultResponse = {
             periods: PERIODS,
             gracePeriod: { fullPresentMins: 5, halfPresentMins: 20 },
-            wifi: { ssid: "", password: "" }
+            wifi: { ssid: "", password: "", networks: [] }
         };
 
         if (!settings) {
@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
             ...settings.toObject(),
             wifi: {
                 ssid: settings.deviceConfig?.wifiSSID || "",
-                password: settings.deviceConfig?.wifiPassword || ""
+                password: settings.deviceConfig?.wifiPassword || "",
+                networks: settings.deviceConfig?.wifiNetworks || []
             }
         };
 
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest) {
             deviceConfig = {
                 wifiSSID: wifi?.ssid,
                 wifiPassword: wifi?.password,
+                wifiNetworks: wifi?.networks, // New field
             };
         }
 

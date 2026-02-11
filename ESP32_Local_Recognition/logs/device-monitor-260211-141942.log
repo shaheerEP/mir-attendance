@@ -1,0 +1,10 @@
+[OLED] Connecting: 2
+[OLED] Connecting: 3
+[OLED] Connecting: 4
+[Status] {"period":"Free","present":0,"total":2}
+Checking for updates...
+[Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"firmwareVersion":"","firmwareUrl":"","wifiSSID":"IRIS_FOUNDATION_JIO","wifiPassword":"iris916313"},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"21:41","durationMinutes":45,"_id":"698b58de40ebe20a018b7773"},{"id":2,"startTime":"01:25","durationMinutes":45,"_id":"698c370a9bcf8fbb1752442a"}],"updatedAt":"2026-02-11T08:00:10.584Z","weeklyHolidays":[5],"firmware":{"version":"1.0.0","url":""},"wifi":{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313"}}
+[Debug] Current SSID: IRIS_FOUNDATION_JIO
+[Debug] New SSID: IRIS_FOUNDATION_JIO
+[Debug] WiFi credentials match. No update.
+[OLED] Ready....: Press Button by standing away from camera 

@@ -1,0 +1,29 @@
+13:05:29.903 > ets Jul 29 2019 12:21:46
+13:05:29.903 > 
+13:05:29.903 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+13:05:29.903 > configsip: 0, SPIWP:0xee
+13:05:29.903 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+13:05:29.903 > mode:DIO, clock div:2
+13:05:29.903 > load:0x3fff0018,len:4
+13:05:29.903 > load:0x3fff001c,len:1044
+13:05:29.903 > load:0x40078000,len:10124
+13:05:29.903 > load:0x40080400,len:5828
+13:05:29.903 > entry 0x400806a8
+13:05:29.903 > �
+13:05:29.903 > 
+13:05:29.903 > --- ESP32 Online Snapshot Firmware ---
+13:05:29.903 > [OLED] Booting...: Init System
+13:05:29.903 > Connecting to: IRIS_FOUNDATION_JIO
+13:05:29.903 > [OLED] Connecting...: IRIS_FOUNDATION_JIO 0
+13:05:29.903 > [OLED] Connecting...: IRIS_FOUNDATION_JIO 1
+13:05:29.903 > [OLED] Connecting...: IRIS_FOUNDATION_JIO 2
+13:05:29.903 > [OLED] Connecting...: IRIS_FOUNDATION_JIO 3
+13:05:30.153 > [OLED] Connecting...: IRIS_FOUNDATION_JIO 4
+13:05:30.680 > [OLED] Connecting...: IRIS_FOUNDATION_JIO 5
+13:05:34.204 > [Status] {"period":"Free","present":0,"total":1}
+13:05:34.207 > Checking for updates...
+13:05:38.094 > [Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"firmwareVersion":"","firmwareUrl":"","wifiSSID":"IRIS_FOUNDATION_JIO","wifiPassword":"iris916313"},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"21:41","durationMinutes":45,"_id":"698b58de40ebe20a018b7773"}],"updatedAt":"2026-02-11T03:15:54.172Z","weeklyHolidays":[5],"firmware":{"version":"1.0.0","url":""},"wifi":{"ssid":"IRIS_FOUNDATION_JIO","password":"iris916313"}}
+13:05:38.139 > [Debug] Current SSID: IRIS_FOUNDATION_JIO
+13:05:38.143 > [Debug] New SSID: IRIS_FOUNDATION_JIO
+13:05:38.148 > [Debug] WiFi credentials match. No update.
+13:05:38.177 > [OLED] Ready....: Press Button by standing away from camera 
