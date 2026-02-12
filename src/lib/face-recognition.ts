@@ -86,7 +86,9 @@ export async function recognizeFace(imageBuffer: Buffer) {
     const img = await canvas.loadImage(imageBuffer);
 
     // Detect all faces
-    const detections = await api.detectAllFaces(img as any)
+    // Detect all faces using SsdMobilenetv1 with tuned options
+    // minConfidence 0.4 (default is 0.5) to catch smaller/partial faces in groups
+    const detections = await api.detectAllFaces(img as any, new api.SsdMobilenetv1Options({ minConfidence: 0.4 }))
         .withFaceLandmarks()
         .withFaceDescriptors();
 
