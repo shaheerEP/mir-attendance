@@ -1,0 +1,42 @@
+[OLED] Connecting: 1
+[OLED] Connecting: 2
+[OLED] Connecting: 3
+[OLED] Connecting: 4
+WiFi Connected: Redmi Note 8
+IP Address: 192.168.136.203
+[Status] {"period":"Free","present":0,"total":2}
+Checking for updates...
+[Debug] Settings Response: {"gracePeriod":{"fullPresentMins":60,"halfPresentMins":80},"deviceConfig":{"firmwareVersion":"","firmwareUrl":"","wifiSSID":"Redmi Note 8","wifiPassword":"12345678"},"_id":"695944d34a66e617af193748","__v":0,"createdAt":"2026-01-03T16:33:23.217Z","periods":[{"id":1,"startTime":"20:55","durationMinutes":45,"_id":"698c9fe94ca9015e8e611165"},{"id":2,"startTime":"20:55","durationMinutes":45,"_id":"698c9fe94ca9015e8e611166"}],"updatedAt":"2026-02-12T05:11:08.999Z","weeklyHolidays":[5],"firmware":{"version":"1.0.0","url":""},"wifi":{"ssid":"Redmi Note 8","password":"12345678"}}
+[OLED] Ready....: Press Button by standing away from camera 
+Button Pressed
+[OLED] Get Ready!: 3...
+[OLED] Get Ready!: 2...
+[OLED] Get Ready!: 1...
+[OLED] Smile!: Capturing...
+Starting Capture Sequence...
+Image Captured. Size: 7591 bytes
+[OLED] Uploading...: Please Wait
+[OLED] Server Error: Repress button to capture another
+Connecting to Saved WiFi: Redmi Note 8
+Connecting...
+[OLED] Connecting: 0
+[OLED] Connecting: 1
+[OLED] Connecting: 2
+[OLED] Connecting: 3
+[OLED] Connecting: 4
+[OLED] Connecting: 5
+[OLED] Connecting: 6
+[OLED] Connecting: 7
+[OLED] Connecting: 8
+[OLED] Connecting: 9
+[OLED] Connecting: 10
+[OLED] Connecting: 11
+[OLED] Connecting: 12
+[OLED] Connecting: 13
+[OLED] Connecting: 14
+[OLED] Connecting: 15
+[OLED] Connecting: 16
+[OLED] Connecting: 17
+[OLED] Connecting: 18
+[OLED] Connecting: 19
+[OLED] WiFi Error: Out of Range

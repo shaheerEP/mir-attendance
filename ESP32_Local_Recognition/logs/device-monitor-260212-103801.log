@@ -1,0 +1,52 @@
+10:38:01.853 > ets Jul 29 2019 12:21:46
+10:38:01.853 > 
+10:38:01.853 > rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+10:38:01.853 > configsip: 0, SPIWP:0xee
+10:38:01.853 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:38:01.853 > mode:DIO, clock div:2
+10:38:01.853 > load:0x3fff0018,len:4
+10:38:01.853 > load:0x3fff001c,len:1044
+10:38:01.853 > load:0x40078000,len:10124
+10:38:01.853 > load:0x40080400,len:5828
+10:38:01.853 > entry 0x400806a8
+10:38:01.853 > �
+10:38:01.853 > 
+10:38:01.853 > --- ESP32 Online Snapshot Firmware ---
+10:38:01.853 > [OLED] Booting...: Init System
+10:38:01.853 > Connecting to Saved WiFi: Redmi Note 8
+10:38:01.853 > Connecting...
+10:38:01.853 > [OLED] Connecting: 0
+10:38:01.853 > [OLED] Connecting: 1
+10:38:01.853 > [OLED] Connecting: 2
+10:38:02.101 > [OLED] Connecting: 3
+10:38:02.628 > [OLED] Connecting: 4
+10:38:03.155 > [OLED] Connecting: 5
+10:38:03.685 > [OLED] Connecting: 6
+10:38:04.215 > [OLED] Connecting: 7
+10:38:04.742 > [OLED] Connecting: 8
+10:38:05.271 > [OLED] Connecting: 9
+10:38:05.799 > [OLED] Connecting: 10
+10:38:06.331 > [OLED] Connecting: 11
+10:38:06.331 > WiFi Connected: Redmi Note 8
+10:38:06.331 > IP Address: 192.168.136.203
+10:38:12.895 > [E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+10:38:12.901 > [E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+10:38:12.906 > [Status] HTTP Error: connection refused
+10:38:12.906 > Checking for updates...
+10:38:19.899 > [E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+10:38:19.905 > [E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+10:38:19.909 > [Debug] HTTP Error: connection refused
+10:38:19.935 > [OLED] Ready....: Press Button by standing away from camera 
+10:38:24.444 > Button Pressed
+10:38:24.473 > [OLED] Get Ready!: 3...
+10:38:25.501 > [OLED] Get Ready!: 2...
+10:38:26.528 > [OLED] Get Ready!: 1...
+10:38:27.558 > [OLED] Smile!: Capturing...
+10:38:28.058 > Starting Capture Sequence...
+10:38:28.258 > Image Captured. Size: 17924 bytes
+10:38:28.289 > [OLED] Uploading...: Please Wait
+10:38:28.289 > [E][WiFiGeneric.cpp:739] hostByName(): DNS Failed for mir-attendance.vercel.app
+10:38:28.294 > [E][WiFiClientSecure.cpp:133] connect(): start_ssl_client: -1
+10:38:28.321 > [OLED] Conn. Error: Repress button to capture another
+10:38:32.085 > Button Pressed
+10:38:32.117 > [OLED] Ready: Press Button and stand away from camera
