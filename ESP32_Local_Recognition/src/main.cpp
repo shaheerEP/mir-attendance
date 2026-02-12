@@ -8,7 +8,7 @@
 #include <HTTPClient.h>
 #include <Preferences.h> // ABSOLUTELY REQUIRED for Preferences
 #include <WiFi.h>
-// #include <WiFiClientSecure.h>
+#include <WiFiClientSecure.h>
 
 // ===========================
 // STREAM MACROS
@@ -27,12 +27,12 @@ httpd_handle_t stream_httpd = NULL;
 // ===========================
 const char *default_ssid = "IRIS_FOUNDATION_JIO";
 const char *default_password = "iris916313";
-const char *serverUrl = "192.168.31.3";
+const char *serverUrl = "mir-attendance.vercel.app";
 const char *serverPath = "/api/recognize";
 const char *statusPath =
-    "http://192.168.31.3:3000/api/status";  // Full URL for HTTPClient
+    "https://mir-attendance.vercel.app/api/status"; // Full URL for HTTPClient
 const char *settingsPath = "/api/settings"; // Endpoint for checking updates
-const int serverPort = 3000;                // HTTP Port
+const int serverPort = 443;                 // HTTPS Port
 
 // STATE MACHINE
 enum AppState { STATE_IDLE, STATE_CAPTURING, STATE_SHOWING_RESULT };
@@ -118,8 +118,8 @@ void showStatus(String title, String msg) {
 
 void fetchStatus() {
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
-    // client.setInsecure(); // Required for HTTPS without cert
+    WiFiClientSecure client;
+    client.setInsecure(); // Required for HTTPS without cert
 
     HTTPClient http;
     http.begin(client, statusPath);
@@ -205,12 +205,11 @@ void checkSettingsUpdates() {
 
   Serial.println("Checking for updates...");
 
-  WiFiClient client;
-  // client.setInsecure(); // Required for HTTPS without cert
+  WiFiClientSecure client;
+  client.setInsecure(); // Required for HTTPS without cert
 
   HTTPClient http;
-  http.begin(client, String("http://") + serverUrl + ":" + String(serverPort) +
-                         settingsPath);
+  http.begin(client, String("https://") + serverUrl + settingsPath);
   http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
 
   int httpCode = http.GET();
@@ -258,8 +257,8 @@ void checkSettingsUpdates() {
 }
 
 String uploadPhoto(camera_fb_t *fb) {
-  WiFiClient client;
-  // client.setInsecure();
+  WiFiClientSecure client;
+  client.setInsecure();
 
   showStatus("Uploading...", "Please Wait");
 
