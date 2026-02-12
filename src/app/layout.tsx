@@ -20,26 +20,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <div className="fixed inset-0 z-[-1]">
+          <div className="absolute inset-0 bg-[url('/bg.png')] bg-cover bg-center bg-no-repeat" />
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+        </div>
         <div className="h-full relative">
-          <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-[80] bg-transparent">
+          <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-[80] bg-gray-900">
             <Sidebar />
           </div>
-          <main className="md:pl-64 h-full bg-transparent min-h-screen relative overflow-hidden">
-            {/* Tiled Background Logos */}
-            <div
-              className="absolute inset-0 z-0 pointer-events-none opacity-10"
-              style={{
-                backgroundImage: 'url("/mir-logo.png")',
-                backgroundSize: '100px auto',
-                backgroundRepeat: 'repeat',
-                filter: 'brightness(0.8) contrast(1.1) saturate(1.2)'
-              }}
-            />
-
-            {/* Content */}
-            <div className="relative z-10 h-full">
-              {children}
-            </div>
+          <main className="md:pl-64 h-full min-h-screen">
+            {children}
           </main>
         </div>
       </body>
