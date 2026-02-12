@@ -48,8 +48,7 @@ export async function POST(req: NextRequest) {
         if (!deviceConfig && wifi) {
             deviceConfig = {
                 wifiSSID: wifi?.ssid,
-                wifiPassword: wifi?.password,
-                wifiNetworks: wifi?.networks || [],
+                wifiPassword: wifi?.password
             };
         }
 
