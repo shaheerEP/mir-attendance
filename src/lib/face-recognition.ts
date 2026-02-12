@@ -8,7 +8,7 @@ import dbConnect from '@/lib/db';
 import * as canvasLib from 'canvas';
 let canvas: any = canvasLib;
 
-// Handle CommonJS/ESM interop for canvas in Next.js/TS
+// Handle CommonJS/ESM interop rof canvas in Next.js
 if (canvas.default) {
     canvas = canvas.default;
 }
