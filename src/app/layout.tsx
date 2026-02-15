@@ -6,10 +6,12 @@ import { Sidebar } from "@/components/Sidebar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MIR Attendance",
+  title: "MIR Attendance - Markez",
   description: "Automated attendance tracking",
-  icons: "/mir-logo.png",
-
+  icons: {
+    icon: "/mir-logo.png",
+    apple: "/mir-logo.png",
+  },
 };
 
 export default function RootLayout({
